@@ -34,7 +34,6 @@ public abstract class Subsystem<StateType extends SubsystemStates> {
         if (!DriverStation.isEnabled()) return;
 
         runState();
-        if (Robot.isSimulation()) runSimulation();
 
         checkTriggers();
     }
