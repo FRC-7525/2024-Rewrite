@@ -40,7 +40,6 @@ public abstract class Subsystem<StateType extends SubsystemStates> {
     }
     
     protected abstract void runState();
-    protected abstract void runSimulation();
     
     // SmartDashboard utils
     protected void putSmartDashboard(String key, String value) {
