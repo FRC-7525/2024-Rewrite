@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+
 import java.util.function.BooleanSupplier;
 
 public class Trigger<StateType extends SubsystemStates> {
