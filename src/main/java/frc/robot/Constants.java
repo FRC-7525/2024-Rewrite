@@ -34,4 +34,21 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static final class Intake {
+    // Motor setpoints for the intake motors.
+    public static final double OFF = 0.0;
+    public static final double ON = 0.5;
+    public static final double ON_SLOW = 0.1;
+    public static final double REVERSE_SLOW = -0.2;
+    public static final double REVERSE = -0.7;
+    public static final double DOWN = -37;
+    public static final double AMP_SCORING = -16.7;
+    public static final double ON_SLOW_AMP = -0.4;
+    public static final double SUPPLY_CURRENT_MINIMUM = 25;
+    public static final double CURRENT_SENSING_TIMER = 0.5;
+    public static final double SPINNING_UP_INTAKE_TIME = 0.2;
+    public static final double SLOW_CENTERING = 0.2;
+    public static final double GEARING = 67.5;
+  }
 }
