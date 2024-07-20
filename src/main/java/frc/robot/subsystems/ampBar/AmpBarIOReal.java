@@ -89,7 +89,7 @@ public class AmpBarIOReal implements AmpBarIO {
 
     @Override
     public double getSpinnerSpeed() {
-        return spinnerMotor.getVelocity().getValueAsDouble();
+        return spinnerMotor.getVelocity().getValueAsDouble() * Math.PI * 2;
     }
 
     @Override

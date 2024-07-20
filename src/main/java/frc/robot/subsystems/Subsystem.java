@@ -32,7 +32,7 @@ public abstract class Subsystem<StateType extends SubsystemStates> {
 
     // State operation
     public void periodic() {
-        Logger.recordOutput(subsystemName + " State", state.getStateString()); 
+        Logger.recordOutput(subsystemName + "/state", state.getStateString()); 
         if (!DriverStation.isEnabled()) return;
 
         runState();
