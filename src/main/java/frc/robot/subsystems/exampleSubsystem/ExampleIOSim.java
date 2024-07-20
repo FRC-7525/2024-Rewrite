@@ -5,7 +5,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.subsystems.exampleSubsystem.ExampleIO.ExampleIOInputs;
 
-public class ExampleIOSim {
+public class ExampleIOSim implements ExampleIO {
   FlywheelSim sim;
   PIDController controller;
   double appliedVolts;

@@ -6,7 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.exampleSubsystem.ExampleIO.ExampleIOInputs;
 
-public class ExampleIOSparkMax {
+public class ExampleIOSparkMax implements ExampleIO {
 
   CANSparkMax motor;
   RelativeEncoder encoder;
