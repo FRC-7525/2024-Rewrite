@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +32,7 @@ public abstract class Subsystem<StateType extends SubsystemStates> {
 
     // State operation
     public void periodic() {
-        putSmartDashboard("State", state.getStateString());
+        Logger.recordOutput(subsystemName + " State", state.getStateString()); 
         if (!DriverStation.isEnabled()) return;
 
         runState();

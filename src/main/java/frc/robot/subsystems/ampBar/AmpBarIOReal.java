@@ -7,9 +7,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 
 
 
@@ -30,6 +27,7 @@ public class AmpBarIOReal implements AmpBarIO {
     private double spinnerAppliedVoltage;
 
     final double ERROR_OF_MARGIN = 0.1;
+
     public AmpBarIOReal()
     {
         leftMotor = new CANSparkMax(31, MotorType.kBrushless);
@@ -38,7 +36,7 @@ public class AmpBarIOReal implements AmpBarIO {
 
         pivotEncoder = leftMotor.getEncoder();
         stateString = "";
-        controller = new PIDController(1, 0, 0);
+        controller = new PIDController(0, 0, 0);
 
         pivotMotorAppliedVoltage = 0;
         pivotPositionSetpoint = 0;
@@ -59,11 +57,6 @@ public class AmpBarIOReal implements AmpBarIO {
 
     @Override
     public void updateInput(AmpBarIOInputs inputs) {
-        inputs.mechanismPose3d = new Pose3d(
-            new Translation3d(0,0,0),
-            new Rotation3d(0, getPivotPosition(), 0)
-        );
-
         inputs.ampBarState = stateString;
 
         inputs.pivotPosition = pivotEncoder.getPosition();
@@ -79,14 +72,14 @@ public class AmpBarIOReal implements AmpBarIO {
     public void setPivotPosition(double position) {
         pivotPositionSetpoint = position;
         pivotMotorAppliedVoltage = controller.calculate(pivotEncoder.getPosition(), pivotPositionSetpoint);
-        leftMotor.set(pivotMotorAppliedVoltage);
+        leftMotor.setVoltage(pivotMotorAppliedVoltage);
     }
 
     @Override
     public void setSpinnerSpeedpoint(double speed) {
         spinnerSpeedpoint = speed;
         spinnerAppliedVoltage = speed;
-        spinnerMotor.set(speed);
+        spinnerMotor.setVoltage(speed);
     }
 
     @Override
@@ -102,11 +95,6 @@ public class AmpBarIOReal implements AmpBarIO {
     @Override
     public void configurePID(double kP, double kI, double kD) {
         controller.setPID(kP, kI, kD);
-    }
-
-    @Override
-    public void setStateString(String inputStateString) {
-        stateString = inputStateString;
     }
 
     @Override

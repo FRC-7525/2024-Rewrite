@@ -1,9 +1,6 @@
 package frc.robot.subsystems.ampBar;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -31,9 +28,9 @@ public class AmpBarIOSim implements AmpBarIO {
             2,
             1,
             Math.PI,
-            Math.PI,
+            Math.PI * 2,
             false,
-            0
+            Math.PI
         );
         spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(0), .5, .5);
 
@@ -48,10 +45,6 @@ public class AmpBarIOSim implements AmpBarIO {
 
     @Override
     public void updateInput(AmpBarIOInputs inputs) {
-        inputs.mechanismPose3d = new Pose3d(
-            new Translation3d(0,0,0),
-            new Rotation3d(0, getPivotPosition(), 0)
-        );
         inputs.ampBarState = stateString;
 
         inputs.pivotPosition = getPivotPosition();
@@ -61,12 +54,15 @@ public class AmpBarIOSim implements AmpBarIO {
         inputs.spinnerSpeed = getSpinnerSpeed();
         inputs.spinnerSetpoint = spinnerSpeedpoint;
         inputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
+
+        pivotSim.update(0.05);
+        spinnerSim.update(0.05);
     }
 
     @Override
     public void setPivotPosition(double position) {
         pivotSetpoint = position;
-        pivotAppliedVoltage = controller.calculate(pivotSim.getVelocityRadPerSec() * 60, pivotSetpoint);
+        pivotAppliedVoltage = controller.calculate(pivotSim.getAngleRads(), pivotSetpoint);
         pivotSim.setInputVoltage(pivotAppliedVoltage);
     }
 
@@ -84,17 +80,12 @@ public class AmpBarIOSim implements AmpBarIO {
 
     @Override
     public double getSpinnerSpeed() {
-        return spinnerSim.getAngularVelocityRadPerSec() * 60;
+        return spinnerSim.getAngularVelocityRadPerSec();
     }
 
     @Override
     public void configurePID(double kP, double kI, double kD) {
         controller.setPID(kP, kI, kD);
-    }
-
-    @Override
-    public void setStateString(String inputStateString) {
-        stateString = inputStateString;
     }
 
     @Override
