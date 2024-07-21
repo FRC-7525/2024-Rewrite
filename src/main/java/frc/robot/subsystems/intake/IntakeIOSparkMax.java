@@ -26,28 +26,30 @@ public class IntakeIOSparkMax implements IntakeIO {
     double pivotMotorSetpoint = 0.0;
     double intakeMotorSetpoint = 0.0;
 
-    private IntakeStates currentState;
-
     double wheelAppliedVoltage;
     double pivotAppliedVoltage;
 
     double wheelSpeedpoint;
     double pivotSetpoint;
 
+    boolean usingInPID;
+
     public IntakeIOSparkMax() {
         intakeMotor = new TalonFX(20);
         pivotMotor = new CANSparkMax(32, MotorType.kBrushless);
         pivotEncoder = pivotMotor.getEncoder();
 
-        outPivotController = new PIDController(0.09, 0, 0);
-        inPIDController = new PIDController(0.05, 0, 0);
+        outPivotController = new PIDController(0, 0, 0);
+        inPIDController = new PIDController(0, 0, 0);
 
         pivotEncoder.setPositionConversionFactor(Math.PI * 2);
         pivotEncoder.setVelocityConversionFactor(Math.PI * 2);
     }
 
-    public void setSetpoints(double pivotMotorSetpoint, double intakeMotorSetpoint, boolean useIn) {
-        if (useIn) pivotController = inPIDController;
+    public void setSetpoints(double pivotMotorSetpoint, double intakeMotorSetpoint, boolean useInPID) {
+        usingInPID = useInPID;
+
+        if (useInPID) pivotController = inPIDController;
         else pivotController = outPivotController;
 
         pivotAppliedVoltage = pivotController.calculate(pivotEncoder.getPosition(), pivotMotorSetpoint);
@@ -61,12 +63,6 @@ public class IntakeIOSparkMax implements IntakeIO {
     }
 
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.stateString = currentState.getStateString();
-        inputs.position = new Pose3d(
-            new Translation3d(0,0,0),
-            new Rotation3d(0, pivotEncoder.getPosition(), 0)
-        );
-
         inputs.wheelSpeed = intakeMotor.getVelocity().getValueAsDouble();
         inputs.wheelAppliedVoltage = wheelAppliedVoltage;
         inputs.wheelSpeedpoint = wheelSpeedpoint;
@@ -75,14 +71,12 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.pivotAppliedVoltage = pivotAppliedVoltage;
         inputs.pivotSetpoint = pivotSetpoint;
         inputs.pivotSetpointError = Math.abs(pivotEncoder.getPosition() - pivotSetpoint);
+        
+        inputs.usingInPID = usingInPID;
     }
 
     public double getPosition() {
         return pivotEncoder.getPosition();
-    }
-
-    public void setState(IntakeStates state) {
-        currentState = state;
     }
 
     public void stop() {

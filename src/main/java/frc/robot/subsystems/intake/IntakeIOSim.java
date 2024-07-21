@@ -14,8 +14,6 @@ public class IntakeIOSim implements IntakeIO {
     SingleJointedArmSim pivotSimModel;
     DCMotorSim spinnerWheelSim;
 
-    IntakeStates currentState;
-
     PIDController outPivotController;
     PIDController inPIDController;
 
@@ -26,6 +24,8 @@ public class IntakeIOSim implements IntakeIO {
 
     double wheelSpeedpoint;
     double pivotSetpoint;
+
+    boolean usingInPID;
 
     public IntakeIOSim() {
         pivotSimModel = new SingleJointedArmSim(
@@ -41,12 +41,14 @@ public class IntakeIOSim implements IntakeIO {
 
         spinnerWheelSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.Intake.GEARING, 0.192383865);
 
-        outPivotController = new PIDController(0.09, 0, 0);
-        inPIDController = new PIDController(0.05, 0, 0);
+        outPivotController = new PIDController(0., 0, 0);
+        inPIDController = new PIDController(0, 0, 0);
     }
 
-    public void setSetpoints(double pivotMotorSetPoint, double intakeMotorSetpoint, boolean useIn) {
-        if (useIn) pivotController = inPIDController;
+    public void setSetpoints(double pivotMotorSetPoint, double intakeMotorSetpoint, boolean useInPID) {
+        usingInPID = useInPID;
+
+        if (useInPID) pivotController = inPIDController;
         else pivotController = outPivotController;
 
         pivotAppliedVoltage = pivotController.calculate(pivotSimModel.getVelocityRadPerSec() * 60, pivotMotorSetPoint);
@@ -60,12 +62,6 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.stateString = currentState.getStateString();
-        inputs.position = new Pose3d(
-            new Translation3d(0,0,0),
-            new Rotation3d(0, pivotSimModel.getAngleRads(), 0)
-        );
-
         inputs.wheelSpeed = spinnerWheelSim.getAngularVelocityRadPerSec() * 60;
         inputs.wheelAppliedVoltage = wheelAppliedVoltage;
         inputs.wheelSpeedpoint = wheelSpeedpoint;
@@ -74,6 +70,8 @@ public class IntakeIOSim implements IntakeIO {
         inputs.pivotAppliedVoltage = pivotAppliedVoltage;
         inputs.pivotSetpoint = pivotSetpoint;
         inputs.pivotSetpointError = Math.abs(pivotSimModel.getAngleRads() - pivotSetpoint);
+
+        inputs.usingInPID = usingInPID;
     }
 
     public double getPosition() {
@@ -85,10 +83,6 @@ public class IntakeIOSim implements IntakeIO {
         pivotAppliedVoltage = 0.0;
         pivotSimModel.setInputVoltage(0);
         spinnerWheelSim.setInputVoltage(0);
-    }
-
-    public void setState(IntakeStates state) {
-        currentState = state;
     }
 
     public void configurePID(PIDController outPivotController, PIDController inPIPidController) {

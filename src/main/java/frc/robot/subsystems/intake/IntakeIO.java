@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -10,7 +11,6 @@ public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
         public Pose3d position;
-        public String stateString;
 
         public double wheelSpeed;
         public double wheelAppliedVoltage;
@@ -20,6 +20,8 @@ public interface IntakeIO {
         public double pivotAppliedVoltage;
         public double pivotSetpoint; //Also not sure what value the setpoint is supposed to be
         public double pivotSetpointError; //Same problems
+
+        public boolean usingInPID;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}
@@ -32,5 +34,5 @@ public interface IntakeIO {
         return 0.0;
     }
 
-    public default void configurePID(double kP, double kI, double kD) {}
+    public default void configurePID(PIDController outPivotController, PIDController inPIDController) {}
 }
