@@ -7,16 +7,16 @@ public enum ShooterStates implements SubsystemStates {
   SHOOTING(1, "Shooting Full"),
   PASSING_AMP(0.5, "Passing To Amp");
 
-  private double spinnerMotorSpeedpoint;
+  private double speedPoint;
   private String stateString;
 
-  ShooterStates(double spinnerMotorSpeedpoint, String stateString) {
-    this.spinnerMotorSpeedpoint = spinnerMotorSpeedpoint;
+  ShooterStates(double speedPoint, String stateString) {
+    this.speedPoint = speedPoint;
     this.stateString = stateString;
   }
 
   public double getMotorSpeedpoint() {
-    return spinnerMotorSpeedpoint;
+    return speedPoint;
   }
 
   @Override

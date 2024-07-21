@@ -2,23 +2,20 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants;
 
-public class ShooterIOReal implements ShooterIO {
+public class ShooterIOTalonFX implements ShooterIO {
 
   // Im not bouta go change can IDs
-  private TalonFX leftMotor = new TalonFX(0);
-  private TalonFX rightMotor = new TalonFX(1);
+  private TalonFX leftMotor = new TalonFX(15);
+  private TalonFX rightMotor = new TalonFX(14);
   private PIDController feedbackController;
-  private SimpleMotorFeedforward feedForwardController;
   public double speedPoint = 0.0;
 
-  public ShooterIOReal() {
+  public ShooterIOTalonFX() {
     leftMotor.setInverted(false);
     rightMotor.setInverted(true);
     // Maybe this or true false
-    feedbackController = new PIDController(0, 0, 0);
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
@@ -31,13 +28,10 @@ public class ShooterIOReal implements ShooterIO {
 
   public void setSpeed(double rps) {
     speedPoint = rps;
-    double feedforward = feedForwardController.calculate(rps);
     double left =
-        feedbackController.calculate(leftMotor.getRotorVelocity().getValueAsDouble(), rps)
-            + feedforward;
+        feedbackController.calculate(leftMotor.getRotorVelocity().getValueAsDouble(), rps);
     double right =
-        feedbackController.calculate(rightMotor.getRotorVelocity().getValueAsDouble(), rps)
-            + feedforward;
+        feedbackController.calculate(rightMotor.getRotorVelocity().getValueAsDouble(), rps);
 
     leftMotor.setVoltage(left);
     rightMotor.setVoltage(right);
@@ -55,10 +49,6 @@ public class ShooterIOReal implements ShooterIO {
 
   public void configurePID(double kP, double kI, double kD) {
     feedbackController.setPID(kP, kI, kD);
-  }
-
-  public void configureFeedForward(double kS, double kV, double kA) {
-    feedForwardController = new SimpleMotorFeedforward(kS, kV, kA);
   }
 
   public boolean speedPoint() {
