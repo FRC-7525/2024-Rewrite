@@ -43,4 +43,9 @@ public final class Constants {
     public static final double DOWN = Math.PI;
     public static final double GEARING = 67.5;
   }
+  public static final class Shooter {
+    public static final double SHOOTER_MAX = 0.1;
+    public static final double SHOOTER_MAX_SPEED_DEVIATION = 5;
+    //not sure if this is too high or low
+  }
 }
