@@ -34,4 +34,8 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static final class Shooter {
+    public static final double SHOOTER_MAX = 0.1;
+  }
 }
