@@ -39,6 +39,7 @@ public final class Constants {
     // Motor setpoints for the intake motors.
     public static final double OFF = 0.0;
     public static final double REVERSE = -10;
+    public static final double ON = 10;
     public static final double DOWN = Math.PI;
     public static final double GEARING = 67.5;
   }

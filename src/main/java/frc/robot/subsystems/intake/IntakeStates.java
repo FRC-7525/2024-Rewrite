@@ -14,7 +14,7 @@ public enum IntakeStates implements SubsystemStates {
     INTAKING(
         "Intaking",
         Constants.Intake.DOWN,
-        Constants.Intake.OFF,
+        Constants.Intake.ON,
         false
     ),
     FEEDING(
