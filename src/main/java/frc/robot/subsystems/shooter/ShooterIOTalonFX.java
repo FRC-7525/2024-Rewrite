@@ -6,16 +6,17 @@ import frc.robot.Constants;
 
 public class ShooterIOTalonFX implements ShooterIO {
 
-  // Im not bouta go change can IDs
-  private TalonFX leftMotor = new TalonFX(15);
-  private TalonFX rightMotor = new TalonFX(14);
+  private TalonFX leftMotor;
+  private TalonFX rightMotor;
   private PIDController feedbackController;
-  public double speedPoint = 0.0;
+  private double speedPoint;
 
   public ShooterIOTalonFX() {
+    leftMotor = new TalonFX(15);
+    rightMotor = new TalonFX(14);
+    speedPoint = 0.0;
     leftMotor.setInverted(false);
     rightMotor.setInverted(true);
-    // Maybe this or true false
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
@@ -27,19 +28,12 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   public void setSpeed(double rps) {
-   speedPoint = rps;
-    double left =
-        feedbackController.calculate(leftMotor.getRotorVelocity().getValueAsDouble(), rps);
-    double right =
-        feedbackController.calculate(rightMotor.getRotorVelocity().getValueAsDouble(), rps);
+    speedPoint = rps;
+    double left = feedbackController.calculate(leftMotor.getRotorVelocity().getValueAsDouble(), rps);
+    double right = feedbackController.calculate(rightMotor.getRotorVelocity().getValueAsDouble(), rps);
 
     leftMotor.setVoltage(left);
     rightMotor.setVoltage(right);
-  }
-
-  public void setVoltage(double volts) {
-    leftMotor.setVoltage(volts);
-    rightMotor.setVoltage(volts);
   }
 
   public void stop() {
@@ -51,10 +45,8 @@ public class ShooterIOTalonFX implements ShooterIO {
     feedbackController.setPID(kP, kI, kD);
   }
 
-  public boolean speedPoint() {
-    return Math.abs(speedPoint - leftMotor.getVelocity().getValueAsDouble())
-            < Constants.Shooter.SHOOTER_MAX
-        && Math.abs(speedPoint - rightMotor.getVelocity().getValueAsDouble())
-            < Constants.Shooter.SHOOTER_MAX;
+  public boolean nearSpeedPoint() {
+    return Math.abs(speedPoint - leftMotor.getVelocity().getValueAsDouble()) < Constants.Shooter.SHOOTER_MAX
+        && Math.abs(speedPoint - rightMotor.getVelocity().getValueAsDouble()) < Constants.Shooter.SHOOTER_MAX;
   }
 }

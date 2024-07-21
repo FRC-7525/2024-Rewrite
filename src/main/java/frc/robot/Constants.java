@@ -37,5 +37,7 @@ public final class Constants {
 
   public static final class Shooter {
     public static final double SHOOTER_MAX = 0.1;
+    public static final double SHOOTER_MAX_SPEED_DEVIATION = 5;
+    //not sure if this is too high or low
   }
 }
