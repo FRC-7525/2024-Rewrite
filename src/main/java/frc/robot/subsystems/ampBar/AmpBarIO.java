@@ -12,7 +12,7 @@ public interface AmpBarIO {
     public double pivotPosition;
     public double pivotSetpoint;
     public double pivotAppliedVoltage;
-    //Spinners
+    // Spinners
     public double spinnerSpeed;
     public double spinnerSetpoint;
     public double spinnerAppliedVoltage;

@@ -6,92 +6,83 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class AmpBarIOSim implements AmpBarIO {
-    SingleJointedArmSim pivotSim;
-    DCMotorSim spinnerSim;
-    PIDController controller;
+  SingleJointedArmSim pivotSim;
+  DCMotorSim spinnerSim;
+  PIDController controller;
 
-    String stateString;
+  String stateString;
 
-    double pivotAppliedVoltage;
-    double pivotSetpoint;
-    
-    double spinnerAppliedVoltage;
-    double spinnerSpeedpoint;
+  double pivotAppliedVoltage;
+  double pivotSetpoint;
 
-    final double ERROR_OF_MARGIN = .1;
+  double spinnerAppliedVoltage;
+  double spinnerSpeedpoint;
 
-    public AmpBarIOSim() {
-        //the sim values are random
-        pivotSim = new SingleJointedArmSim(
-            DCMotor.getNEO(2),
-            .5,
-            2,
-            1,
-            Math.PI,
-            Math.PI * 2,
-            false,
-            Math.PI
-        );
-        spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(0), .5, .5);
+  final double ERROR_OF_MARGIN = .1;
 
-        controller = new PIDController(0, 0, 0);
-        stateString = "";
+  public AmpBarIOSim() {
+    // the sim values are random
+    pivotSim =
+        new SingleJointedArmSim(DCMotor.getNEO(2), .5, 2, 1, Math.PI, Math.PI * 2, false, Math.PI);
+    spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(0), .5, .5);
 
-        pivotAppliedVoltage = 0;
-        pivotSetpoint = 0;
-        spinnerAppliedVoltage =0;
-        spinnerSpeedpoint=0;
-    }   
+    controller = new PIDController(0, 0, 0);
+    stateString = "";
 
-    @Override
-    public void updateInput(AmpBarIOInputs inputs) {
-        inputs.ampBarState = stateString;
+    pivotAppliedVoltage = 0;
+    pivotSetpoint = 0;
+    spinnerAppliedVoltage = 0;
+    spinnerSpeedpoint = 0;
+  }
 
-        inputs.pivotPosition = getPivotPosition();
-        inputs.pivotSetpoint = pivotSetpoint;
-        inputs.pivotAppliedVoltage = pivotAppliedVoltage;
+  @Override
+  public void updateInput(AmpBarIOInputs inputs) {
+    inputs.ampBarState = stateString;
 
-        inputs.spinnerSpeed = getSpinnerSpeed();
-        inputs.spinnerSetpoint = spinnerSpeedpoint;
-        inputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
+    inputs.pivotPosition = getPivotPosition();
+    inputs.pivotSetpoint = pivotSetpoint;
+    inputs.pivotAppliedVoltage = pivotAppliedVoltage;
 
-        pivotSim.update(0.05);
-        spinnerSim.update(0.05);
-    }
+    inputs.spinnerSpeed = getSpinnerSpeed();
+    inputs.spinnerSetpoint = spinnerSpeedpoint;
+    inputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
 
-    @Override
-    public void setPivotPosition(double position) {
-        pivotSetpoint = position;
-        pivotAppliedVoltage = controller.calculate(pivotSim.getAngleRads(), pivotSetpoint);
-        pivotSim.setInputVoltage(pivotAppliedVoltage);
-    }
+    pivotSim.update(0.05);
+    spinnerSim.update(0.05);
+  }
 
-    @Override
-    public void setSpinnerSpeedpoint(double speed) {
-        spinnerSpeedpoint = speed;
-        spinnerAppliedVoltage = speed;
-        spinnerSim.setInputVoltage(speed);
-    }
+  @Override
+  public void setPivotPosition(double position) {
+    pivotSetpoint = position;
+    pivotAppliedVoltage = controller.calculate(pivotSim.getAngleRads(), pivotSetpoint);
+    pivotSim.setInputVoltage(pivotAppliedVoltage);
+  }
 
-    @Override
-    public double getPivotPosition() {
-        return pivotSim.getAngleRads();
-    }
+  @Override
+  public void setSpinnerSpeedpoint(double speed) {
+    spinnerSpeedpoint = speed;
+    spinnerAppliedVoltage = speed;
+    spinnerSim.setInputVoltage(speed);
+  }
 
-    @Override
-    public double getSpinnerSpeed() {
-        return spinnerSim.getAngularVelocityRadPerSec();
-    }
+  @Override
+  public double getPivotPosition() {
+    return pivotSim.getAngleRads();
+  }
 
-    @Override
-    public void configurePID(double kP, double kI, double kD) {
-        controller.setPID(kP, kI, kD);
-    }
+  @Override
+  public double getSpinnerSpeed() {
+    return spinnerSim.getAngularVelocityRadPerSec();
+  }
 
-    @Override
-    public boolean atSetPoint() {
-        double motorPosition = getPivotPosition();
-        return Math.abs(motorPosition - pivotSetpoint) <= ERROR_OF_MARGIN;
-    }
-    
+  @Override
+  public void configurePID(double kP, double kI, double kD) {
+    controller.setPID(kP, kI, kD);
+  }
+
+  @Override
+  public boolean atSetPoint() {
+    double motorPosition = getPivotPosition();
+    return Math.abs(motorPosition - pivotSetpoint) <= ERROR_OF_MARGIN;
+  }
 }
