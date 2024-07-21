@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -23,10 +24,14 @@ public class ShooterIOSim implements ShooterIO {
         inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / 60;
         inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / 60;
         inputs.shooterSpeedPoint = speedPoint;
+        inputs.leftShooterAppliedVolts = sim.getCurrentDrawAmps();
+        inputs.rightShooterAppliedVolts = sim.getCurrentDrawAmps();
+
     }
 
     @Override
     public void stop() {
+        sim.setInputVoltage(0);
     }
 
     @Override
@@ -36,7 +41,8 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void setSpeed(double rpm) {
-        speedPoint = rpm;
+        double appliedVolts = MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()), -12.0, 12.0);
+        sim.setInputVoltage(appliedVolts);
     }
 
     @Override
