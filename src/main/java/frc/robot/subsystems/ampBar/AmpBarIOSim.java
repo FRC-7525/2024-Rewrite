@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
 
 public class AmpBarIOSim implements AmpBarIO {
   SingleJointedArmSim pivotSim;
@@ -47,8 +48,8 @@ public class AmpBarIOSim implements AmpBarIO {
     inputs.spinnerSetpoint = spinnerSpeedpoint;
     inputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
 
-    pivotSim.update(0.05);
-    spinnerSim.update(0.05);
+    pivotSim.update(Constants.SIM_UPDATE_TIME);
+    spinnerSim.update(Constants.SIM_UPDATE_TIME);
   }
 
   @Override

@@ -19,7 +19,7 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public void updateInputs(ShooterIOInputs inputs) {
-    sim.update(0.02);
+    sim.update(Constants.SIM_UPDATE_TIME);
 
     inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / 60;
     inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / 60;

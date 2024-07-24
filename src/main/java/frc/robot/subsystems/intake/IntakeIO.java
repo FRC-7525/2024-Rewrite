@@ -1,6 +1,6 @@
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.math.controller.PIDController;
+import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose3d;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -33,6 +33,5 @@ public interface IntakeIO {
     return 0.0;
   }
 
-  public default void configurePID(
-      PIDController outPivotController, PIDController inPIDController) {}
+  public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {}
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.pathplanner.lib.util.PIDConstants;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -80,8 +81,8 @@ public class IntakeIOSparkMax implements IntakeIO {
     intakeMotor.stopMotor();
   }
 
-  public void configurePID(PIDController outPivotController, PIDController inPIPidController) {
-    this.outPivotController = outPivotController;
-    this.inPIDController = inPIPidController;
+  public void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {
+    outPivotController.setPID(outPIDConst.kP, outPIDConst.kI, outPIDConst.kD);
+    inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
   }
 }
