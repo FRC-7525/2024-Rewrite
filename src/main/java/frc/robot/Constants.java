@@ -22,7 +22,7 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -43,9 +43,10 @@ public final class Constants {
     public static final double DOWN = Math.PI;
     public static final double GEARING = 67.5;
   }
+
   public static final class Shooter {
     public static final double SHOOTER_MAX = 0.1;
     public static final double SHOOTER_MAX_SPEED_DEVIATION = 5;
-    //not sure if this is too high or low
+    // not sure if this is too high or low
   }
 }

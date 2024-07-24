@@ -24,7 +24,7 @@ public class AmpBarIOSim implements AmpBarIO {
     // the sim values are random
     pivotSim =
         new SingleJointedArmSim(DCMotor.getNEO(2), .5, 2, 1, Math.PI, Math.PI * 2, false, Math.PI);
-    spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(0), .5, .5);
+    spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(1), .5, .5);
 
     controller = new PIDController(0, 0, 0);
     stateString = "";
