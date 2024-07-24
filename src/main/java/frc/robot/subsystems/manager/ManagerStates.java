@@ -38,7 +38,7 @@ public enum ManagerStates implements SubsystemStates {
         IntakeStates.OFF,
         AmpBarStates.SHOOTING,
         ShooterStates.OFF
-    )
+    );
 
     String stateString;
     IntakeStates intakeState;
