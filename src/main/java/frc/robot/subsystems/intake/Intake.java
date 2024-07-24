@@ -43,7 +43,7 @@ public class Intake extends Subsystem<IntakeStates> {
     super.periodic();
 
     Logger.recordOutput(
-        "Intake Pose",
+        "Intake/Intake Pose",
         new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, io.getPosition(), 0)));
 
     Logger.processInputs("Intake", inputs);

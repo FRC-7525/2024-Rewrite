@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import frc.robot.Constants;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private CANSparkMax pivotMotor;
@@ -36,8 +37,8 @@ public class IntakeIOSparkMax implements IntakeIO {
     outPivotController = new PIDController(0, 0, 0);
     inPIDController = new PIDController(0, 0, 0);
 
-    pivotEncoder.setPositionConversionFactor(Math.PI * 2);
-    pivotEncoder.setVelocityConversionFactor(Math.PI * 2);
+    pivotEncoder.setPositionConversionFactor(Constants.RADIAN_CF);
+    pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
   }
 
   public void setSetpoints(

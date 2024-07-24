@@ -42,7 +42,7 @@ public class AmpBar extends Subsystem<AmpBarStates> {
     super.periodic();
 
     Logger.recordOutput(
-        "Amp Bar Pose3d",
+        "Amp Bar/Amp Bar Pose3d",
         new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, io.getPivotPosition(), 0)));
     Logger.processInputs("Amp Bar", inputs);
     io.updateInput(inputs);

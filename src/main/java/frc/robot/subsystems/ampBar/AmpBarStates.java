@@ -1,34 +1,35 @@
 package frc.robot.subsystems.ampBar;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemStates;
 
 public enum AmpBarStates implements SubsystemStates {
-  OFF(0, 0, "Amp Bar Off"),
-  SHOOTING(-0.717, -0.5, "Shooting Amp"),
-  IN(0, 0, "Amp Bar In"),
-  FEEDING(-0.625, -0.1, "Getting Fed"),
-  HOLDING_NOTE(-0.717, 0, "Holding a Note");
+	OFF(Constants.AmpBar.OFF, Constants.AmpBar.OFF, "Amp Bar Off"),
+	SHOOTING(Constants.AmpBar.OUT, Constants.AmpBar.SHOOTING, "Shooting Amp"),
+	IN(Constants.AmpBar.OFF, Constants.AmpBar.OFF, "Amp Bar In"),
+	FEEDING(Constants.AmpBar.FEEDING_POSITION, Constants.AmpBar.FEEDING, "Getting Fed"),
+	HOLDING_NOTE(Constants.AmpBar.OUT, Constants.AmpBar.OFF, "Holding a Note");
 
-  private double pivotPositionSetpoint;
-  private double spinnerMotorSpeedpoint;
-  private String stateString;
+	private double pivotPositionSetpoint;
+	private double spinnerMotorSpeedpoint;
+	private String stateString;
 
-  AmpBarStates(double pivotMotorSetpoint, double spinnerMotorSpeedpoint, String stateString) {
-    this.pivotPositionSetpoint = pivotMotorSetpoint;
-    this.spinnerMotorSpeedpoint = spinnerMotorSpeedpoint;
-    this.stateString = stateString;
-  }
+	AmpBarStates(double pivotMotorSetpoint, double spinnerMotorSpeedpoint, String stateString) {
+		this.pivotPositionSetpoint = pivotMotorSetpoint;
+		this.spinnerMotorSpeedpoint = spinnerMotorSpeedpoint;
+		this.stateString = stateString;
+	}
 
-  public double getPivotPositionSetpoint() {
-    return pivotPositionSetpoint;
-  }
+	public double getPivotPositionSetpoint() {
+		return pivotPositionSetpoint;
+	}
 
-  public double getMotorSpeedpoint() {
-    return spinnerMotorSpeedpoint;
-  }
+	public double getMotorSpeedpoint() {
+		return spinnerMotorSpeedpoint;
+	}
 
-  @Override
-  public String getStateString() {
-    return stateString;
-  }
+	@Override
+	public String getStateString() {
+		return stateString;
+	}
 }

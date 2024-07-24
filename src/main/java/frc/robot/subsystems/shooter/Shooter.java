@@ -22,7 +22,7 @@ public class Shooter extends Subsystem<ShooterStates> {
         io.configurePID(1.0, 0.0, 0.0);
         break;
       case SIM:
-        io.configurePID(0.5, 0.0, 0.0);
+        io.configurePID(1.0, 0.0, 0.0);
         break;
       default:
         break;
