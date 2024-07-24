@@ -21,10 +21,21 @@ public class AmpBarIOSim implements AmpBarIO {
 
   public AmpBarIOSim() {
     // the sim values are random
-    pivotSim = new SingleJointedArmSim(DCMotor.getNEO(2), Constants.AmpBar.PIVOT_GEARING, Constants.AmpBar.PIVOT_MOI,
-        Constants.AmpBar.PIVOT_LENGTH_METERS, 0, Constants.AmpBar.MAX_PIVOT_POSITION, false, 0);
-    spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(1), Constants.AmpBar.SPINNER_GEARING,
-        Constants.AmpBar.SPINNER_MOI);
+    pivotSim =
+        new SingleJointedArmSim(
+            DCMotor.getNEO(2),
+            Constants.AmpBar.PIVOT_GEARING,
+            Constants.AmpBar.PIVOT_MOI,
+            Constants.AmpBar.PIVOT_LENGTH_METERS,
+            0,
+            Constants.AmpBar.MAX_PIVOT_POSITION,
+            false,
+            0);
+    spinnerSim =
+        new DCMotorSim(
+            DCMotor.getKrakenX60(1),
+            Constants.AmpBar.SPINNER_GEARING,
+            Constants.AmpBar.SPINNER_MOI);
 
     controller = new PIDController(0, 0, 0);
     stateString = "";
@@ -63,6 +74,14 @@ public class AmpBarIOSim implements AmpBarIO {
     spinnerSpeedpoint = speed;
     spinnerAppliedVoltage = speed;
     spinnerSim.setInputVoltage(speed);
+  }
+
+  @Override
+  public void stop() {
+    pivotAppliedVoltage = 0;
+    spinnerAppliedVoltage = 0;
+    spinnerSim.setInputVoltage(0);
+    pivotSim.setInputVoltage(0);
   }
 
   @Override

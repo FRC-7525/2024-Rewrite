@@ -1,6 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -13,7 +12,11 @@ public class ShooterIOSim implements ShooterIO {
   private double appliedVolts;
 
   public ShooterIOSim() {
-    sim = new FlywheelSim(DCMotor.getFalcon500(2), Constants.Shooter.SHOOTER_GEARING, Constants.Shooter.SHOOTER_MOI);
+    sim =
+        new FlywheelSim(
+            DCMotor.getFalcon500(2),
+            Constants.Shooter.SHOOTER_GEARING,
+            Constants.Shooter.SHOOTER_MOI);
     pid = new PIDController(0.0, 0.0, 0.0);
     speedPoint = 0.0;
   }
@@ -49,6 +52,7 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public boolean nearSpeedPoint() {
-    return Math.abs((sim.getAngularVelocityRPM() / 60) - speedPoint) > Constants.Shooter.SHOOTER_MAX_SPEED_DEVIATION;
+    return Math.abs((sim.getAngularVelocityRPM() / 60) - speedPoint)
+        > Constants.Shooter.SHOOTER_MAX_SPEED_DEVIATION;
   }
 }

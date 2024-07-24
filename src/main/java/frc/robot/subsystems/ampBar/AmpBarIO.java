@@ -24,6 +24,8 @@ public interface AmpBarIO {
 
   public default void setSpinnerSpeedpoint(double speed) {}
 
+  public default void stop() {}
+
   public default double getPivotPosition() {
     return 0.0;
   }

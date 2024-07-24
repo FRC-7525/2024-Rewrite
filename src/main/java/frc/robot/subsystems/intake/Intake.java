@@ -38,6 +38,10 @@ public class Intake extends Subsystem<IntakeStates> {
         getState().getPivotSetPoint(), getState().getMotorSetPoint(), getState().getUsingPID());
   }
 
+  public void stop() {
+    io.stop();
+  }
+
   @Override
   public void periodic() {
     super.periodic();

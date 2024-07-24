@@ -70,6 +70,14 @@ public class AmpBarIOReal implements AmpBarIO {
     leftMotor.setVoltage(pivotMotorAppliedVoltage);
   }
 
+  public void stop() {
+    spinnerAppliedVoltage = 0;
+    pivotMotorAppliedVoltage = 0;
+    leftMotor.stopMotor();
+    rightMotor.stopMotor();
+    spinnerMotor.stopMotor();
+  }
+
   @Override
   public void setSpinnerSpeedpoint(double speed) {
     spinnerSpeedpoint = speed;

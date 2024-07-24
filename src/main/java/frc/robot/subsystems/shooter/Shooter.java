@@ -38,6 +38,10 @@ public class Shooter extends Subsystem<ShooterStates> {
     return io.nearSpeedPoint();
   }
 
+  public void stop() {
+    io.stop();
+  }
+
   @Override
   public void periodic() {
     super.periodic();

@@ -37,6 +37,10 @@ public class AmpBar extends Subsystem<AmpBarStates> {
     io.setPivotPosition(getState().getPivotPositionSetpoint());
   }
 
+  public void stop() {
+    io.stop();
+  }
+
   @Override
   public void periodic() {
     super.periodic();
