@@ -21,6 +21,12 @@ public enum ManagerStates implements SubsystemStates {
         AmpBarStates.OFF,
         ShooterStates.OFF 
     ),
+    SPINNING_UP(
+        "Spinning Up",
+        IntakeStates.OFF,
+        AmpBarStates.OFF,
+        ShooterStates.SHOOTING
+    ),
     SHOOTING(
         "Shooting",
         IntakeStates.FEEDING,

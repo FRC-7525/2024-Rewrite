@@ -49,8 +49,17 @@ public class Manager extends Subsystem<ManagerStates> {
         addTrigger(ManagerStates.IDLE, ManagerStates.SCORE_AMP, () -> controller.getLeftBumperPressed());
         addTrigger(ManagerStates.SCORE_AMP, ManagerStates.SCORE_AMP, () -> controller.getLeftBumperPressed());
 
-        addTrigger(ManagerStates.IDLE, ManagerStates.SHOOTING, () -> controller.getRightBumperPressed());
-        addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () -> controller.getRightBumperPressed());
+        addTrigger(ManagerStates.IDLE, ManagerStates.SPINNING_UP, () -> controller.getRightBumperPressed());
+        addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () -> controller.getRightBumperPressed());
+
+        addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () -> controller.getBButtonPressed());
+        addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () -> controller.getBButtonPressed());
+
+        addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () -> controller.getXButtonPressed());
+        addTrigger(ManagerStates.FEED_AMP, ManagerStates.IDLE, () -> controller.getXButtonPressed());
+        addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> controller.getXButtonPressed());
+        addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () -> controller.getXButtonPressed());
+        addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () -> controller.getXButtonPressed());
     }
 
     @Override
@@ -61,7 +70,9 @@ public class Manager extends Subsystem<ManagerStates> {
         ampBarSubsystem.setState(getState().getAmpBarState());
         shooterSubsystem.setState(getState().getShooterState());
 
-        Logger.recordOutput("Manager/State", getState().getStateString());
+        intakeSubsystem.periodic();
+        ampBarSubsystem.periodic();
+        shooterSubsystem.periodic();
     }
 
     @Override
