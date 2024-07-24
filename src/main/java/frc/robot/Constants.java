@@ -99,10 +99,10 @@ public final class Constants {
     public static final double SPINNER_MOI = 0.5;
 
     // Pivot
-    public static final double PIVOT_GEARING = 0.5;
-    public static final double PIVOT_MOI = 2;
-    public static final double PIVOT_LENGTH_METERS = 1;
-    public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(180);
+    public static final double PIVOT_GEARING = 0.05;
+    public static final double PIVOT_MOI = 0.05;
+    public static final double PIVOT_LENGTH_METERS = 0.378;
+    public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(114.1633329);
 
     // Pivot and Spinner Setpoints
 
