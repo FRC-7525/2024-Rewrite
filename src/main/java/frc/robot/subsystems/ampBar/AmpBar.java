@@ -35,6 +35,11 @@ public class AmpBar extends Subsystem<AmpBarStates> {
   protected void runState() {
     io.setSpinnerSpeedpoint(getState().getMotorSpeedpoint());
     io.setPivotPosition(getState().getPivotPositionSetpoint());
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
 
     Logger.recordOutput(
         "Amp Bar Pose3d",
