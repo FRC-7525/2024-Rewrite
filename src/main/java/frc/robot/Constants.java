@@ -41,7 +41,6 @@ public final class Constants {
   }
 
   public static final class Intake {
-    // Off is Off.
     public static final double OFF = 0.0;
 
     // Sim Configs
