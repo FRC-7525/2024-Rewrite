@@ -4,9 +4,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemStates;
 
 public enum AmpBarStates implements SubsystemStates {
-  OFF(Constants.AmpBar.OFF, Constants.AmpBar.OFF, "Amp Bar Off"),
+  OFF(Constants.AmpBar.IN, Constants.AmpBar.OFF, "Amp Bar Off"),
   SHOOTING(Constants.AmpBar.OUT, Constants.AmpBar.SHOOTING, "Shooting Amp"),
-  IN(Constants.AmpBar.OFF, Constants.AmpBar.OFF, "Amp Bar In"),
   FEEDING(Constants.AmpBar.FEEDING_POSITION, Constants.AmpBar.FEEDING, "Getting Fed"),
   HOLDING_NOTE(Constants.AmpBar.OUT, Constants.AmpBar.OFF, "Holding a Note");
 

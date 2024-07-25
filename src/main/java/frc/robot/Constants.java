@@ -45,7 +45,10 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final double OFF = 0.0;
+
+	// CAN IDs
+	public static final int PIVOT_ID = 32;
+	public static final int SPINNER_ID = 20;
 
     // Sim Configs
 
@@ -57,29 +60,29 @@ public final class Constants {
 
     // Spinner
     public static final double SPINNER_MOI = 0.01;
-    public static final double SPINNER_GEARING = 1;
+    public static final double SPINNER_GEARING = 1.0;
+    public static final double OFF = 0.0;
 
     // In Rads (Pivot setpoints)
     public static final double DOWN = Units.degreesToRadians(180.0);
+	public static final double IN = Units.degreesToRadians(0.0);
 
     // In RPS (Spinner Setpoints)
-    public static final double REVERSE = -10;
-    public static final double ON = 10;
+    public static final double REVERSE = -10.0;
+    public static final double ON = 10.0;
   }
 
   public static final class Shooter {
-
-    public static final double SHOOTER_MAX = 0.1;
-    public static final double SHOOTER_MAX_SPEED_DEVIATION = 5;
+    public static final double ERROR_OF_MARGIN = 2.0;
 
     // CAN IDs
     public static final int LEFT_SHOOTER_ID = 15;
     public static final int RIGHT_SHOOTER_ID = 14;
 
-    // Shooter Setpoints
+    // Shooter Setpoints (RPS)
     public static final double OFF = 0.0;
-    public static final double SHOOTING = 50;
-    public static final double FEEDING_AMP = 25;
+    public static final double FEEDING_AMP = 25.0;
+    public static final double SHOOTING = 50.0;
 
     // Sim Configs
     public static final double SHOOTER_GEARING = 1.5;
@@ -87,8 +90,7 @@ public final class Constants {
   }
 
   public static final class AmpBar {
-    public static final double ERROR_OF_MARGIN = .1;
-    public static final double OFF = 0.0;
+    public static final double ERROR_OF_MARGIN = 0.1;
 
     // Motor CAN IDs
     public static final int LEFT_PIVOT_ID = 31;
@@ -112,14 +114,16 @@ public final class Constants {
     // In RPS (Spinner Setpoints)
     public static final double SHOOTING = -0.5;
     public static final double FEEDING = -0.1;
+    public static final double OFF = 0.0;
 
     // IN Rads (Pivot Setpoints)
     public static final double OUT = Units.degreesToRadians(50.0);
     public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
+	public static final double IN = Units.degreesToRadians(0.0);
   }
 
   public static final class Drive {
-    public static final double DEADBAND = 0.1;
+    public static final double CONTROLLER_DEADBAND = 0.1;
 
     /* Rotation and Translation Modifers
     rm = rotation multiplier
@@ -133,6 +137,6 @@ public final class Constants {
     public static final double AA_RM = 0.8;
     public static final double AA_TM = 0.8;
     public static final double FAST_RM = 1.5;
-    public static final double FAST_TM = 2;
+    public static final double FAST_TM = 2.0;
   }
 }

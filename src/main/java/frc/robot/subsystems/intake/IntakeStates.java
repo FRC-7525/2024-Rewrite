@@ -4,9 +4,9 @@ import frc.robot.Constants;
 import frc.robot.subsystems.*;
 
 public enum IntakeStates implements SubsystemStates {
-  OFF("Off", Constants.Intake.OFF, Constants.Intake.OFF, true),
+  OFF("Off", Constants.Intake.IN, Constants.Intake.OFF, true),
   INTAKING("Intaking", Constants.Intake.DOWN, Constants.Intake.ON, false),
-  FEEDING("Feeding", Constants.Intake.OFF, Constants.Intake.REVERSE, true),
+  FEEDING("Feeding", Constants.Intake.IN, Constants.Intake.REVERSE, true),
   OUTTAKING("Outtaking", Constants.Intake.DOWN, Constants.Intake.REVERSE, false);
 
   private String stateString;

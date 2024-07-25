@@ -44,15 +44,15 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void setSpeed(double rpm) {
-    speedPoint = rpm;
-    appliedVolts = pid.calculate(sim.getAngularVelocityRadPerSec());
+  public void setSpeed(double rps) {
+    speedPoint = rps;
+    appliedVolts = pid.calculate(sim.getAngularVelocityRPM()/60, rps);
     sim.setInputVoltage(appliedVolts);
   }
 
   @Override
   public boolean nearSpeedPoint() {
     return Math.abs((sim.getAngularVelocityRPM() / 60) - speedPoint)
-        > Constants.Shooter.SHOOTER_MAX_SPEED_DEVIATION;
+        > Constants.Shooter.ERROR_OF_MARGIN;
   }
 }

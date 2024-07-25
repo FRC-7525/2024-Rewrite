@@ -13,11 +13,10 @@ public interface IntakeIO {
     public double wheelAppliedVoltage;
     public double wheelSpeedpoint;
 
-    public double
-        pivotPosition; // Not sure what exact values I need to store here (Pose? Translation?)
+    public double pivotPosition;
     public double pivotAppliedVoltage;
-    public double pivotSetpoint; // Also not sure what value the setpoint is supposed to be
-    public double pivotSetpointError; // Same problems
+    public double pivotSetpoint;
+    public double pivotSetpointError;
 
     public boolean usingInPID;
   }

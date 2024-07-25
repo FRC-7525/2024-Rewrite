@@ -54,8 +54,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   public boolean nearSpeedPoint() {
     return Math.abs(speedPoint - leftMotor.getVelocity().getValueAsDouble())
-            < Constants.Shooter.SHOOTER_MAX
+            < Constants.Shooter.ERROR_OF_MARGIN
         && Math.abs(speedPoint - rightMotor.getVelocity().getValueAsDouble())
-            < Constants.Shooter.SHOOTER_MAX;
+            < Constants.Shooter.ERROR_OF_MARGIN;
   }
 }

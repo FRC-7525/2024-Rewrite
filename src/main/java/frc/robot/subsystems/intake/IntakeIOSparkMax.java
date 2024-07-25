@@ -30,8 +30,8 @@ public class IntakeIOSparkMax implements IntakeIO {
   boolean usingInPID;
 
   public IntakeIOSparkMax() {
-    intakeMotor = new TalonFX(20);
-    pivotMotor = new CANSparkMax(32, MotorType.kBrushless);
+    intakeMotor = new TalonFX(Constants.Intake.SPINNER_ID);
+    pivotMotor = new CANSparkMax(Constants.Intake.PIVOT_ID, MotorType.kBrushless);
     pivotEncoder = pivotMotor.getEncoder();
 
     outPivotController = new PIDController(0, 0, 0);
