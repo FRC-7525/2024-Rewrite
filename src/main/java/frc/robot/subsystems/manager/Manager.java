@@ -1,8 +1,6 @@
 package frc.robot.subsystems.manager;
 
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
-import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.ampBar.*;
 import frc.robot.subsystems.drive.Drive;
@@ -18,23 +16,17 @@ public class Manager extends Subsystem<ManagerStates> {
   Intake intakeSubsystem;
   AmpBar ampBarSubsystem;
   Shooter shooterSubsystem;
-  Drive drive;
-
-  XboxController controller;
-  XboxController operatorController;
+  Drive driveSubsystem;
 
   public Manager() {
     super("Manager", ManagerStates.IDLE);
-
-    controller = new XboxController(0);
-    operatorController = new XboxController(1);
 
     switch (Constants.currentMode) {
       case REAL:
         intakeSubsystem = new Intake(new IntakeIOSparkMax());
         ampBarSubsystem = new AmpBar(new AmpBarIOReal());
         shooterSubsystem = new Shooter(new ShooterIOTalonFX());
-        drive =
+        driveSubsystem =
             new Drive(
                 new GyroIOPigeon2(false),
                 new ModuleIOSparkMax(0),
@@ -46,7 +38,7 @@ public class Manager extends Subsystem<ManagerStates> {
         intakeSubsystem = new Intake(new IntakeIO() {});
         ampBarSubsystem = new AmpBar(new AmpBarIO() {});
         shooterSubsystem = new Shooter(new ShooterIO() {});
-        drive =
+        driveSubsystem =
             new Drive(
                 new GyroIO() {},
                 new ModuleIO() {},
@@ -58,7 +50,7 @@ public class Manager extends Subsystem<ManagerStates> {
         intakeSubsystem = new Intake(new IntakeIOSim());
         ampBarSubsystem = new AmpBar(new AmpBarIOSim());
         shooterSubsystem = new Shooter(new ShooterIOSim());
-        drive =
+        driveSubsystem =
             new Drive(
                 new GyroIO() {},
                 new ModuleIOSim(),
@@ -84,48 +76,44 @@ public class Manager extends Subsystem<ManagerStates> {
     // entered from main controller input
 
     // Intaking (B)
-    addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () -> controller.getBButtonPressed());
-    addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () -> controller.getBButtonPressed());
+    addTrigger(
+        ManagerStates.IDLE, ManagerStates.INTAKING, () -> Constants.controller.getBButtonPressed());
+    addTrigger(
+        ManagerStates.INTAKING, ManagerStates.IDLE, () -> Constants.controller.getBButtonPressed());
 
     // Amping (Y)
-    addTrigger(ManagerStates.IDLE, ManagerStates.FEED_AMP, () -> controller.getYButtonPressed());
     addTrigger(
-        ManagerStates.FEED_AMP, ManagerStates.SCORE_AMP, () -> controller.getYButtonPressed());
-    addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> controller.getYButtonPressed());
-    addTrigger(ManagerStates.FEED_AMP, ManagerStates.IDLE, () -> controller.getXButtonPressed());
+        ManagerStates.IDLE, ManagerStates.FEED_AMP, () -> Constants.controller.getYButtonPressed());
+    addTrigger(
+        ManagerStates.FEED_AMP,
+        ManagerStates.SCORE_AMP,
+        () -> Constants.controller.getYButtonPressed());
+    addTrigger(
+        ManagerStates.SCORE_AMP,
+        ManagerStates.IDLE,
+        () -> Constants.controller.getYButtonPressed());
+    addTrigger(
+        ManagerStates.FEED_AMP, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
 
     // Shooting (A)
-    addTrigger(ManagerStates.IDLE, ManagerStates.SPINNING_UP, () -> controller.getAButtonPressed());
     addTrigger(
         ManagerStates.IDLE,
         ManagerStates.SPINNING_UP,
-        () -> operatorController.getAButtonPressed());
-    addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () -> controller.getXButtonPressed());
+        () -> Constants.controller.getAButtonPressed());
     addTrigger(
-        ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () -> controller.getAButtonPressed());
-    addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () -> controller.getAButtonPressed());
-
-    // Cancel Actions
-    addTrigger(
-        ManagerStates.INTAKING, ManagerStates.IDLE, () -> operatorController.getXButtonPressed());
-    addTrigger(
-        ManagerStates.FEED_AMP, ManagerStates.IDLE, () -> operatorController.getXButtonPressed());
-    addTrigger(
-        ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> operatorController.getXButtonPressed());
+        ManagerStates.IDLE,
+        ManagerStates.SPINNING_UP,
+        () -> Constants.operatorController.getAButtonPressed());
     addTrigger(
         ManagerStates.SPINNING_UP,
         ManagerStates.IDLE,
-        () -> operatorController.getXButtonPressed());
+        () -> Constants.controller.getXButtonPressed());
     addTrigger(
-        ManagerStates.SHOOTING, ManagerStates.IDLE, () -> operatorController.getXButtonPressed());
-
-    // Drive Configs
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> controller.getLeftY(),
-            () -> controller.getLeftX(),
-            () -> -controller.getRightX()));
+        ManagerStates.SPINNING_UP,
+        ManagerStates.SHOOTING,
+        () -> Constants.controller.getAButtonPressed());
+    addTrigger(
+        ManagerStates.SHOOTING, ManagerStates.IDLE, () -> Constants.controller.getAButtonPressed());
   }
 
   @Override
@@ -139,12 +127,19 @@ public class Manager extends Subsystem<ManagerStates> {
     intakeSubsystem.periodic();
     ampBarSubsystem.periodic();
     shooterSubsystem.periodic();
+    driveSubsystem.periodic();
+
+	// Cancel all actions regardless of whats happening
+	if (Constants.operatorController.getXButtonPressed()) {
+		setState(ManagerStates.IDLE);
+	}
   }
 
   public void stop() {
     intakeSubsystem.stop();
     ampBarSubsystem.stop();
     shooterSubsystem.stop();
+    driveSubsystem.stop();
   }
 
   @Override

@@ -14,6 +14,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -28,6 +29,9 @@ public final class Constants {
   public static final double RADIAN_CF = (Math.PI * 2);
 
   public static final Mode currentMode = Mode.SIM;
+
+  public static final XboxController controller = new XboxController(0);
+  public static final XboxController operatorController = new XboxController(1);
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -112,5 +116,23 @@ public final class Constants {
     // IN Rads (Pivot Setpoints)
     public static final double OUT = Units.degreesToRadians(50.0);
     public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
+  }
+
+  public static final class Drive {
+    public static final double DEADBAND = 0.1;
+
+    /* Rotation and Translation Modifers
+    rm = rotation multiplier
+    tm = translation multipliers
+    aa = auto align
+    */
+    public static final double REGULAR_RM = 1.0;
+    public static final double REGULAR_TM = 1.0;
+    public static final double SLOW_RM = 0.5;
+    public static final double SLOW_TM = 0.2;
+    public static final double AA_RM = 0.8;
+    public static final double AA_TM = 0.8;
+    public static final double FAST_RM = 1.5;
+    public static final double FAST_TM = 2;
   }
 }
