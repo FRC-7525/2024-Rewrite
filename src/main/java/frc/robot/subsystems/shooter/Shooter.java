@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.util.NoteSimulator;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends Subsystem<ShooterStates> {
@@ -31,6 +33,8 @@ public class Shooter extends Subsystem<ShooterStates> {
     @Override
     protected void runState() {
         io.setSpeed(getState().getMotorSpeedpoint());
+        if (getState() == ShooterStates.SHOOTING)
+            NoteSimulator.launch(0); //TODO: add velocity
     }
 
     public boolean nearSpeedPoint() {
