@@ -18,17 +18,25 @@ public interface AmpBarIO {
     public double spinnerAppliedVoltage;
   }
 
-  public void updateInput(AmpBarIOInputs inputs);
+  public default void updateInput(AmpBarIOInputs inputs) {}
 
-  public void setPivotPosition(double position);
+  public default void setPivotPosition(double position) {}
 
-  public void setSpinnerSpeedpoint(double speed);
+  public default void setSpinnerSpeedpoint(double speed) {}
 
-  public double getPivotPosition();
+  public default void stop() {}
 
-  public double getSpinnerSpeed();
+  public default double getPivotPosition() {
+    return 0.0;
+  }
 
-  public void configurePID(double kP, double kI, double kD);
+  public default double getSpinnerSpeed() {
+    return 0.0;
+  }
 
-  public boolean atSetPoint();
+  public default void configurePID(double kP, double kI, double kD) {}
+
+  public default boolean atSetPoint() {
+    return false;
+  }
 }
