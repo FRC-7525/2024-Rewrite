@@ -38,5 +38,8 @@
   "[java]": {
     "editor.defaultFormatter": "redhat.java"
   },
-  "java.debug.settings.onBuildFailureProceed": true
+  "java.debug.settings.onBuildFailureProceed": true,
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
