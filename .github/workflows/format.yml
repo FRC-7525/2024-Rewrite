@@ -19,6 +19,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      - name: Pull latest changes
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
+            git fetch origin
+            git checkout "${GITHUB_HEAD_REF}"
+            git pull origin "${GITHUB_HEAD_REF}"
+          elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
+            git fetch origin
+            git pull origin "${GITHUB_REF#refs/heads/}"
+          fi
 
       - name: Setup Mid JS Framework
         uses: actions/setup-node@v3
@@ -40,17 +51,6 @@ jobs:
         run: |
           git diff --exit-code || echo "Changes detected"
         continue-on-error: true
-
-      - name: Pull latest changes
-        run: |
-          if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
-            git fetch origin
-            git checkout "${GITHUB_HEAD_REF}"
-            git pull origin "${GITHUB_HEAD_REF}"
-          elif [ "${GITHUB_EVENT_NAME}" == "push" ]; then
-            git fetch origin
-            git pull origin "${GITHUB_REF#refs/heads/}"
-          fi
 
       - name: Commit changes
         if: steps.git-check.outcome == 'success'
