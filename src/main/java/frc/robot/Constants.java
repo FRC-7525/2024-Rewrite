@@ -25,118 +25,122 @@ import edu.wpi.first.wpilibj.XboxController;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final double SIM_UPDATE_TIME = 0.05;
-  public static final double RADIAN_CF = (Math.PI * 2);
 
-  public static final Mode currentMode = Mode.SIM;
+	public static final double SIM_UPDATE_TIME = 0.05;
+	public static final double RADIAN_CF = (Math.PI * 2);
 
-  public static final XboxController controller = new XboxController(0);
-  public static final XboxController operatorController = new XboxController(1);
+	public static final Mode currentMode = Mode.SIM;
 
-  public static enum Mode {
-    /** Running on a real robot. */
-    REAL,
+	public static final XboxController controller = new XboxController(0);
+	public static final XboxController operatorController = new XboxController(1);
 
-    /** Running a physics simulator. */
-    SIM,
+	public static enum Mode {
+		/** Running on a real robot. */
+		REAL,
 
-    /** Replaying from a log file. */
-    REPLAY
-  }
+		/** Running a physics simulator. */
+		SIM,
 
-  public static final class Intake {
+		/** Replaying from a log file. */
+		REPLAY,
+	}
 
-	// CAN IDs
-	public static final int PIVOT_ID = 32;
-	public static final int SPINNER_ID = 20;
+	public static final class Intake {
 
-    // Sim Configs
+		// CAN IDs
+		public static final int PIVOT_ID = 32;
+		public static final int SPINNER_ID = 20;
 
-    // Pivot
-    public static final double PIVOT_GEARING = 67.5;
-    public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(180.0);
-    public static final double PIVOT_MOI = 0.192383865;
-    public static final double PIVOT_LENGTH_METERS = 0.3;
+		// Sim Configs
 
-    // Spinner
-    public static final double SPINNER_MOI = 0.01;
-    public static final double SPINNER_GEARING = 1.0;
-    public static final double OFF = 0.0;
+		// Pivot
+		public static final double PIVOT_GEARING = 67.5;
+		public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(180.0);
+		public static final double PIVOT_MOI = 0.192383865;
+		public static final double PIVOT_LENGTH_METERS = 0.3;
 
-    // In Rads (Pivot setpoints)
-    public static final double DOWN = Units.degreesToRadians(180.0);
-	public static final double IN = Units.degreesToRadians(0.0);
+		// Spinner
+		public static final double SPINNER_MOI = 0.01;
+		public static final double SPINNER_GEARING = 1.0;
+		public static final double OFF = 0.0;
 
-    // In RPS (Spinner Setpoints)
-    public static final double REVERSE = -10.0;
-    public static final double ON = 10.0;
-  }
+		// In Rads (Pivot setpoints)
+		public static final double DOWN = Units.degreesToRadians(180.0);
+		public static final double IN = Units.degreesToRadians(0.0);
 
-  public static final class Shooter {
-    public static final double ERROR_OF_MARGIN = 2.0;
+		// In RPS (Spinner Setpoints)
+		public static final double REVERSE = -10.0;
+		public static final double ON = 10.0;
+	}
 
-    // CAN IDs
-    public static final int LEFT_SHOOTER_ID = 15;
-    public static final int RIGHT_SHOOTER_ID = 14;
+	public static final class Shooter {
 
-    // Shooter Setpoints (RPS)
-    public static final double OFF = 0.0;
-    public static final double FEEDING_AMP = 25.0;
-    public static final double SHOOTING = 50.0;
+		public static final double ERROR_OF_MARGIN = 2.0;
 
-    // Sim Configs
-    public static final double SHOOTER_GEARING = 1.5;
-    public static final double SHOOTER_MOI = 0.004;
-  }
+		// CAN IDs
+		public static final int LEFT_SHOOTER_ID = 15;
+		public static final int RIGHT_SHOOTER_ID = 14;
 
-  public static final class AmpBar {
-    public static final double ERROR_OF_MARGIN = 0.1;
+		// Shooter Setpoints (RPS)
+		public static final double OFF = 0.0;
+		public static final double FEEDING_AMP = 25.0;
+		public static final double SHOOTING = 50.0;
 
-    // Motor CAN IDs
-    public static final int LEFT_PIVOT_ID = 31;
-    public static final int RIGHT_PIVOT_ID = 30;
-    public static final int SPINNER_ID = 38;
+		// Sim Configs
+		public static final double SHOOTER_GEARING = 1.5;
+		public static final double SHOOTER_MOI = 0.004;
+	}
 
-    // Sim Configs
+	public static final class AmpBar {
 
-    // Spinner
-    public static final double SPINNER_GEARING = 0.5;
-    public static final double SPINNER_MOI = 0.5;
+		public static final double ERROR_OF_MARGIN = 0.1;
 
-    // Pivot
-    public static final double PIVOT_GEARING = 0.05;
-    public static final double PIVOT_MOI = 0.05;
-    public static final double PIVOT_LENGTH_METERS = 0.378;
-    public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(114.1633329);
+		// Motor CAN IDs
+		public static final int LEFT_PIVOT_ID = 31;
+		public static final int RIGHT_PIVOT_ID = 30;
+		public static final int SPINNER_ID = 38;
 
-    // Pivot and Spinner Setpoints
+		// Sim Configs
 
-    // In RPS (Spinner Setpoints)
-    public static final double SHOOTING = -0.5;
-    public static final double FEEDING = -0.1;
-    public static final double OFF = 0.0;
+		// Spinner
+		public static final double SPINNER_GEARING = 0.5;
+		public static final double SPINNER_MOI = 0.5;
 
-    // IN Rads (Pivot Setpoints)
-    public static final double OUT = Units.degreesToRadians(50.0);
-    public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
-	public static final double IN = Units.degreesToRadians(0.0);
-  }
+		// Pivot
+		public static final double PIVOT_GEARING = 0.05;
+		public static final double PIVOT_MOI = 0.05;
+		public static final double PIVOT_LENGTH_METERS = 0.378;
+		public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(114.1633329);
 
-  public static final class Drive {
-    public static final double CONTROLLER_DEADBAND = 0.1;
+		// Pivot and Spinner Setpoints
 
-    /* Rotation and Translation Modifers
+		// In RPS (Spinner Setpoints)
+		public static final double SHOOTING = -0.5;
+		public static final double FEEDING = -0.1;
+		public static final double OFF = 0.0;
+
+		// IN Rads (Pivot Setpoints)
+		public static final double OUT = Units.degreesToRadians(50.0);
+		public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
+		public static final double IN = Units.degreesToRadians(0.0);
+	}
+
+	public static final class Drive {
+
+		public static final double CONTROLLER_DEADBAND = 0.1;
+
+		/* Rotation and Translation Modifers
     rm = rotation multiplier
     tm = translation multipliers
     aa = auto align
     */
-    public static final double REGULAR_RM = 1.0;
-    public static final double REGULAR_TM = 1.0;
-    public static final double SLOW_RM = 0.5;
-    public static final double SLOW_TM = 0.2;
-    public static final double AA_RM = 0.8;
-    public static final double AA_TM = 0.8;
-    public static final double FAST_RM = 1.5;
-    public static final double FAST_TM = 2.0;
-  }
+		public static final double REGULAR_RM = 1.0;
+		public static final double REGULAR_TM = 1.0;
+		public static final double SLOW_RM = 0.5;
+		public static final double SLOW_TM = 0.2;
+		public static final double AA_RM = 0.8;
+		public static final double AA_TM = 0.8;
+		public static final double FAST_RM = 1.5;
+		public static final double FAST_TM = 2.0;
+	}
 }

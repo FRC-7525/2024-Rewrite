@@ -34,105 +34,105 @@ import org.littletonrobotics.junction.Logger;
  * time synchronization.
  */
 public class PhoenixOdometryThread extends Thread {
-  private final Lock signalsLock =
-      new ReentrantLock(); // Prevents conflicts when registering signals
-  private BaseStatusSignal[] signals = new BaseStatusSignal[0];
-  private final List<Queue<Double>> queues = new ArrayList<>();
-  private final List<Queue<Double>> timestampQueues = new ArrayList<>();
-  private boolean isCANFD = false;
 
-  private static PhoenixOdometryThread instance = null;
+	private final Lock signalsLock = new ReentrantLock(); // Prevents conflicts when registering signals
+	private BaseStatusSignal[] signals = new BaseStatusSignal[0];
+	private final List<Queue<Double>> queues = new ArrayList<>();
+	private final List<Queue<Double>> timestampQueues = new ArrayList<>();
+	private boolean isCANFD = false;
 
-  public static PhoenixOdometryThread getInstance() {
-    if (instance == null) {
-      instance = new PhoenixOdometryThread();
-    }
-    return instance;
-  }
+	private static PhoenixOdometryThread instance = null;
 
-  private PhoenixOdometryThread() {
-    setName("PhoenixOdometryThread");
-    setDaemon(true);
-  }
+	public static PhoenixOdometryThread getInstance() {
+		if (instance == null) {
+			instance = new PhoenixOdometryThread();
+		}
+		return instance;
+	}
 
-  @Override
-  public void start() {
-    if (timestampQueues.size() > 0) {
-      super.start();
-    }
-  }
+	private PhoenixOdometryThread() {
+		setName("PhoenixOdometryThread");
+		setDaemon(true);
+	}
 
-  public Queue<Double> registerSignal(ParentDevice device, StatusSignal<Double> signal) {
-    Queue<Double> queue = new ArrayBlockingQueue<>(20);
-    signalsLock.lock();
-    Drive.odometryLock.lock();
-    try {
-      isCANFD = CANBus.isNetworkFD(device.getNetwork());
-      BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
-      System.arraycopy(signals, 0, newSignals, 0, signals.length);
-      newSignals[signals.length] = signal;
-      signals = newSignals;
-      queues.add(queue);
-    } finally {
-      signalsLock.unlock();
-      Drive.odometryLock.unlock();
-    }
-    return queue;
-  }
+	@Override
+	public void start() {
+		if (timestampQueues.size() > 0) {
+			super.start();
+		}
+	}
 
-  public Queue<Double> makeTimestampQueue() {
-    Queue<Double> queue = new ArrayBlockingQueue<>(20);
-    Drive.odometryLock.lock();
-    try {
-      timestampQueues.add(queue);
-    } finally {
-      Drive.odometryLock.unlock();
-    }
-    return queue;
-  }
+	public Queue<Double> registerSignal(ParentDevice device, StatusSignal<Double> signal) {
+		Queue<Double> queue = new ArrayBlockingQueue<>(20);
+		signalsLock.lock();
+		Drive.odometryLock.lock();
+		try {
+			isCANFD = CANBus.isNetworkFD(device.getNetwork());
+			BaseStatusSignal[] newSignals = new BaseStatusSignal[signals.length + 1];
+			System.arraycopy(signals, 0, newSignals, 0, signals.length);
+			newSignals[signals.length] = signal;
+			signals = newSignals;
+			queues.add(queue);
+		} finally {
+			signalsLock.unlock();
+			Drive.odometryLock.unlock();
+		}
+		return queue;
+	}
 
-  @Override
-  public void run() {
-    while (true) {
-      // Wait for updates from all signals
-      signalsLock.lock();
-      try {
-        if (isCANFD) {
-          BaseStatusSignal.waitForAll(2.0 / Module.ODOMETRY_FREQUENCY, signals);
-        } else {
-          // "waitForAll" does not support blocking on multiple
-          // signals with a bus that is not CAN FD, regardless
-          // of Pro licensing. No reasoning for this behavior
-          // is provided by the documentation.
-          Thread.sleep((long) (1000.0 / Module.ODOMETRY_FREQUENCY));
-          if (signals.length > 0) BaseStatusSignal.refreshAll(signals);
-        }
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      } finally {
-        signalsLock.unlock();
-      }
+	public Queue<Double> makeTimestampQueue() {
+		Queue<Double> queue = new ArrayBlockingQueue<>(20);
+		Drive.odometryLock.lock();
+		try {
+			timestampQueues.add(queue);
+		} finally {
+			Drive.odometryLock.unlock();
+		}
+		return queue;
+	}
 
-      // Save new data to queues
-      Drive.odometryLock.lock();
-      try {
-        double timestamp = Logger.getRealTimestamp() / 1e6;
-        double totalLatency = 0.0;
-        for (BaseStatusSignal signal : signals) {
-          totalLatency += signal.getTimestamp().getLatency();
-        }
-        if (signals.length > 0) {
-          timestamp -= totalLatency / signals.length;
-        }
-        for (int i = 0; i < signals.length; i++) {
-          queues.get(i).offer(signals[i].getValueAsDouble());
-        }
-        for (int i = 0; i < timestampQueues.size(); i++) {
-          timestampQueues.get(i).offer(timestamp);
-        }
-      } finally {
-        Drive.odometryLock.unlock();
-      }
-    }
-  }
+	@Override
+	public void run() {
+		while (true) {
+			// Wait for updates from all signals
+			signalsLock.lock();
+			try {
+				if (isCANFD) {
+					BaseStatusSignal.waitForAll(2.0 / Module.ODOMETRY_FREQUENCY, signals);
+				} else {
+					// "waitForAll" does not support blocking on multiple
+					// signals with a bus that is not CAN FD, regardless
+					// of Pro licensing. No reasoning for this behavior
+					// is provided by the documentation.
+					Thread.sleep((long) (1000.0 / Module.ODOMETRY_FREQUENCY));
+					if (signals.length > 0) BaseStatusSignal.refreshAll(signals);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} finally {
+				signalsLock.unlock();
+			}
+
+			// Save new data to queues
+			Drive.odometryLock.lock();
+			try {
+				double timestamp = Logger.getRealTimestamp() / 1e6;
+				double totalLatency = 0.0;
+				for (BaseStatusSignal signal : signals) {
+					totalLatency += signal.getTimestamp().getLatency();
+				}
+				if (signals.length > 0) {
+					timestamp -= totalLatency / signals.length;
+				}
+				for (int i = 0; i < signals.length; i++) {
+					queues.get(i).offer(signals[i].getValueAsDouble());
+				}
+				for (int i = 0; i < timestampQueues.size(); i++) {
+					timestampQueues.get(i).offer(timestamp);
+				}
+			} finally {
+				Drive.odometryLock.unlock();
+			}
+		}
+	}
 }

@@ -6,53 +6,56 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants;
 
 public class ShooterIOSim implements ShooterIO {
-  FlywheelSim sim;
-  PIDController pid;
-  private double speedPoint;
-  private double appliedVolts;
 
-  public ShooterIOSim() {
-    sim =
-        new FlywheelSim(
-            DCMotor.getFalcon500(2),
-            Constants.Shooter.SHOOTER_GEARING,
-            Constants.Shooter.SHOOTER_MOI);
-    pid = new PIDController(0.0, 0.0, 0.0);
-    speedPoint = 0.0;
-  }
+	FlywheelSim sim;
+	PIDController pid;
+	private double speedPoint;
+	private double appliedVolts;
 
-  @Override
-  public void updateInputs(ShooterIOInputs inputs) {
-    sim.update(Constants.SIM_UPDATE_TIME);
+	public ShooterIOSim() {
+		sim = new FlywheelSim(
+			DCMotor.getFalcon500(2),
+			Constants.Shooter.SHOOTER_GEARING,
+			Constants.Shooter.SHOOTER_MOI
+		);
+		pid = new PIDController(0.0, 0.0, 0.0);
+		speedPoint = 0.0;
+	}
 
-    inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / 60;
-    inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / 60;
-    inputs.shooterSpeedPoint = speedPoint;
-    inputs.leftShooterAppliedVolts = appliedVolts;
-    inputs.rightShooterAppliedVolts = appliedVolts;
-  }
+	@Override
+	public void updateInputs(ShooterIOInputs inputs) {
+		sim.update(Constants.SIM_UPDATE_TIME);
 
-  @Override
-  public void stop() {
-    appliedVolts = 0;
-    sim.setInputVoltage(appliedVolts);
-  }
+		inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / 60;
+		inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / 60;
+		inputs.shooterSpeedPoint = speedPoint;
+		inputs.leftShooterAppliedVolts = appliedVolts;
+		inputs.rightShooterAppliedVolts = appliedVolts;
+	}
 
-  @Override
-  public void configurePID(double kP, double kI, double kD) {
-    pid.setPID(kP, kI, kD);
-  }
+	@Override
+	public void stop() {
+		appliedVolts = 0;
+		sim.setInputVoltage(appliedVolts);
+	}
 
-  @Override
-  public void setSpeed(double rps) {
-    speedPoint = rps;
-    appliedVolts = pid.calculate(sim.getAngularVelocityRPM()/60, rps);
-    sim.setInputVoltage(appliedVolts);
-  }
+	@Override
+	public void configurePID(double kP, double kI, double kD) {
+		pid.setPID(kP, kI, kD);
+	}
 
-  @Override
-  public boolean nearSpeedPoint() {
-    return Math.abs((sim.getAngularVelocityRPM() / 60) - speedPoint)
-        > Constants.Shooter.ERROR_OF_MARGIN;
-  }
+	@Override
+	public void setSpeed(double rps) {
+		speedPoint = rps;
+		appliedVolts = pid.calculate(sim.getAngularVelocityRPM() / 60, rps);
+		sim.setInputVoltage(appliedVolts);
+	}
+
+	@Override
+	public boolean nearSpeedPoint() {
+		return (
+			Math.abs((sim.getAngularVelocityRPM() / 60) - speedPoint) >
+			Constants.Shooter.ERROR_OF_MARGIN
+		);
+	}
 }

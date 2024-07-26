@@ -29,110 +29,108 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  */
 public class Robot extends LoggedRobot {
 
-  private Manager managerSubsystem;
+	private Manager managerSubsystem;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
-    // Record metadata
-    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    switch (BuildConstants.DIRTY) {
-      case 0:
-        Logger.recordMetadata("GitDirty", "All changes committed");
-        break;
-      case 1:
-        Logger.recordMetadata("GitDirty", "Uncomitted changes");
-        break;
-      default:
-        Logger.recordMetadata("GitDirty", "Unknown");
-        break;
-    }
+	/**
+	 * This function is run when the robot is first started up and should be used for any
+	 * initialization code.
+	 */
+	@Override
+	public void robotInit() {
+		// Record metadata
+		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+		Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+		Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+		Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+		Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+		switch (BuildConstants.DIRTY) {
+			case 0:
+				Logger.recordMetadata("GitDirty", "All changes committed");
+				break;
+			case 1:
+				Logger.recordMetadata("GitDirty", "Uncomitted changes");
+				break;
+			default:
+				Logger.recordMetadata("GitDirty", "Unknown");
+				break;
+		}
 
-    // Set up data receivers & replay source
-    switch (Constants.currentMode) {
-      case REAL:
-        // Running on a real robot, log to a USB stick ("/U/logs")
-        Logger.addDataReceiver(new WPILOGWriter());
-        Logger.addDataReceiver(new NT4Publisher());
-        break;
+		// Set up data receivers & replay source
+		switch (Constants.currentMode) {
+			case REAL:
+				// Running on a real robot, log to a USB stick ("/U/logs")
+				Logger.addDataReceiver(new WPILOGWriter());
+				Logger.addDataReceiver(new NT4Publisher());
+				break;
+			case SIM:
+				// Running a physics simulator, log to NT
+				Logger.addDataReceiver(new NT4Publisher());
+				break;
+			case REPLAY:
+				// Replaying a log, set up replay source
+				setUseTiming(false); // Run as fast as possible
+				String logPath = LogFileUtil.findReplayLog();
+				Logger.setReplaySource(new WPILOGReader(logPath));
+				Logger.addDataReceiver(
+					new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))
+				);
+				break;
+		}
 
-      case SIM:
-        // Running a physics simulator, log to NT
-        Logger.addDataReceiver(new NT4Publisher());
-        break;
+		// See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
+		// Logger.disableDeterministicTimestamps()
 
-      case REPLAY:
-        // Replaying a log, set up replay source
-        setUseTiming(false); // Run as fast as possible
-        String logPath = LogFileUtil.findReplayLog();
-        Logger.setReplaySource(new WPILOGReader(logPath));
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-        break;
-    }
+		// Start AdvantageKit logger
+		Logger.start();
 
-    // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
-    // Logger.disableDeterministicTimestamps()
+		managerSubsystem = new Manager();
+	}
 
-    // Start AdvantageKit logger
-    Logger.start();
+	/** This function is called periodically during all modes. */
+	@Override
+	public void robotPeriodic() {
+		managerSubsystem.periodic();
+	}
 
-    managerSubsystem = new Manager();
-  }
+	/** This function is called once when the robot is disabled. */
+	@Override
+	public void disabledInit() {
+		managerSubsystem.stop();
+	}
 
-  /** This function is called periodically during all modes. */
-  @Override
-  public void robotPeriodic() {
-    managerSubsystem.periodic();
-  }
+	/** This function is called periodically when disabled. */
+	@Override
+	public void disabledPeriodic() {}
 
-  /** This function is called once when the robot is disabled. */
-  @Override
-  public void disabledInit() {
-    managerSubsystem.stop();
-  }
+	/** This function is called once the robot enters Auto. */
+	@Override
+	public void autonomousInit() {}
 
-  /** This function is called periodically when disabled. */
-  @Override
-  public void disabledPeriodic() {}
+	/** This function is called periodically during autonomous. */
+	@Override
+	public void autonomousPeriodic() {}
 
-  /** This function is called once the robot enters Auto. */
-  @Override
-  public void autonomousInit() {}
+	/** This function is called once when teleop is enabled. */
+	@Override
+	public void teleopInit() {}
 
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {}
+	/** This function is called periodically during operator control. */
+	@Override
+	public void teleopPeriodic() {}
 
-  /** This function is called once when teleop is enabled. */
-  @Override
-  public void teleopInit() {
-  }
+	/** This function is called once when test mode is enabled. */
+	@Override
+	public void testInit() {}
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {}
+	/** This function is called periodically during test mode. */
+	@Override
+	public void testPeriodic() {}
 
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {
-  }
+	/** This function is called once when the robot is first started up. */
+	@Override
+	public void simulationInit() {}
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
-
-  /** This function is called once when the robot is first started up. */
-  @Override
-  public void simulationInit() {}
-
-  /** This function is called periodically whilst in simulation. */
-  @Override
-  public void simulationPeriodic() {}
+	/** This function is called periodically whilst in simulation. */
+	@Override
+	public void simulationPeriodic() {}
 }

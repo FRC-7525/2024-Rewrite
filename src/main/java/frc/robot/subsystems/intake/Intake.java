@@ -9,48 +9,53 @@ import frc.robot.subsystems.Subsystem;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends Subsystem<IntakeStates> {
-  IntakeIO io;
-  IntakeIOInputsAutoLogged inputs;
 
-  public Intake(IntakeIO io) {
-    super("Intake", IntakeStates.OFF);
-    this.io = io;
-    inputs = new IntakeIOInputsAutoLogged();
+	IntakeIO io;
+	IntakeIOInputsAutoLogged inputs;
 
-    // Configure PIDs here
-    switch (Constants.currentMode) {
-      case REAL:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
-        break;
-      case REPLAY:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
-        break;
-      case SIM:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
-        break;
-      default:
-        break;
-    }
-  }
+	public Intake(IntakeIO io) {
+		super("Intake", IntakeStates.OFF);
+		this.io = io;
+		inputs = new IntakeIOInputsAutoLogged();
 
-  protected void runState() {
-    io.setSetpoints(
-        getState().getPivotSetPoint(), getState().getMotorSetPoint(), getState().getUsingPID());
-  }
+		// Configure PIDs here
+		switch (Constants.currentMode) {
+			case REAL:
+				io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
+				break;
+			case REPLAY:
+				io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
+				break;
+			case SIM:
+				io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
+				break;
+			default:
+				break;
+		}
+	}
 
-  public void stop() {
-    io.stop();
-  }
+	protected void runState() {
+		io.setSetpoints(
+			getState().getPivotSetPoint(),
+			getState().getMotorSetPoint(),
+			getState().getUsingPID()
+		);
+	}
 
-  @Override
-  public void periodic() {
-    super.periodic();
+	public void stop() {
+		io.stop();
+	}
 
-    Logger.recordOutput(
-        "Intake/Intake Pose",
-        new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, io.getPosition(), 0)));
+	@Override
+	public void periodic() {
+		super.periodic();
 
-    Logger.processInputs("Intake", inputs);
-    io.updateInputs(inputs);
-  }
+		Logger.recordOutput(
+			"Intake/Intake Pose",
+			new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, io.getPosition(), 0))
+		);
+
+		Logger.processInputs("Intake", inputs);
+		io.updateInputs(inputs);
+	}
 }
