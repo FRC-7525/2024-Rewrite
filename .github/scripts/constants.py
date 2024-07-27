@@ -18,7 +18,7 @@ excused_cases = ["ModuleIOSparkMax", "case", "new Module(", "new BaseStatusSigna
 def check_for_magic_numbers(file_path):
     magic_numbers = []
     
-    # like bash but weird, number pattern makes sure number isnt in a var and detects all numbers that arent in a function/var
+    # Number pattern makes sure number isnt in a var and detects all numbers that arent in a function/var
     number_pattern = r'(?<!\w)-?(?:\d*\.\d+|\d+\.?)\b(?!\w)'
     zero_pattern = r'^0*\.?0+$'
 

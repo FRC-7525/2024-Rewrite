@@ -42,8 +42,6 @@ public class ModuleIOHybrid implements ModuleIO {
 
   private final RelativeEncoder turnRelativeEncoder;
   private final Queue<Double> turnPositionQueue;
-
-  // Gear ratios for SDS MK4i L2, adjust as necessary
   
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
