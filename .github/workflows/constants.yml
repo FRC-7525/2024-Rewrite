@@ -2,9 +2,11 @@ name: Find Misplaced Constants
 
 on:
   pull_request:
-    - main
+    branches:
+      - main
   push:
-    - Constants-Checking
+    branches:
+      - Constants-Checking
 
 jobs:
   Find Misplaced Constants:
