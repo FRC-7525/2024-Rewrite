@@ -2,9 +2,9 @@ package frc.robot.subsystems.ampBar;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
 
 public class AmpBarIOSim implements AmpBarIO {
   SingleJointedArmSim pivotSim;
@@ -24,9 +24,19 @@ public class AmpBarIOSim implements AmpBarIO {
   public AmpBarIOSim() {
     // the sim values are random
     pivotSim =
-    new SingleJointedArmSim(DCMotor.getNEO(2), .5, 2, .378, Units.degreesToRadians(179), Units.degreesToRadians(293.1633329) * 2, false, Units.degreesToRadians(179));
-    //still need gearing, and jkgMetersSquared
-    spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(1), .5, .5);
+    new SingleJointedArmSim(
+    DCMotor.getNEO(2),
+    Constants.AmpBar.PIVOT_GEARING,
+    Constants.AmpBar.PIVOT_JKG_METERS_SQUARED, 
+    Constants.AmpBar.PIVOT_ARM_LENGTH,
+    Constants.AmpBar.PIVOT_MIN_ANGLE,
+    Constants.AmpBar.PIVOT_MAX_ANGLE, 
+    false, 
+    Constants.AmpBar.PIVOT_STARTING_ANGLE);
+
+    spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(1),
+    Constants.AmpBar.SPINNER_GEARING,
+    Constants.AmpBar.SPINNER_JKG_METERS_SQUARED);
 
     controller = new PIDController(0, 0, 0);
     stateString = "";

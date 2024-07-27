@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 
 public class NoteSimulator {
@@ -20,15 +21,6 @@ public class NoteSimulator {
     private static Translation3d fieldVelocity = new Translation3d();
     private static boolean inShooter = false;
     private static List<Translation3d> noteTrajectory = new ArrayList<>();
-
-    private static final double AIR_DENSITY = 1.225;
-    private static final double DRAG_COEFFICIENT = 0.45;
-    private static final double CROSSECTION_AREA = 0.11;
-    private static final double MASS = 0.235;
-
-    private static final Pose3d shooterPose3d = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
-    public static final Translation2d fieldSize = new Translation2d(16.54, 8.21); //stolen from 3015 constants
-
 
     public static void setDrive(Drive drivesystem)
     {
@@ -53,7 +45,7 @@ public class NoteSimulator {
             return;
         }
 
-        currentFieldPose = getFieldPose(shooterPose3d);
+        currentFieldPose = getFieldPose(Constants.NoteSim.SHOOTER_POSE3D);
         inShooter = false;
 
         fieldVelocity = new Translation3d(velocity, currentFieldPose.getRotation());
@@ -82,35 +74,33 @@ public class NoteSimulator {
             return;
         }
 
-        double dt = 0.02;
-
-        Translation3d posDelta = fieldVelocity.times(dt);
+        Translation3d posDelta = fieldVelocity.times(Constants.NoteSim.dt);
 
         currentFieldPose =
             new Pose3d(
                 currentFieldPose.getTranslation().plus(posDelta), currentFieldPose.getRotation());
 
-        if (currentFieldPose.getX() <= -0.25
-            || currentFieldPose.getX() >= fieldSize.getX() + 0.25
-            || currentFieldPose.getY() <= -0.25
-            || currentFieldPose.getY() >= fieldSize.getY() + 0.25
+        if (currentFieldPose.getX() <= -Constants.NoteSim.OUT_OF_FIELD_MARGIN
+            || currentFieldPose.getX() >= Constants.NoteSim.FIELD_SIZE.getX() + Constants.NoteSim.OUT_OF_FIELD_MARGIN
+            || currentFieldPose.getY() <= -Constants.NoteSim.OUT_OF_FIELD_MARGIN
+            || currentFieldPose.getY() >= Constants.NoteSim.FIELD_SIZE.getY() + Constants.NoteSim.OUT_OF_FIELD_MARGIN
             || currentFieldPose.getZ() <= 0.0) {
             fieldVelocity = new Translation3d();
         } else {
-            fieldVelocity = fieldVelocity.minus(new Translation3d(0.0, 0.0, 9.81 * dt));
+            fieldVelocity = fieldVelocity.minus(Constants.NoteSim.GRAVITY_TRANSLATION3D.times(Constants.NoteSim.dt));
             double norm = fieldVelocity.getNorm();
 
-            double fDrag = 0.5 * AIR_DENSITY * Math.pow(norm, 2) * DRAG_COEFFICIENT * CROSSECTION_AREA;
-            double deltaV = (MASS * fDrag) * dt;
+            double fDrag = 0.5 * Constants.NoteSim.AIR_DENSITY * Math.pow(norm, 2) * Constants.NoteSim.DRAG_COEFFICIENT * Constants.NoteSim.CROSSECTION_AREA;
+            double deltaV = (Constants.NoteSim.MASS * fDrag) * Constants.NoteSim.dt;
 
             double t = (norm - deltaV) / norm;
             fieldVelocity = fieldVelocity.times(t);
             noteTrajectory.add(currentFieldPose.getTranslation());
-        }
+        }   
     }
 
     public static void logNoteInfo() {
         Logger.recordOutput("SimNoteTrajectory", NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0]));
-        Logger.recordOutput("SimNotePose3d", getFieldPose(shooterPose3d));
+        Logger.recordOutput("SimNotePose3d", getFieldPose(Constants.NoteSim.SHOOTER_POSE3D));
     }
 }
