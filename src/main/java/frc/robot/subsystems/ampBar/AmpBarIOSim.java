@@ -19,24 +19,23 @@ public class AmpBarIOSim implements AmpBarIO {
   double spinnerAppliedVoltage;
   double spinnerSpeedpoint;
 
-  final double ERROR_OF_MARGIN = .1;
-
   public AmpBarIOSim() {
     // the sim values are random
     pivotSim =
-    new SingleJointedArmSim(
-    DCMotor.getNEO(2),
-    Constants.AmpBar.PIVOT_GEARING,
-    Constants.AmpBar.PIVOT_JKG_METERS_SQUARED, 
-    Constants.AmpBar.PIVOT_ARM_LENGTH,
-    Constants.AmpBar.PIVOT_MIN_ANGLE,
-    Constants.AmpBar.PIVOT_MAX_ANGLE, 
-    false, 
-    Constants.AmpBar.PIVOT_STARTING_ANGLE);
-
-    spinnerSim = new DCMotorSim(DCMotor.getKrakenX60(1),
-    Constants.AmpBar.SPINNER_GEARING,
-    Constants.AmpBar.SPINNER_JKG_METERS_SQUARED);
+        new SingleJointedArmSim(
+            DCMotor.getNEO(2),
+            Constants.AmpBar.PIVOT_GEARING,
+            Constants.AmpBar.PIVOT_MOI,
+            Constants.AmpBar.PIVOT_LENGTH_METERS,
+            0,
+            Constants.AmpBar.MAX_PIVOT_POSITION,
+            false,
+            0);
+    spinnerSim =
+        new DCMotorSim(
+            DCMotor.getKrakenX60(1),
+            Constants.AmpBar.SPINNER_GEARING,
+            Constants.AmpBar.SPINNER_MOI);
 
     controller = new PIDController(0, 0, 0);
     stateString = "";
@@ -59,8 +58,8 @@ public class AmpBarIOSim implements AmpBarIO {
     inputs.spinnerSetpoint = spinnerSpeedpoint;
     inputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
 
-    pivotSim.update(0.05);
-    spinnerSim.update(0.05);
+    pivotSim.update(Constants.SIM_UPDATE_TIME);
+    spinnerSim.update(Constants.SIM_UPDATE_TIME);
   }
 
   @Override
@@ -78,13 +77,21 @@ public class AmpBarIOSim implements AmpBarIO {
   }
 
   @Override
+  public void stop() {
+    pivotAppliedVoltage = 0;
+    spinnerAppliedVoltage = 0;
+    spinnerSim.setInputVoltage(0);
+    pivotSim.setInputVoltage(0);
+  }
+
+  @Override
   public double getPivotPosition() {
     return pivotSim.getAngleRads();
   }
 
   @Override
   public double getSpinnerSpeed() {
-    return spinnerSim.getAngularVelocityRadPerSec();
+    return spinnerSim.getAngularVelocityRPM() / 60;
   }
 
   @Override
@@ -95,6 +102,6 @@ public class AmpBarIOSim implements AmpBarIO {
   @Override
   public boolean atSetPoint() {
     double motorPosition = getPivotPosition();
-    return Math.abs(motorPosition - pivotSetpoint) <= ERROR_OF_MARGIN;
+    return Math.abs(motorPosition - pivotSetpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
   }
 }

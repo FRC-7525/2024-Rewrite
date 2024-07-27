@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import frc.robot.Constants;
 
 public class AmpBarIOReal implements AmpBarIO {
 
@@ -23,31 +24,29 @@ public class AmpBarIOReal implements AmpBarIO {
   private double spinnerSpeedpoint;
   private double spinnerAppliedVoltage;
 
-  final double ERROR_OF_MARGIN = 0.1;
-
   public AmpBarIOReal() {
-    leftMotor = new CANSparkMax(31, MotorType.kBrushless);
-    rightMotor = new CANSparkMax(30, MotorType.kBrushless);
-    spinnerMotor = new TalonFX(38);
-
-    pivotEncoder = leftMotor.getEncoder();
-    stateString = "";
-    controller = new PIDController(0, 0, 0);
-
-    pivotMotorAppliedVoltage = 0;
-    pivotPositionSetpoint = 0;
-
-    spinnerSpeedpoint = 0;
-    spinnerAppliedVoltage = 0;
+    leftMotor = new CANSparkMax(Constants.AmpBar.LEFT_PIVOT_ID, MotorType.kBrushless);
+    rightMotor = new CANSparkMax(Constants.AmpBar.RIGHT_PIVOT_ID, MotorType.kBrushless);
+    spinnerMotor = new TalonFX(Constants.AmpBar.SPINNER_ID);
 
     leftMotor.setInverted(false);
     rightMotor.follow(leftMotor, true);
-    pivotEncoder.setPosition(0);
     leftMotor.setIdleMode(IdleMode.kCoast);
     rightMotor.setIdleMode(IdleMode.kCoast);
 
-    pivotEncoder.setPositionConversionFactor(Math.PI * 2);
-    pivotEncoder.setVelocityConversionFactor(Math.PI * 2);
+    pivotEncoder = leftMotor.getEncoder();
+
+    pivotEncoder.setPosition(0);
+    pivotEncoder.setPositionConversionFactor(Constants.RADIAN_CF);
+    pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
+
+    controller = new PIDController(0, 0, 0);
+
+    stateString = "";
+    pivotMotorAppliedVoltage = 0;
+    pivotPositionSetpoint = 0;
+    spinnerSpeedpoint = 0;
+    spinnerAppliedVoltage = 0;
   }
 
   @Override
@@ -71,6 +70,14 @@ public class AmpBarIOReal implements AmpBarIO {
     leftMotor.setVoltage(pivotMotorAppliedVoltage);
   }
 
+  public void stop() {
+    spinnerAppliedVoltage = 0;
+    pivotMotorAppliedVoltage = 0;
+    leftMotor.stopMotor();
+    rightMotor.stopMotor();
+    spinnerMotor.stopMotor();
+  }
+
   @Override
   public void setSpinnerSpeedpoint(double speed) {
     spinnerSpeedpoint = speed;
@@ -85,7 +92,7 @@ public class AmpBarIOReal implements AmpBarIO {
 
   @Override
   public double getSpinnerSpeed() {
-    return spinnerMotor.getVelocity().getValueAsDouble() * Math.PI * 2;
+    return spinnerMotor.getVelocity().getValueAsDouble();
   }
 
   @Override
@@ -96,6 +103,6 @@ public class AmpBarIOReal implements AmpBarIO {
   @Override
   public boolean atSetPoint() {
     double motorPosition = getPivotPosition();
-    return Math.abs(motorPosition - pivotPositionSetpoint) <= ERROR_OF_MARGIN;
+    return Math.abs(motorPosition - pivotPositionSetpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
   }
 }
