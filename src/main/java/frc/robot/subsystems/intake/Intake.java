@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 import frc.robot.subsystems.Subsystem;
+import frc.robot.util.NoteSimulator;
 import frc.robot.Constants;
 
 import org.littletonrobotics.junction.Logger;
@@ -37,6 +38,10 @@ public class Intake extends Subsystem<IntakeStates> {
 
     protected void runState() {
         io.setSetpoints(getState().getPivotSetPoint(), getState().getMotorSetPoint(), getState().getUsingPID());
+        if (getState() == IntakeStates.INTAKING)
+        {
+            NoteSimulator.attachToShooter();
+        }
     }
 
     @Override

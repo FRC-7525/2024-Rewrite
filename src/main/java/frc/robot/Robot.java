@@ -22,7 +22,8 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import frc.robot.subsystems.manager.*;;
+import frc.robot.subsystems.manager.*;
+import frc.robot.util.NoteSimulator;;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -105,6 +106,10 @@ public class Robot extends LoggedRobot {
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
     managerSubsystem.periodic();
+
+    //Logs note sim logging and updating sims
+    NoteSimulator.update();
+    NoteSimulator.logNoteInfo();
   }
 
   /** This function is called once when the robot is disabled. */

@@ -51,4 +51,9 @@ public class ShooterIOSim implements ShooterIO {
         double motorSpeed = (sim.getAngularVelocityRPM() / 60);
         return Math.abs(motorSpeed - speedPoint) > Constants.Shooter.SHOOTER_MAX_SPEED_DEVIATION;
     }
+
+    @Override
+    public double getAverageSpeed() {
+        return sim.getAngularVelocityRPM() / 60;
+    }
 }

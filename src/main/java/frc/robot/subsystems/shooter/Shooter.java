@@ -8,6 +8,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends Subsystem<ShooterStates> {
 
+    private final double CIRCUMFRENCE_OF_SHOOTER_SPINNER = 1; //TODO: add circumfrence of shooter spinner
+    
     private ShooterIO io;
     private ShooterIOInputsAutoLogged inputs;
 
@@ -34,7 +36,7 @@ public class Shooter extends Subsystem<ShooterStates> {
     protected void runState() {
         io.setSpeed(getState().getMotorSpeedpoint());
         if (getState() == ShooterStates.SHOOTING)
-            NoteSimulator.launch(0); //TODO: add velocity
+            NoteSimulator.launch(io.getAverageSpeed() * CIRCUMFRENCE_OF_SHOOTER_SPINNER);
     }
 
     public boolean nearSpeedPoint() {
