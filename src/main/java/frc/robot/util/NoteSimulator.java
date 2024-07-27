@@ -21,7 +21,7 @@ public class NoteSimulator {
     private static Translation3d fieldVelocity = new Translation3d();
     private static boolean inShooter = false;
     private static List<Translation3d> noteTrajectory = new ArrayList<>();
-
+    
     public static void setDrive(Drive drivesystem)
     {
         drive = drivesystem;
@@ -50,7 +50,7 @@ public class NoteSimulator {
 
         fieldVelocity = new Translation3d(velocity, currentFieldPose.getRotation());
 
-        ChassisSpeeds robotVel = new ChassisSpeeds(0, 0, 0); //assumes robot is not moving
+        ChassisSpeeds robotVel = drive.getChassisSpeed();
         ChassisSpeeds fieldRel =
             ChassisSpeeds.fromRobotRelativeSpeeds(
                 robotVel, drive.getRotation());

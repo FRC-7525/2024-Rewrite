@@ -11,6 +11,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
+import frc.robot.util.NoteSimulator;
 
 public class Manager extends Subsystem<ManagerStates> {
   Intake intakeSubsystem;
@@ -20,6 +21,8 @@ public class Manager extends Subsystem<ManagerStates> {
 
   public Manager() {
     super("Manager", ManagerStates.IDLE);
+
+    NoteSimulator.setDrive(driveSubsystem);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -143,5 +146,8 @@ public class Manager extends Subsystem<ManagerStates> {
   }
 
   @Override
-  protected void runState() {}
+  protected void runState() {
+    NoteSimulator.update();
+    NoteSimulator.logNoteInfo();
+  }
 }

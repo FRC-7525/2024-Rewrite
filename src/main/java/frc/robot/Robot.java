@@ -93,10 +93,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     managerSubsystem.periodic();
-
-    //Logs note sim logging and updating sims
-    NoteSimulator.update();
-    NoteSimulator.logNoteInfo();
   }
 
   /** This function is called once when the robot is disabled. */
