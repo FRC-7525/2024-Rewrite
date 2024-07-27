@@ -16,13 +16,13 @@ public class Shooter extends Subsystem<ShooterStates> {
 
     switch (Constants.currentMode) {
       case REAL:
-        io.configurePID(1.0, 0, 0);
+        io.configurePID(Constants.Shooter.REAL_PID.kP, Constants.Shooter.REAL_PID.kI, Constants.Shooter.REAL_PID.kD);
         break;
       case REPLAY:
-        io.configurePID(1.0, 0.0, 0.0);
+        io.configurePID(0.0, 0.0, 0.0);
         break;
       case SIM:
-        io.configurePID(1.0, 0.0, 0.0);
+        io.configurePID(Constants.Shooter.SIM_PID.kP, Constants.Shooter.SIM_PID.kI, Constants.Shooter.SIM_PID.kD);
         break;
       default:
         break;

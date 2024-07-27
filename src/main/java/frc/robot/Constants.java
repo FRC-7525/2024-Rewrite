@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.PIDConstants;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -26,7 +28,10 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public final class Constants {
   public static final double SIM_UPDATE_TIME = 0.05;
+
+  // Conversion Factors
   public static final double RADIAN_CF = (Math.PI * 2);
+  public static final double RPM_TO_RPS_CF = 60;
 
   public static final Mode currentMode = Mode.SIM;
 
@@ -46,26 +51,35 @@ public final class Constants {
 
   public static final class Intake {
 
-	// CAN IDs
-	public static final int PIVOT_ID = 32;
-	public static final int SPINNER_ID = 20;
+    // CAN IDs
+    public static final int PIVOT_ID = 32;
+    public static final int SPINNER_ID = 20;
+
+    // PID
+    public static final PIDConstants SIM_IN_PID = new PIDConstants(1, 0, 0);
+    public static final PIDConstants SIM_OUT_PID = new PIDConstants(1, 0, 0);
+
+    public static final PIDConstants REAL_IN_PID = new PIDConstants(1, 0, 0);
+    public static final PIDConstants REAL_OUT_PID = new PIDConstants(1, 0, 0);
 
     // Sim Configs
 
     // Pivot
+    public static final int NUM_PIVOT_MOTORS = 1;
     public static final double PIVOT_GEARING = 67.5;
     public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(180.0);
     public static final double PIVOT_MOI = 0.192383865;
     public static final double PIVOT_LENGTH_METERS = 0.3;
 
     // Spinner
+    public static final int NUM_SPINNER_MOTORS = 1;
     public static final double SPINNER_MOI = 0.01;
     public static final double SPINNER_GEARING = 1.0;
     public static final double OFF = 0.0;
 
     // In Rads (Pivot setpoints)
     public static final double DOWN = Units.degreesToRadians(180.0);
-	public static final double IN = Units.degreesToRadians(0.0);
+	  public static final double IN = Units.degreesToRadians(0.0);
 
     // In RPS (Spinner Setpoints)
     public static final double REVERSE = -10.0;
@@ -74,6 +88,10 @@ public final class Constants {
 
   public static final class Shooter {
     public static final double ERROR_OF_MARGIN = 2.0;
+
+    // PID
+    public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
+    public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
 
     // CAN IDs
     public static final int LEFT_SHOOTER_ID = 15;
@@ -85,12 +103,18 @@ public final class Constants {
     public static final double SHOOTING = 50.0;
 
     // Sim Configs
+    public static final int NUM_MOTORS = 2;
     public static final double SHOOTER_GEARING = 1.5;
     public static final double SHOOTER_MOI = 0.004;
   }
 
   public static final class AmpBar {
     public static final double ERROR_OF_MARGIN = 0.1;
+
+    // PID
+    public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
+    public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
+
 
     // Motor CAN IDs
     public static final int LEFT_PIVOT_ID = 31;
@@ -102,8 +126,10 @@ public final class Constants {
     // Spinner
     public static final double SPINNER_GEARING = 0.5;
     public static final double SPINNER_MOI = 0.5;
+    public static final int NUM_SPINNER_MOTORS = 1;
 
     // Pivot
+    public static final int NUM_PIVOT_MOTORS = 2;
     public static final double PIVOT_GEARING = 0.05;
     public static final double PIVOT_MOI = 0.05;
     public static final double PIVOT_LENGTH_METERS = 0.378;
@@ -119,7 +145,7 @@ public final class Constants {
     // IN Rads (Pivot Setpoints)
     public static final double OUT = Units.degreesToRadians(50.0);
     public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
-	public static final double IN = Units.degreesToRadians(0.0);
+	  public static final double IN = Units.degreesToRadians(0.0);
   }
 
   public static final class Drive {
