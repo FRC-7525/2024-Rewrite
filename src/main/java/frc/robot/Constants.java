@@ -93,6 +93,9 @@ public final class Constants {
     // Sim Configs
     public static final double SHOOTER_GEARING = 1.5;
     public static final double SHOOTER_MOI = 0.004;
+
+    //spinner circumfrence need to check with mech
+    public static final double CIRCUMFRENCE_OF_SHOOTER_SPINNER = 4;
   }
 
   public static final class AmpBar {
