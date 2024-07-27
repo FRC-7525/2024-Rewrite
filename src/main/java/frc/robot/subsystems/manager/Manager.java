@@ -7,6 +7,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOHybrid;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.intake.*;
@@ -29,10 +30,10 @@ public class Manager extends Subsystem<ManagerStates> {
         driveSubsystem =
             new Drive(
                 new GyroIOPigeon2(false),
-                new ModuleIOSparkMax(0),
-                new ModuleIOSparkMax(1),
-                new ModuleIOSparkMax(2),
-                new ModuleIOSparkMax(3));
+                new ModuleIOHybrid(0),
+                new ModuleIOHybrid(1),
+                new ModuleIOHybrid(2),
+                new ModuleIOHybrid(3));
         break;
       case REPLAY:
         intakeSubsystem = new Intake(new IntakeIO() {});

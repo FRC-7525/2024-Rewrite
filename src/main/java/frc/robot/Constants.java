@@ -16,7 +16,9 @@ package frc.robot;
 import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.util.FFConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -32,8 +34,12 @@ public final class Constants {
   // Conversion Factors
   public static final double RADIAN_CF = (Math.PI * 2);
   public static final double RPM_TO_RPS_CF = 60;
+  public static final double DIAM_TO_RADIUS_CF = 2.0;
 
   public static final Mode currentMode = Mode.SIM;
+
+  public static final double MAX_VOLTS = 12.0;
+  public static final double MIN_VOLTS = -12.0;
 
   public static final XboxController controller = new XboxController(0);
   public static final XboxController operatorController = new XboxController(1);
@@ -149,7 +155,10 @@ public final class Constants {
   }
 
   public static final class Drive {
+
+    public static final double DISCRETIZE_TIME_SECONDS = 0.02;
     public static final double CONTROLLER_DEADBAND = 0.1;
+    public static final int NUM_MODULES = 4;
 
     /* Rotation and Translation Modifers
     rm = rotation multiplier
@@ -164,5 +173,103 @@ public final class Constants {
     public static final double AA_TM = 0.8;
     public static final double FAST_RM = 1.5;
     public static final double FAST_TM = 2.0;
+
+    // Configs
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
+    public static final double DRIVE_BASE_RADIUS =
+        Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+
+    public static final class Pidgeon2 {
+      public static final int DEVICE_ID = 20;
+      public static final double UPDATE_FREQUENCY = 100.0;
+    }
+
+    public static final class Module {  
+      public static final double ODOMETRY_FREQUENCY = 250.0;
+
+      // There isnt one for real its just all 0 so idk whats good with that
+      public static final FFConstants REPLAY_FF = new FFConstants(0.1, 0.13);
+      public static final PIDConstants REPLAY_DRIVE_PID = new PIDConstants(0.05, 0.0, 0.0);
+      public static final PIDConstants REPLAY_TURN_PID = new PIDConstants(7.0, 0.0, 0.0);
+
+      public static final FFConstants SIM_FF = new FFConstants(0.0, 0.13);
+      public static final PIDConstants SIM_DRIVE_PID = new PIDConstants(0.1, 0.0, 0.0);
+      public static final PIDConstants SIM_TURN_PID = new PIDConstants(10.0, 0.0, 0.0);
+
+      public static final int NUM_TURN_MOTORS = 1;
+      public static final int NUM_DRIVE_MOTORS = 1;
+      public static final class Sim {
+        public static final double LOOP_PERIOD_SECS = 0.02;
+
+        // Configs
+        public static final double DRIVE_GEARING = 6.75;
+        public static final double DRIVE_MOI = 0.025;
+
+        public static final double TURN_GEARING = 150.0 / 7.0;
+        public static final double TURN_MOI = 0.004;
+        
+      }
+      
+      // TODO: Put constants from those abstractions in here
+      public static final class SparkMax {
+      }
+
+      public static final class TalonFX {
+      }
+
+      public static final class Hybrid {
+        // These are for l2 Mk4i mods, should be L3 plus
+        public static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+        public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
+
+        public static final double DRIVE_CURRENT_LIMIT = 40.0;
+        public static final int TURN_CURRENT_LIMIT = 30;
+        // Stuff
+        public static final double TALON_UPDATE_FREQUENCY_HZ = 50.0;
+
+        public static final int SPARK_TIMEOUT_MS = 250;
+        public static final int SPARK_MEASURMENT_PERIOD_MS = 10;
+        public static final int SPARK_AVG_DEPTH = 2;
+        public static final double SPARK_FRAME_PERIOD = 1000.0 / ODOMETRY_FREQUENCY;
+
+        // CAN/Device IDS and offsets
+        public static final int DRIVE0_ID = 0;
+        public static final int TURN0_ID = 1;
+        public static final int CANCODER0_ID = 2;
+        public static final double OFFSET0 = 0.0;
+
+        public static final int DRIVE1_ID = 0;
+        public static final int TURN1_ID = 1;
+        public static final int CANCODER1_ID = 2;
+        public static final double OFFSET1 = 0.0;
+
+        public static final int DRIVE2_ID = 0;
+        public static final int TURN2_ID = 1;
+        public static final int CANCODER2_ID = 2;
+        public static final double OFFSET2 = 0.0;
+
+        public static final int DRIVE3_ID = 0;
+        public static final int TURN3_ID = 1;
+        public static final int CANCODER3_ID = 2;
+        public static final double OFFSET3 = 0.0;
+
+      }
+    } 
+
+    public static final class OdoThread {
+      public static final class Phoenix {
+        
+        public static final int QUE_CAPACITY = 20;
+        public static final double SLEEP_TIME = 1000.0;
+      }
+      public static final class SparkMax {
+        public static final int QUE_CAPACITY = 20;
+        public static final double PERIOD = 1.0;
+      }
+    }
   }
 }

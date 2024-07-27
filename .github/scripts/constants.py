@@ -2,8 +2,9 @@ import re
 import os
 import sys
 
-# List of files to excuse (constants and things we didnt make)
-excused_files = ["Constants.java", "BuildConstants.java", "LocalADStarAK.java"]
+# List of files to excuse (constants and things we didnt make and stuff we wont use)
+# TODO: Put un-used Module IO abstraction constants in constants (Not super needed but important)
+excused_files = ["Constants.java", "BuildConstants.java", "LocalADStarAK.java", "ModuleIOSparkMax.java", "ModuleIOTalonFX.java"]
 
 # Not really dirs becasue the full ones didnt work
 excused_dirs = [
@@ -12,7 +13,7 @@ excused_dirs = [
 ]
 
 # Weird stuff that shouldn't go in constants, dont put function/var names in here theyre already checked
-excused_cases = ["ModuleIOSparkMax", "case"]
+excused_cases = ["ModuleIOSparkMax", "case", "new Module(", "new BaseStatusSignal[", "BaseStatusSignal.waitForAll(", "new ModuleIOHybrid("]
 
 def check_for_magic_numbers(file_path):
     magic_numbers = []
@@ -94,7 +95,11 @@ if __name__ == "__main__":
     
     print(f"Scanning directory: {project_root}")
     total_magic_numbers = scan_directory(project_root)
-    print(f"\nTotal magic numbers found: {total_magic_numbers}.\nPlease put these in  Constnats.java!")
 
-    # Fails if magic numbers are in any non excused locations
-    sys.exit(1 if total_magic_numbers > 0 else 0)
+    # Fails if magic numbers are in any non excused locations    
+    if total_magic_numbers > 0:
+        print(f"\nTotal magic numbers found: {total_magic_numbers}.\nPlease put these in  Constanats.java!")
+        sys.exit(1)
+    else:
+        print("\nNo Magic Number Found")
+        sys.exit(0)
