@@ -6,7 +6,7 @@ on:
       - main
   push:
     branches:
-      - Constants-Checking
+      - main
 
 jobs:
   find-misplaced-constants:
