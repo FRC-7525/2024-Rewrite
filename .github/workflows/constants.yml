@@ -9,9 +9,9 @@ on:
       - Constants-Checking
 
 jobs:
-  Find Misplaced Constants:
+  find-misplaced-constants:
     runs-on: ubuntu-latest
-    Steps:
+    steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Set up Python
