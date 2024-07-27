@@ -44,17 +44,37 @@ public class Module {
     // Switch constants based on mode (the physics simulator is treated as a
     // separate robot with different tuning)
     switch (Constants.currentMode) {
-      // TODO: Configure PID in rela mabye? idk why its off
+        // TODO: Configure PID in rela mabye? idk why its off
       case REAL:
       case REPLAY:
-        driveFeedforward = new SimpleMotorFeedforward(Constants.Drive.Module.REPLAY_FF.kS, Constants.Drive.Module.REPLAY_FF.kV);
-        driveFeedback = new PIDController(Constants.Drive.Module.REPLAY_DRIVE_PID.kP, Constants.Drive.Module.REPLAY_DRIVE_PID.kI, Constants.Drive.Module.REPLAY_DRIVE_PID.kD);
-        turnFeedback = new PIDController(Constants.Drive.Module.REPLAY_TURN_PID.kP, Constants.Drive.Module.REPLAY_TURN_PID.kI, Constants.Drive.Module.REPLAY_TURN_PID.kD);
+        driveFeedforward =
+            new SimpleMotorFeedforward(
+                Constants.Drive.Module.REPLAY_FF.kS, Constants.Drive.Module.REPLAY_FF.kV);
+        driveFeedback =
+            new PIDController(
+                Constants.Drive.Module.REPLAY_DRIVE_PID.kP,
+                Constants.Drive.Module.REPLAY_DRIVE_PID.kI,
+                Constants.Drive.Module.REPLAY_DRIVE_PID.kD);
+        turnFeedback =
+            new PIDController(
+                Constants.Drive.Module.REPLAY_TURN_PID.kP,
+                Constants.Drive.Module.REPLAY_TURN_PID.kI,
+                Constants.Drive.Module.REPLAY_TURN_PID.kD);
         break;
       case SIM:
-        driveFeedforward = new SimpleMotorFeedforward(Constants.Drive.Module.SIM_FF.kS, Constants.Drive.Module.SIM_FF.kV);
-        driveFeedback = new PIDController(Constants.Drive.Module.SIM_DRIVE_PID.kP, Constants.Drive.Module.SIM_DRIVE_PID.kI, Constants.Drive.Module.SIM_DRIVE_PID.kD);
-        turnFeedback = new PIDController(Constants.Drive.Module.SIM_TURN_PID.kP, Constants.Drive.Module.SIM_TURN_PID.kI, Constants.Drive.Module.SIM_TURN_PID.kD);
+        driveFeedforward =
+            new SimpleMotorFeedforward(
+                Constants.Drive.Module.SIM_FF.kS, Constants.Drive.Module.SIM_FF.kV);
+        driveFeedback =
+            new PIDController(
+                Constants.Drive.Module.SIM_DRIVE_PID.kP,
+                Constants.Drive.Module.SIM_DRIVE_PID.kI,
+                Constants.Drive.Module.SIM_DRIVE_PID.kD);
+        turnFeedback =
+            new PIDController(
+                Constants.Drive.Module.SIM_TURN_PID.kP,
+                Constants.Drive.Module.SIM_TURN_PID.kI,
+                Constants.Drive.Module.SIM_TURN_PID.kD);
         break;
       default:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);

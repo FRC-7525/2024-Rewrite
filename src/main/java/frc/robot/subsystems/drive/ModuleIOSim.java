@@ -29,10 +29,19 @@ import frc.robot.Constants;
  */
 public class ModuleIOSim implements ModuleIO {
 
-  private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(Constants.Drive.Module.NUM_DRIVE_MOTORS), Constants.Drive.Module.Sim.DRIVE_GEARING, Constants.Drive.Module.Sim.DRIVE_MOI);
-  private DCMotorSim turnSim = new DCMotorSim(DCMotor.getNEO(Constants.Drive.Module.NUM_TURN_MOTORS), Constants.Drive.Module.Sim.TURN_GEARING, Constants.Drive.Module.Sim.TURN_MOI);
+  private DCMotorSim driveSim =
+      new DCMotorSim(
+          DCMotor.getNEO(Constants.Drive.Module.NUM_DRIVE_MOTORS),
+          Constants.Drive.Module.Sim.DRIVE_GEARING,
+          Constants.Drive.Module.Sim.DRIVE_MOI);
+  private DCMotorSim turnSim =
+      new DCMotorSim(
+          DCMotor.getNEO(Constants.Drive.Module.NUM_TURN_MOTORS),
+          Constants.Drive.Module.Sim.TURN_GEARING,
+          Constants.Drive.Module.Sim.TURN_MOI);
 
-  private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * Constants.RADIAN_CF);
+  private final Rotation2d turnAbsoluteInitPosition =
+      new Rotation2d(Math.random() * Constants.RADIAN_CF);
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
 
@@ -60,8 +69,9 @@ public class ModuleIOSim implements ModuleIO {
 
   @Override
   public void setDriveVoltage(double volts) {
+    // :( it doesent work if you clamp volts regularly idk. It really just stopped working
     driveAppliedVolts = MathUtil.clamp(volts, Constants.MIN_VOLTS, Constants.MAX_VOLTS);
-    driveSim.setInputVoltage(driveAppliedVolts);
+    driveSim.setInputVoltage(volts);
   }
 
   @Override

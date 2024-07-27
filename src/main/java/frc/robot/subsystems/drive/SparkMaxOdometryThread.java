@@ -15,7 +15,6 @@ package frc.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -52,7 +51,8 @@ public class SparkMaxOdometryThread {
 
   public void start() {
     if (timestampQueues.size() > 0) {
-      notifier.startPeriodic(Constants.Drive.OdoThread.SparkMax.PERIOD / Constants.Drive.Module.ODOMETRY_FREQUENCY);
+      notifier.startPeriodic(
+          Constants.Drive.OdoThread.SparkMax.PERIOD / Constants.Drive.Module.ODOMETRY_FREQUENCY);
     }
   }
 

@@ -9,7 +9,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOHybrid;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
 
@@ -130,10 +129,10 @@ public class Manager extends Subsystem<ManagerStates> {
     shooterSubsystem.periodic();
     driveSubsystem.periodic();
 
-	// Cancel all actions regardless of whats happening
-	if (Constants.operatorController.getXButtonPressed()) {
-		setState(ManagerStates.IDLE);
-	}
+    // Cancel all actions regardless of whats happening
+    if (Constants.operatorController.getXButtonPressed()) {
+      setState(ManagerStates.IDLE);
+    }
   }
 
   public void stop() {

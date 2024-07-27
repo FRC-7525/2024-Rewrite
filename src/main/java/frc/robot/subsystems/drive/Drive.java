@@ -24,7 +24,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
@@ -104,9 +103,11 @@ public class Drive extends Subsystem<DriveStates> {
     // Apply deadband
     double linearMagnitude =
         MathUtil.applyDeadband(
-            Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), Constants.Drive.CONTROLLER_DEADBAND);
+            Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()),
+            Constants.Drive.CONTROLLER_DEADBAND);
     Rotation2d linearDirection = new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), Constants.Drive.CONTROLLER_DEADBAND);
+    double omega =
+        MathUtil.applyDeadband(omegaSupplier.getAsDouble(), Constants.Drive.CONTROLLER_DEADBAND);
 
     // Square values
     linearMagnitude = linearMagnitude * linearMagnitude;
@@ -162,7 +163,8 @@ public class Drive extends Subsystem<DriveStates> {
     int sampleCount = sampleTimestamps.length;
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
-      SwerveModulePosition[] modulePositions = new SwerveModulePosition[Constants.Drive.NUM_MODULES];
+      SwerveModulePosition[] modulePositions =
+          new SwerveModulePosition[Constants.Drive.NUM_MODULES];
       SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[Constants.Drive.NUM_MODULES];
       for (int moduleIndex = 0; moduleIndex < Constants.Drive.NUM_MODULES; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
@@ -196,12 +198,14 @@ public class Drive extends Subsystem<DriveStates> {
    */
   public void runVelocity(ChassisSpeeds speeds) {
     // Calculate module setpoints
-    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, Constants.Drive.DISCRETIZE_TIME_SECONDS);
+    ChassisSpeeds discreteSpeeds =
+        ChassisSpeeds.discretize(speeds, Constants.Drive.DISCRETIZE_TIME_SECONDS);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, Constants.Drive.MAX_LINEAR_SPEED);
 
     // Send setpoints to modules
-    SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[Constants.Drive.NUM_MODULES];
+    SwerveModuleState[] optimizedSetpointStates =
+        new SwerveModuleState[Constants.Drive.NUM_MODULES];
     for (int i = 0; i < Constants.Drive.NUM_MODULES; i++) {
       // The module returns the optimized state, useful for logging
       optimizedSetpointStates[i] = modules[i].runSetpoint(setpointStates[i]);
@@ -288,10 +292,18 @@ public class Drive extends Subsystem<DriveStates> {
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF, Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
-      new Translation2d(Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF, -Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
-      new Translation2d(-Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF, Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
-      new Translation2d(-Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF, -Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF)
+      new Translation2d(
+          Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+          Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
+      new Translation2d(
+          Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+          -Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
+      new Translation2d(
+          -Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+          Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
+      new Translation2d(
+          -Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+          -Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF)
     };
   }
 }

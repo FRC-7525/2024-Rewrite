@@ -24,7 +24,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
-
 import java.util.OptionalDouble;
 import java.util.Queue;
 

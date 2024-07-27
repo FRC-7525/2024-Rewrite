@@ -17,9 +17,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.ParentDevice;
-
 import frc.robot.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -107,7 +105,10 @@ public class PhoenixOdometryThread extends Thread {
           // signals with a bus that is not CAN FD, regardless
           // of Pro licensing. No reasoning for this behavior
           // is provided by the documentation.
-          Thread.sleep((long) (Constants.Drive.OdoThread.Phoenix.SLEEP_TIME / Constants.Drive.Module.ODOMETRY_FREQUENCY));
+          Thread.sleep(
+              (long)
+                  (Constants.Drive.OdoThread.Phoenix.SLEEP_TIME
+                      / Constants.Drive.Module.ODOMETRY_FREQUENCY));
           if (signals.length > 0) BaseStatusSignal.refreshAll(signals);
         }
       } catch (InterruptedException e) {

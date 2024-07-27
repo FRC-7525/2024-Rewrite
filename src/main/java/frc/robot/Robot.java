@@ -112,8 +112,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {
-  }
+  public void teleopInit() {}
 
   /** This function is called periodically during operator control. */
   @Override
@@ -121,8 +120,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {
-  }
+  public void testInit() {}
 
   /** This function is called periodically during test mode. */
   @Override

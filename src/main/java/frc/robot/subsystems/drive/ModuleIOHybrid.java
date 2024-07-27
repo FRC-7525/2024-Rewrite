@@ -19,7 +19,6 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-
 import java.util.OptionalDouble;
 import java.util.Queue;
 
@@ -42,7 +41,7 @@ public class ModuleIOHybrid implements ModuleIO {
 
   private final RelativeEncoder turnRelativeEncoder;
   private final Queue<Double> turnPositionQueue;
-  
+
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
 
@@ -50,25 +49,29 @@ public class ModuleIOHybrid implements ModuleIO {
     switch (index) {
       case 0:
         driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE0_ID);
-        turnSparkMax = new CANSparkMax(Constants.Drive.Module.Hybrid.TURN0_ID, MotorType.kBrushless);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN0_ID, MotorType.kBrushless);
         cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER0_ID);
-        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET0); 
+        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET0);
         break;
       case 1:
         driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE1_ID);
-        turnSparkMax = new CANSparkMax(Constants.Drive.Module.Hybrid.TURN1_ID, MotorType.kBrushless);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN1_ID, MotorType.kBrushless);
         cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER1_ID);
-        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET1); 
+        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET1);
         break;
       case 2:
         driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE2_ID);
-        turnSparkMax = new CANSparkMax(Constants.Drive.Module.Hybrid.TURN2_ID, MotorType.kBrushless);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN2_ID, MotorType.kBrushless);
         cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER2_ID);
         absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET2);
         break;
       case 3:
         driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE3_ID);
-        turnSparkMax = new CANSparkMax(Constants.Drive.Module.Hybrid.TURN3_ID, MotorType.kBrushless);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN3_ID, MotorType.kBrushless);
         cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER3_ID);
         absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET3);
         break;
@@ -78,7 +81,8 @@ public class ModuleIOHybrid implements ModuleIO {
 
     // TalonFX configuration
     var driveConfig = new TalonFXConfiguration();
-    driveConfig.CurrentLimits.SupplyCurrentLimit = Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
+    driveConfig.CurrentLimits.SupplyCurrentLimit =
+        Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveTalon.getConfigurator().apply(driveConfig);
     setDriveBrakeMode(true);
@@ -113,7 +117,8 @@ public class ModuleIOHybrid implements ModuleIO {
     turnSparkMax.enableVoltageCompensation(Constants.MAX_VOLTS);
 
     turnRelativeEncoder.setPosition(0.0);
-    turnRelativeEncoder.setMeasurementPeriod(Constants.Drive.Module.Hybrid.SPARK_MEASURMENT_PERIOD_MS);
+    turnRelativeEncoder.setMeasurementPeriod(
+        Constants.Drive.Module.Hybrid.SPARK_MEASURMENT_PERIOD_MS);
     turnRelativeEncoder.setAverageDepth(Constants.Drive.Module.Hybrid.SPARK_AVG_DEPTH);
 
     turnSparkMax.setCANTimeout(0);
@@ -136,18 +141,15 @@ public class ModuleIOHybrid implements ModuleIO {
 
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
-    BaseStatusSignal.refreshAll(
-        drivePosition,
-        driveVelocity,
-        driveAppliedVolts,
-        driveCurrent);
-    
+    BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+
     // Turn Stuff
     inputs.turnAbsolutePosition =
         Rotation2d.fromRotations(cancoder.getAbsolutePosition().getValueAsDouble())
-        .minus(absoluteEncoderOffset);
+            .minus(absoluteEncoderOffset);
     inputs.turnPosition =
-        Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO);
+        Rotation2d.fromRotations(
+            turnRelativeEncoder.getPosition() / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO);
     inputs.turnVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
             / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
@@ -159,11 +161,16 @@ public class ModuleIOHybrid implements ModuleIO {
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryDrivePositionsRad =
         drivePositionQueue.stream()
-            .mapToDouble((Double value) -> Units.rotationsToRadians(value) / Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO)
+            .mapToDouble(
+                (Double value) ->
+                    Units.rotationsToRadians(value)
+                        / Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO)
             .toArray();
     inputs.odometryTurnPositions =
         turnPositionQueue.stream()
-            .map((Double value) -> Rotation2d.fromRotations(value / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO))
+            .map(
+                (Double value) ->
+                    Rotation2d.fromRotations(value / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO))
             .toArray(Rotation2d[]::new);
     timestampQueue.clear();
     drivePositionQueue.clear();

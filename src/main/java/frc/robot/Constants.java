@@ -14,9 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.util.PIDConstants;
-
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.util.FFConstants;
 
@@ -85,7 +83,7 @@ public final class Constants {
 
     // In Rads (Pivot setpoints)
     public static final double DOWN = Units.degreesToRadians(180.0);
-	  public static final double IN = Units.degreesToRadians(0.0);
+    public static final double IN = Units.degreesToRadians(0.0);
 
     // In RPS (Spinner Setpoints)
     public static final double REVERSE = -10.0;
@@ -121,7 +119,6 @@ public final class Constants {
     public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
     public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
 
-
     // Motor CAN IDs
     public static final int LEFT_PIVOT_ID = 31;
     public static final int RIGHT_PIVOT_ID = 30;
@@ -151,7 +148,7 @@ public final class Constants {
     // IN Rads (Pivot Setpoints)
     public static final double OUT = Units.degreesToRadians(50.0);
     public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
-	  public static final double IN = Units.degreesToRadians(0.0);
+    public static final double IN = Units.degreesToRadians(0.0);
   }
 
   public static final class Drive {
@@ -188,7 +185,7 @@ public final class Constants {
       public static final double UPDATE_FREQUENCY = 100.0;
     }
 
-    public static final class Module {  
+    public static final class Module {
       public static final double ODOMETRY_FREQUENCY = 250.0;
 
       // There isnt one for real its just all 0 so idk whats good with that
@@ -202,6 +199,7 @@ public final class Constants {
 
       public static final int NUM_TURN_MOTORS = 1;
       public static final int NUM_DRIVE_MOTORS = 1;
+
       public static final class Sim {
         public static final double LOOP_PERIOD_SECS = 0.02;
 
@@ -211,15 +209,12 @@ public final class Constants {
 
         public static final double TURN_GEARING = 150.0 / 7.0;
         public static final double TURN_MOI = 0.004;
-        
-      }
-      
-      // TODO: Put constants from those abstractions in here
-      public static final class SparkMax {
       }
 
-      public static final class TalonFX {
-      }
+      // TODO: Put constants from those abstractions in here
+      public static final class SparkMax {}
+
+      public static final class TalonFX {}
 
       public static final class Hybrid {
         // These are for l2 Mk4i mods, should be L3 plus
@@ -256,16 +251,16 @@ public final class Constants {
         public static final int TURN3_ID = 1;
         public static final int CANCODER3_ID = 2;
         public static final double OFFSET3 = 0.0;
-
       }
-    } 
+    }
 
     public static final class OdoThread {
       public static final class Phoenix {
-        
+
         public static final int QUE_CAPACITY = 20;
         public static final double SLEEP_TIME = 1000.0;
       }
+
       public static final class SparkMax {
         public static final int QUE_CAPACITY = 20;
         public static final double PERIOD = 1.0;

@@ -18,10 +18,14 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 
     switch (Constants.currentMode) {
       case REAL:
-        io.configurePID(Constants.AmpBar.REAL_PID.kP, Constants.AmpBar.REAL_PID.kI, Constants.AmpBar.REAL_PID.kD);
+        io.configurePID(
+            Constants.AmpBar.REAL_PID.kP,
+            Constants.AmpBar.REAL_PID.kI,
+            Constants.AmpBar.REAL_PID.kD);
         break;
       case SIM:
-        io.configurePID(Constants.AmpBar.SIM_PID.kP, Constants.AmpBar.SIM_PID.kP, Constants.AmpBar.SIM_PID.kP);
+        io.configurePID(
+            Constants.AmpBar.SIM_PID.kP, Constants.AmpBar.SIM_PID.kP, Constants.AmpBar.SIM_PID.kP);
         break;
       case REPLAY:
         io.configurePID(0, 0, 0);
