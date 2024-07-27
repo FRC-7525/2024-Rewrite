@@ -1,0 +1,20 @@
+name: Find Misplaced Constants
+
+on:
+  pull_request:
+    - main
+  push:
+    - Constants-Checking
+
+jobs:
+  Find Misplaced Constants:
+    runs-on: ubuntu-latest
+    Steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+      - name: Run Python Script
+        run: python .github/scripts/constants.py
