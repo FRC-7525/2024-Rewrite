@@ -8,6 +8,8 @@ excused_files = ["Constants.java", "BuildConstants.java", "LocalADStarAK.java"]
 # List of directories to excuse, excldes drive bc we didnt make it
 excused_dirs = [
     "robot\subsystems\drive",
+    "robot/subsystem/drive",
+    "drive"
     "bin",
     "build"
 ]
