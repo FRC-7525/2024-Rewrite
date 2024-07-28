@@ -26,11 +26,15 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -134,11 +138,12 @@ public final class Constants {
   public static final class Drive {
     public static final double CONTROLLER_DEADBAND = 0.1;
 
-    /* Rotation and Translation Modifers
-    rm = rotation multiplier
-    tm = translation multipliers
-    aa = auto align
-    */
+    /*
+     * Rotation and Translation Modifers
+     * rm = rotation multiplier
+     * tm = translation multipliers
+     * aa = auto align
+     */
     public static final double REGULAR_RM = 1.0;
     public static final double REGULAR_TM = 1.0;
     public static final double SLOW_RM = 0.5;
@@ -159,36 +164,29 @@ public final class Constants {
 
     public static final double LOST_VISION_THRESHOLD = 0.5;
 
-    public static final AprilTagFieldLayout aprilTagFieldLayout =
-        AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
+        .loadAprilTagLayoutField();
 
-    // TODO: Take the correct values from 2024-Robot repo
-    public static final Transform3d frontCamToRobot =
-        new Transform3d(
-            new Translation3d(
-                Units.inchesToMeters(11.32), Units.inchesToMeters(7.08), Units.inchesToMeters(7.8)),
-            new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+    public static final Transform3d frontCamToRobot = new Transform3d(
+        new Translation3d(Units.inchesToMeters(-14.25), 0, Units.inchesToMeters(6)),
+        new Rotation3d(0, Units.degreesToRadians(-67), Units.degreesToRadians(180)));
 
-    public static final Transform3d sideCamToRobot =
-        new Transform3d(
-            new Translation3d(
-                Units.inchesToMeters(-12.01),
-                Units.inchesToMeters(11.65),
-                Units.inchesToMeters(10.58)),
-            new Rotation3d(
-                Units.degreesToRadians(180),
-                Units.degreesToRadians(-23.5),
-                Units.degreesToRadians(147)));
+    public static final Transform3d sideCamToRobot = new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(-7.19),
+            Units.inchesToMeters(11),
+            Units.inchesToMeters(15.25)),
+        new Rotation3d(
+            0,
+            Units.degreesToRadians(-20),
+            Units.degreesToRadians(90)));
 
-    public static final Matrix<N3, N1> highResSingleTagStdDev =
-        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+    public static final Matrix<N3, N1> highResSingleTagStdDev = VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
 
-    public static final Matrix<N3, N1> normalSingleTagStdDev =
-        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+    public static final Matrix<N3, N1> normalSingleTagStdDev = VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
 
     public static final Matrix<N3, N1> highResMultiTagStdDev = VecBuilder.fill(0.2, 0.2, 3);
 
-    public static final Matrix<N3, N1> normalMultiTagStdDev =
-        VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
+    public static final Matrix<N3, N1> normalMultiTagStdDev = VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
   }
 }
