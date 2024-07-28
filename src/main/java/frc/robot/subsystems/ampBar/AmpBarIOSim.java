@@ -27,7 +27,7 @@ public class AmpBarIOSim implements AmpBarIO {
             Constants.AmpBar.PIVOT_GEARING,
             Constants.AmpBar.PIVOT_MOI,
             Constants.AmpBar.PIVOT_LENGTH_METERS,
-            0,
+            Constants.AmpBar.MIN_PIVOT_POSITION,
             Constants.AmpBar.MAX_PIVOT_POSITION,
             false,
             0);

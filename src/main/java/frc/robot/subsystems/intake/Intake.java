@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.util.NoteSimulator;
@@ -52,7 +51,8 @@ public class Intake extends Subsystem<IntakeStates> {
 
     Logger.recordOutput(
         "Intake/Intake Pose",
-        new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, io.getPosition(), 0)));
+        new Pose3d(
+            Constants.Intake.ZEROED_PIVOT_TRANSLATION, new Rotation3d(0, io.getPosition(), 0)));
 
     Logger.processInputs("Intake", inputs);
     io.updateInputs(inputs);

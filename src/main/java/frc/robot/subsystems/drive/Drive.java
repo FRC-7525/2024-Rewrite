@@ -258,7 +258,7 @@ public class Drive extends Subsystem<DriveStates> {
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
-  
+
   public ChassisSpeeds getChassisSpeed() {
     ChassisSpeeds robotChassisSpeed = kinematics.toChassisSpeeds(getModuleStates());
     return robotChassisSpeed;

@@ -60,6 +60,8 @@ public final class Constants {
 
   public static final class Intake {
 
+    public static final Translation3d ZEROED_PIVOT_TRANSLATION = new Translation3d(0.31, 0, 0.24);
+
     // CAN IDs
     public static final int PIVOT_ID = 32;
     public static final int SPINNER_ID = 20;
@@ -121,6 +123,10 @@ public final class Constants {
   }
 
   public static final class AmpBar {
+
+    public static final Translation3d ZEROED_PIVOT_TRANSLATION =
+        new Translation3d(-0.317, 0, 0.525);
+
     public static final double ERROR_OF_MARGIN = 0.1;
 
     // PID
@@ -144,7 +150,8 @@ public final class Constants {
     public static final double PIVOT_GEARING = 0.05;
     public static final double PIVOT_MOI = 0.05;
     public static final double PIVOT_LENGTH_METERS = 0.378;
-    public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(114.1633329);
+    public static final double MIN_PIVOT_POSITION = -Units.degreesToRadians(114.163329);
+    public static final double MAX_PIVOT_POSITION = Units.degreesToRadians(0);
 
     // Pivot and Spinner Setpoints
 
@@ -154,8 +161,8 @@ public final class Constants {
     public static final double OFF = 0.0;
 
     // IN Rads (Pivot Setpoints)
-    public static final double OUT = Units.degreesToRadians(50.0);
-    public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
+    public static final double OUT = -Units.degreesToRadians(100.0);
+    public static final double FEEDING_POSITION = -Units.degreesToRadians(93.0);
     public static final double IN = Units.degreesToRadians(0.0);
   }
 

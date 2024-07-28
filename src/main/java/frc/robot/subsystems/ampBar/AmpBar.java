@@ -2,7 +2,6 @@ package frc.robot.subsystems.ampBar;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import org.littletonrobotics.junction.Logger;
@@ -51,7 +50,9 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 
     Logger.recordOutput(
         "Amp Bar/Amp Bar Pose3d",
-        new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, io.getPivotPosition(), 0)));
+        new Pose3d(
+            Constants.AmpBar.ZEROED_PIVOT_TRANSLATION,
+            new Rotation3d(0, io.getPivotPosition(), 0)));
     Logger.processInputs("Amp Bar", inputs);
     io.updateInput(inputs);
   }
