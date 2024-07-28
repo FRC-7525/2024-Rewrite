@@ -22,6 +22,8 @@ public class Manager extends Subsystem<ManagerStates> {
   public Manager() {
     super("Manager", ManagerStates.IDLE);
 
+    NoteSimulator.setDrive(driveSubsystem);
+
     switch (Constants.currentMode) {
       case REAL:
         intakeSubsystem = new Intake(new IntakeIOSparkMax());
@@ -146,5 +148,8 @@ public class Manager extends Subsystem<ManagerStates> {
   }
 
   @Override
-  protected void runState() {}
+  protected void runState() {
+    NoteSimulator.update();
+    NoteSimulator.logNoteInfo();
+  }
 }

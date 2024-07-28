@@ -13,14 +13,14 @@ import org.littletonrobotics.junction.Logger;
 public class NoteSimulator {
   private static Drive drive;
 
-  private static Pose3d currentFieldPose = new Pose3d();
-  private static Translation3d fieldVelocity = new Translation3d();
-  private static boolean inShooter = false;
-  private static List<Translation3d> noteTrajectory = new ArrayList<>();
-
-  public static void setDrive(Drive drivesystem) {
-    drive = drivesystem;
-  }
+    private static Pose3d currentFieldPose = new Pose3d();
+    private static Translation3d fieldVelocity = new Translation3d();
+    private static boolean inShooter = false;
+    private static List<Translation3d> noteTrajectory = new ArrayList<>();
+    
+    public static void setDrive(Drive drivesystem) {
+        drive = drivesystem;
+    }
 
   public static void attachToShooter() {
     inShooter = true;
@@ -47,8 +47,10 @@ public class NoteSimulator {
 
     fieldVelocity = new Translation3d(velocity, currentFieldPose.getRotation());
 
-    ChassisSpeeds robotVel = new ChassisSpeeds(0, 0, 0); // assumes robot is not moving
-    ChassisSpeeds fieldRel = ChassisSpeeds.fromRobotRelativeSpeeds(robotVel, drive.getRotation());
+        ChassisSpeeds robotVel = drive.getChassisSpeed();
+        ChassisSpeeds fieldRel =
+            ChassisSpeeds.fromRobotRelativeSpeeds(
+                robotVel, drive.getRotation());
 
     fieldVelocity =
         fieldVelocity.plus(
