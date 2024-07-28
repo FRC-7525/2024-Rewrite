@@ -7,56 +7,58 @@ import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends Subsystem<ShooterStates> {
-  private ShooterIO io;
-  private ManagerStates managerState;
-  ShooterIOInputsAutoLogged inputs;
 
-  public Shooter(ShooterIO io) {
-    super("Shooter", ShooterStates.OFF);
-    this.io = io;
-    inputs = new ShooterIOInputsAutoLogged();
+	private ShooterIO io;
+	private ManagerStates managerState;
+	ShooterIOInputsAutoLogged inputs;
 
-    switch (Constants.currentMode) {
-      case REAL:
-        io.configurePID(1.0, 0, 0);
-        break;
-      case REPLAY:
-        io.configurePID(1.0, 0.0, 0.0);
-        break;
-      case SIM:
-        io.configurePID(.35, 0.0, 0.0);
-        break;
-      default:
-        break;
-    }
-  }
+	public Shooter(ShooterIO io) {
+		super("Shooter", ShooterStates.OFF);
+		this.io = io;
+		inputs = new ShooterIOInputsAutoLogged();
 
-  @Override
-  protected void runState() {
-    io.setSpeed(getState().getMotorSpeedpoint());
+		switch (Constants.currentMode) {
+			case REAL:
+				io.configurePID(1.0, 0, 0);
+				break;
+			case REPLAY:
+				io.configurePID(1.0, 0.0, 0.0);
+				break;
+			case SIM:
+				io.configurePID(.35, 0.0, 0.0);
+				break;
+			default:
+				break;
+		}
+	}
 
-    if (managerState == ManagerStates.SHOOTING) {
-      NoteSimulator.launch(
-          io.getAverageSpeed() * Constants.Shooter.CIRCUMFRENCE_OF_SHOOTER_SPINNER);
-    }
-  }
+	@Override
+	protected void runState() {
+		io.setSpeed(getState().getMotorSpeedpoint());
 
-  public boolean nearSpeedPoint() {
-    return io.nearSpeedPoint();
-  }
+		if (managerState == ManagerStates.SHOOTING) {
+			NoteSimulator.launch(
+				io.getAverageSpeed() * Constants.Shooter.CIRCUMFRENCE_OF_SHOOTER_SPINNER
+			);
+		}
+	}
 
-  public void stop() {
-    io.stop();
-  }
+	public boolean nearSpeedPoint() {
+		return io.nearSpeedPoint();
+	}
 
-  @Override
-  public void periodic() {
-    super.periodic();
-    io.updateInputs(inputs);
-    Logger.processInputs("Shooter", inputs);
-  }
+	public void stop() {
+		io.stop();
+	}
 
-  public void setManagerState(ManagerStates state) {
-    managerState = state;
-  }
+	@Override
+	public void periodic() {
+		super.periodic();
+		io.updateInputs(inputs);
+		Logger.processInputs("Shooter", inputs);
+	}
+
+	public void setManagerState(ManagerStates state) {
+		managerState = state;
+	}
 }
