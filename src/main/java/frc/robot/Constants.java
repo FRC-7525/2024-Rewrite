@@ -18,9 +18,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-
 import edu.wpi.first.wpilibj.XboxController;
-
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -52,9 +50,9 @@ public final class Constants {
 
   public static final class Intake {
 
-	// CAN IDs
-	public static final int PIVOT_ID = 32;
-	public static final int SPINNER_ID = 20;
+    // CAN IDs
+    public static final int PIVOT_ID = 32;
+    public static final int SPINNER_ID = 20;
 
     // Sim Configs
 
@@ -71,7 +69,7 @@ public final class Constants {
 
     // In Rads (Pivot setpoints)
     public static final double DOWN = Units.degreesToRadians(180.0);
-	public static final double IN = Units.degreesToRadians(0.0);
+    public static final double IN = Units.degreesToRadians(0.0);
 
     // In RPS (Spinner Setpoints)
     public static final double REVERSE = -10.0;
@@ -94,7 +92,7 @@ public final class Constants {
     public static final double SHOOTER_GEARING = 1.5;
     public static final double SHOOTER_MOI = 0.004;
 
-    //spinner circumfrence need to check with mech
+    // spinner circumfrence need to check with mech
     public static final double CIRCUMFRENCE_OF_SHOOTER_SPINNER = 4;
   }
 
@@ -128,7 +126,7 @@ public final class Constants {
     // IN Rads (Pivot Setpoints)
     public static final double OUT = Units.degreesToRadians(50.0);
     public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
-	public static final double IN = Units.degreesToRadians(0.0);
+    public static final double IN = Units.degreesToRadians(0.0);
   }
 
   public static final class Drive {
@@ -148,17 +146,18 @@ public final class Constants {
     public static final double FAST_RM = 1.5;
     public static final double FAST_TM = 2.0;
   }
-  
-    public static final class NoteSim {
+
+  public static final class NoteSim {
     public static final double AIR_DENSITY = 1.225;
     public static final double DRAG_COEFFICIENT = 0.45;
     public static final double CROSSECTION_AREA = 0.11;
     public static final double MASS = 0.235;
 
     public static final Pose3d SHOOTER_POSE3D = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
-    public static final Translation2d FIELD_SIZE = new Translation2d(16.54, 8.21); //stolen from 3015 constants
+    public static final Translation2d FIELD_SIZE =
+        new Translation2d(16.54, 8.21); // stolen from 3015 constants
 
-    public static final double dt = 0.2; //change in time for note sim
+    public static final double dt = 0.2; // change in time for note sim
     public static final Translation3d GRAVITY_TRANSLATION3D = new Translation3d(0, 0, 9.8);
     public static final double OUT_OF_FIELD_MARGIN = .025;
   }

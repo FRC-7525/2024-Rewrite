@@ -111,9 +111,11 @@ public class Drive extends Subsystem<DriveStates> {
     // Apply deadband
     double linearMagnitude =
         MathUtil.applyDeadband(
-            Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), Constants.Drive.CONTROLLER_DEADBAND);
+            Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()),
+            Constants.Drive.CONTROLLER_DEADBAND);
     Rotation2d linearDirection = new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), Constants.Drive.CONTROLLER_DEADBAND);
+    double omega =
+        MathUtil.applyDeadband(omegaSupplier.getAsDouble(), Constants.Drive.CONTROLLER_DEADBAND);
 
     // Square values
     linearMagnitude = linearMagnitude * linearMagnitude;
