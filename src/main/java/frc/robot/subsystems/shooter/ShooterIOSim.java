@@ -55,4 +55,9 @@ public class ShooterIOSim implements ShooterIO {
     return Math.abs((sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF) - speedPoint)
         > Constants.Shooter.ERROR_OF_MARGIN;
   }
+
+  @Override
+  public double getAverageSpeed() {
+    return sim.getAngularVelocityRPM() / 60;
+  }
 }

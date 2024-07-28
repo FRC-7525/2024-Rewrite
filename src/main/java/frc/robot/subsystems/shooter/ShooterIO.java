@@ -24,4 +24,8 @@ public interface ShooterIO {
   public default boolean nearSpeedPoint() {
     return false;
   }
+
+  public default double getAverageSpeed() {
+    return 0.0;
+  }
 }

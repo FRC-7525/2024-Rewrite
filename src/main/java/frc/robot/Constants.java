@@ -14,6 +14,10 @@
 package frc.robot;
 
 import com.pathplanner.lib.util.PIDConstants;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.util.FFConstants;
@@ -110,6 +114,9 @@ public final class Constants {
     public static final int NUM_MOTORS = 2;
     public static final double SHOOTER_GEARING = 1.5;
     public static final double SHOOTER_MOI = 0.004;
+
+    // spinner circumfrence need to check with mech
+    public static final double CIRCUMFRENCE_OF_SHOOTER_SPINNER = 4;
   }
 
   public static final class AmpBar {
@@ -266,5 +273,20 @@ public final class Constants {
         public static final double PERIOD = 1.0;
       }
     }
+  }
+
+  public static final class NoteSim {
+    public static final double AIR_DENSITY = 1.225;
+    public static final double DRAG_COEFFICIENT = 0.45;
+    public static final double CROSSECTION_AREA = 0.11;
+    public static final double MASS = 0.235;
+
+    public static final Pose3d SHOOTER_POSE3D = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+    public static final Translation2d FIELD_SIZE =
+        new Translation2d(16.54, 8.21); // stolen from 3015 constants
+
+    public static final double dt = 0.2; // change in time for note sim
+    public static final Translation3d GRAVITY_TRANSLATION3D = new Translation3d(0, 0, 9.8);
+    public static final double OUT_OF_FIELD_MARGIN = .025;
   }
 }

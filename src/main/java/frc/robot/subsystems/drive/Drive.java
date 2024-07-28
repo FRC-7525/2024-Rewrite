@@ -258,6 +258,19 @@ public class Drive extends Subsystem<DriveStates> {
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
+  
+  public ChassisSpeeds getChassisSpeed() {
+    ChassisSpeeds robotChassisSpeed = kinematics.toChassisSpeeds(getModuleStates());
+    return robotChassisSpeed;
+  }
+
+  public double calculateVelocity() {
+    double robotSpeed =
+        Math.sqrt(
+            Math.pow(getChassisSpeed().vxMetersPerSecond, 2)
+                + Math.pow(getChassisSpeed().vyMetersPerSecond, 2));
+    return robotSpeed;
+  }
 
   /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
