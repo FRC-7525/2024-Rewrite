@@ -211,20 +211,20 @@ public class Drive extends Subsystem<DriveStates> {
       visionIO.updateInputs(visionInputs);
       Logger.processInputs("Drive/AprilTagVision", visionInputs);
 
+      // Bounds check the pose is actually on the field, Deleted bc I dont want it
+      // && Math.abs(visionInputs.visionPoses[j].getZ()) < 0.2
+      // && visionInputs.visionPoses[j].getX() > 0
+      // && visionInputs.visionPoses[j].getX() < 16.5
+      // && visionInputs.visionPoses[j].getY() > 0
+      // && visionInputs.visionPoses[j].getY() < 8.5
+      // && visionInputs.visionPoses[j].getRotation().getX() < 0.2
+      // && visionInputs.visionPoses[j].getRotation().getY() < 0.2)
+
       for (int j = 0; j < visionInputs.timestamps.length; j++) {
-        if ( // Bounds check the pose is actually on the field
-        visionInputs.timestamps[j] >= 1.0
-            && Math.abs(visionInputs.visionPoses[j].getZ()) < 0.2
-            && visionInputs.visionPoses[j].getX() > 0
-            && visionInputs.visionPoses[j].getX() < 16.5
-            && visionInputs.visionPoses[j].getY() > 0
-            && visionInputs.visionPoses[j].getY() < 8.5
-            && visionInputs.visionPoses[j].getRotation().getX() < 0.2
-            && visionInputs.visionPoses[j].getRotation().getY() < 0.2) {
+        if (visionInputs.timestamps[j] >= 1.0) {
           if (visionInputs.timestamps[j] > (Logger.getTimestamp() / 1.0e6)) {
             visionInputs.timestamps[j] = (Logger.getTimestamp() / 1.0e6) - visionInputs.latency[j];
           }
-
           Logger.recordOutput("Drive/AprilTagPose" + j, visionInputs.visionPoses[j].toPose2d());
           Logger.recordOutput(
               "Drive/AprilTagStdDevs" + j,

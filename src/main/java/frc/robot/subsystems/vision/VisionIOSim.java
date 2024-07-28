@@ -7,9 +7,9 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import java.util.Optional;
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -34,9 +34,15 @@ public class VisionIOSim implements VisionIO {
   private boolean hasFrontVision = false;
   private boolean hasSideVision = false;
 
+  // Hahahha you cant stop me from making more timers, I win
+  private Timer sideVisionTimer = new Timer();
+  private Timer frontVisionTimer = new Timer();
+
   public VisionIOSim() {
     PhotonCamera front = new PhotonCamera("front");
     PhotonCamera side = new PhotonCamera("side");
+    frontVisionTimer.start();
+    sideVisionTimer.start();
 
     frontPhotonPoseEstimator =
         new PhotonPoseEstimator(
@@ -108,10 +114,10 @@ public class VisionIOSim implements VisionIO {
           Matrix<N3, N1> stdDevs =
               getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
+          frontVisionTimer.reset();
         },
         () -> {
-          if (Math.abs(timestampArray[1] - Logger.getTimestamp())
-              < Constants.Vision.LOST_VISION_THRESHOLD) {
+          if (frontVisionTimer.get() > Constants.Vision.LOST_VISION_THRESHOLD) {
             hasFrontVision = false;
           }
         });
@@ -125,10 +131,10 @@ public class VisionIOSim implements VisionIO {
           Matrix<N3, N1> stdDevs =
               getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.NORMAL);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
+          sideVisionTimer.restart();
         },
         () -> {
-          if (Math.abs(timestampArray[1] - Logger.getTimestamp())
-              < Constants.Vision.LOST_VISION_THRESHOLD) {
+          if (sideVisionTimer.get() > Constants.Vision.LOST_VISION_THRESHOLD) {
             hasSideVision = false;
           }
         });
