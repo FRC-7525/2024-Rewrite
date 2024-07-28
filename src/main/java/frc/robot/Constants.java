@@ -37,6 +37,7 @@ public final class Constants {
   public static final double RADIAN_CF = (Math.PI * 2);
   public static final double RPM_TO_RPS_CF = 60;
   public static final double DIAM_TO_RADIUS_CF = 2.0;
+  public static final double AVG_TWO_ITEM_F = 2.0;
 
   public static final Mode currentMode = Mode.SIM;
 

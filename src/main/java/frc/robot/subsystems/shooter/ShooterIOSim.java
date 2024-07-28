@@ -58,6 +58,6 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public double getAverageSpeed() {
-    return sim.getAngularVelocityRPM() / 60;
+    return sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
   }
 }
