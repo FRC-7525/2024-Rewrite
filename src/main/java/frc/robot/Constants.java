@@ -124,7 +124,7 @@ public final class Constants {
     public static final double ERROR_OF_MARGIN = 0.1;
 
     // PID
-    public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
+    public static final PIDConstants SIM_PID = new PIDConstants(3, 0, 1.5);
     public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
 
     // Motor CAN IDs
