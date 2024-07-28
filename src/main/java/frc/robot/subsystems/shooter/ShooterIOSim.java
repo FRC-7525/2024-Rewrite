@@ -46,7 +46,7 @@ public class ShooterIOSim implements ShooterIO {
   @Override
   public void setSpeed(double rps) {
     speedPoint = rps;
-    appliedVolts = pid.calculate(sim.getAngularVelocityRPM()/60, rps);
+    appliedVolts = pid.calculate(sim.getAngularVelocityRPM() / 60, rps);
     sim.setInputVoltage(appliedVolts);
   }
 

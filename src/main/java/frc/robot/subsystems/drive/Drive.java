@@ -14,6 +14,7 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,6 +30,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
@@ -45,6 +49,7 @@ public class Drive extends Subsystem<DriveStates> {
 
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
+  private final VisionIO visionIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
@@ -60,16 +65,21 @@ public class Drive extends Subsystem<DriveStates> {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
+  private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
+  @AutoLogOutput public boolean useVision = true;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
-      ModuleIO brModuleIO) {
+      ModuleIO brModuleIO,
+      VisionIO visionIO) {
 
     super("Drive", DriveStates.REGULAR_DRIVE);
 
     this.gyroIO = gyroIO;
+    this.visionIO = visionIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
@@ -111,9 +121,11 @@ public class Drive extends Subsystem<DriveStates> {
     // Apply deadband
     double linearMagnitude =
         MathUtil.applyDeadband(
-            Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), Constants.Drive.CONTROLLER_DEADBAND);
+            Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()),
+            Constants.Drive.CONTROLLER_DEADBAND);
     Rotation2d linearDirection = new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), Constants.Drive.CONTROLLER_DEADBAND);
+    double omega =
+        MathUtil.applyDeadband(omegaSupplier.getAsDouble(), Constants.Drive.CONTROLLER_DEADBAND);
 
     // Square values
     linearMagnitude = linearMagnitude * linearMagnitude;
@@ -193,6 +205,46 @@ public class Drive extends Subsystem<DriveStates> {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+
+      // Vision jibberish (taken directly from Aembot 2024 repo)
+      visionIO.updatePose(getPose());
+      visionIO.updateInputs(visionInputs);
+      Logger.processInputs("Drive/AprilTagVision", visionInputs);
+
+      for (int j = 0; j < visionInputs.timestamps.length; j++) {
+        if ( // Bounds check the pose is actually on the field
+        visionInputs.timestamps[j] >= 1.0
+            && Math.abs(visionInputs.visionPoses[j].getZ()) < 0.2
+            && visionInputs.visionPoses[j].getX() > 0
+            && visionInputs.visionPoses[j].getX() < 16.5
+            && visionInputs.visionPoses[j].getY() > 0
+            && visionInputs.visionPoses[j].getY() < 8.5
+            && visionInputs.visionPoses[j].getRotation().getX() < 0.2
+            && visionInputs.visionPoses[j].getRotation().getY() < 0.2) {
+          if (visionInputs.timestamps[j] > (Logger.getTimestamp() / 1.0e6)) {
+            visionInputs.timestamps[j] = (Logger.getTimestamp() / 1.0e6) - visionInputs.latency[j];
+          }
+
+          Logger.recordOutput("Drive/AprilTagPose" + j, visionInputs.visionPoses[j].toPose2d());
+          Logger.recordOutput(
+              "Drive/AprilTagStdDevs" + j,
+              Arrays.copyOfRange(visionInputs.visionStdDevs, 3 * j, 3 * j + 3));
+          Logger.recordOutput("Drive/AprilTagTimestamps" + j, visionInputs.timestamps[j]);
+
+          if (useVision) {
+            poseEstimator.addVisionMeasurement(
+                visionInputs.visionPoses[j].toPose2d(),
+                visionInputs.timestamps[j],
+                VecBuilder.fill(
+                    visionInputs.visionStdDevs[3 * j],
+                    visionInputs.visionStdDevs[3 * j + 1],
+                    visionInputs.visionStdDevs[3 * j + 2]));
+          }
+        } else {
+          Logger.recordOutput("Drive/AprilTagPose" + j, new Pose2d());
+          Logger.recordOutput("Drive/AprilTagStdDevs" + j, new double[] {0.0, 0.0, 0.0});
+        }
+      }
     }
   }
 

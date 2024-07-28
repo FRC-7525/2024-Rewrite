@@ -11,6 +11,8 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOSim;
 
 public class Manager extends Subsystem<ManagerStates> {
   Intake intakeSubsystem;
@@ -32,7 +34,8 @@ public class Manager extends Subsystem<ManagerStates> {
                 new ModuleIOSparkMax(0),
                 new ModuleIOSparkMax(1),
                 new ModuleIOSparkMax(2),
-                new ModuleIOSparkMax(3));
+                new ModuleIOSparkMax(3),
+                new VisionIOSim());
         break;
       case REPLAY:
         intakeSubsystem = new Intake(new IntakeIO() {});
@@ -44,7 +47,8 @@ public class Manager extends Subsystem<ManagerStates> {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {});
+                new ModuleIO() {},
+                new VisionIO() {});
         break;
       case SIM:
         intakeSubsystem = new Intake(new IntakeIOSim());
@@ -56,7 +60,8 @@ public class Manager extends Subsystem<ManagerStates> {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
-                new ModuleIOSim());
+                new ModuleIOSim(),
+                new VisionIOSim());
 
         break;
       default:
@@ -129,10 +134,10 @@ public class Manager extends Subsystem<ManagerStates> {
     shooterSubsystem.periodic();
     driveSubsystem.periodic();
 
-	// Cancel all actions regardless of whats happening
-	if (Constants.operatorController.getXButtonPressed()) {
-		setState(ManagerStates.IDLE);
-	}
+    // Cancel all actions regardless of whats happening
+    if (Constants.operatorController.getXButtonPressed()) {
+      setState(ManagerStates.IDLE);
+    }
   }
 
   public void stop() {

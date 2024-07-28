@@ -13,6 +13,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -46,9 +55,9 @@ public final class Constants {
 
   public static final class Intake {
 
-	// CAN IDs
-	public static final int PIVOT_ID = 32;
-	public static final int SPINNER_ID = 20;
+    // CAN IDs
+    public static final int PIVOT_ID = 32;
+    public static final int SPINNER_ID = 20;
 
     // Sim Configs
 
@@ -65,7 +74,7 @@ public final class Constants {
 
     // In Rads (Pivot setpoints)
     public static final double DOWN = Units.degreesToRadians(180.0);
-	public static final double IN = Units.degreesToRadians(0.0);
+    public static final double IN = Units.degreesToRadians(0.0);
 
     // In RPS (Spinner Setpoints)
     public static final double REVERSE = -10.0;
@@ -119,7 +128,7 @@ public final class Constants {
     // IN Rads (Pivot Setpoints)
     public static final double OUT = Units.degreesToRadians(50.0);
     public static final double FEEDING_POSITION = Units.degreesToRadians(45.0);
-	public static final double IN = Units.degreesToRadians(0.0);
+    public static final double IN = Units.degreesToRadians(0.0);
   }
 
   public static final class Drive {
@@ -138,5 +147,48 @@ public final class Constants {
     public static final double AA_TM = 0.8;
     public static final double FAST_RM = 1.5;
     public static final double FAST_TM = 2.0;
+  }
+
+  public static final class Vision {
+    // Stolen from Aembots vision
+
+    public static enum CameraResolution {
+      HIGH_RES,
+      NORMAL
+    }
+
+    public static final double LOST_VISION_THRESHOLD = 0.5;
+
+    public static final AprilTagFieldLayout aprilTagFieldLayout =
+        AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+    // TODO: Take the correct values from 2024-Robot repo
+    public static final Transform3d frontCamToRobot =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(11.32), Units.inchesToMeters(7.08), Units.inchesToMeters(7.8)),
+            new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+
+    public static final Transform3d sideCamToRobot =
+        new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(-12.01),
+                Units.inchesToMeters(11.65),
+                Units.inchesToMeters(10.58)),
+            new Rotation3d(
+                Units.degreesToRadians(180),
+                Units.degreesToRadians(-23.5),
+                Units.degreesToRadians(147)));
+
+    public static final Matrix<N3, N1> highResSingleTagStdDev =
+        VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+
+    public static final Matrix<N3, N1> normalSingleTagStdDev =
+        VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+
+    public static final Matrix<N3, N1> highResMultiTagStdDev = VecBuilder.fill(0.2, 0.2, 3);
+
+    public static final Matrix<N3, N1> normalMultiTagStdDev =
+        VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
   }
 }
