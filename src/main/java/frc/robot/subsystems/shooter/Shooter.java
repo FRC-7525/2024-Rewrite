@@ -2,11 +2,14 @@ package frc.robot.subsystems.shooter;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.manager.ManagerStates;
+import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends Subsystem<ShooterStates> {
 
   private ShooterIO io;
+  private ManagerStates managerState;
   ShooterIOInputsAutoLogged inputs;
 
   public Shooter(ShooterIO io) {
@@ -22,7 +25,7 @@ public class Shooter extends Subsystem<ShooterStates> {
         io.configurePID(1.0, 0.0, 0.0);
         break;
       case SIM:
-        io.configurePID(1.0, 0.0, 0.0);
+        io.configurePID(.35, 0.0, 0.0);
         break;
       default:
         break;
@@ -32,6 +35,11 @@ public class Shooter extends Subsystem<ShooterStates> {
   @Override
   protected void runState() {
     io.setSpeed(getState().getMotorSpeedpoint());
+
+    if (managerState == ManagerStates.SHOOTING) {
+      NoteSimulator.launch(
+          io.getAverageSpeed() * Constants.Shooter.CIRCUMFRENCE_OF_SHOOTER_SPINNER);
+    }
   }
 
   public boolean nearSpeedPoint() {
@@ -47,5 +55,9 @@ public class Shooter extends Subsystem<ShooterStates> {
     super.periodic();
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
+  }
+
+  public void setManagerState(ManagerStates state) {
+    managerState = state;
   }
 }

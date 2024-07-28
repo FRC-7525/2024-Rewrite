@@ -11,6 +11,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
+import frc.robot.util.NoteSimulator;
 
 public class Manager extends Subsystem<ManagerStates> {
   Intake intakeSubsystem;
@@ -20,6 +21,8 @@ public class Manager extends Subsystem<ManagerStates> {
 
   public Manager() {
     super("Manager", ManagerStates.IDLE);
+
+    NoteSimulator.setDrive(driveSubsystem);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -57,11 +60,12 @@ public class Manager extends Subsystem<ManagerStates> {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-
         break;
       default:
         break;
     }
+
+    NoteSimulator.setDrive(driveSubsystem);
 
     // State Transitions (Nothing Automatic YET)
 
@@ -123,16 +127,17 @@ public class Manager extends Subsystem<ManagerStates> {
     intakeSubsystem.setState(getState().getIntakeState());
     ampBarSubsystem.setState(getState().getAmpBarState());
     shooterSubsystem.setState(getState().getShooterState());
+    shooterSubsystem.setManagerState(getState());
 
     intakeSubsystem.periodic();
     ampBarSubsystem.periodic();
     shooterSubsystem.periodic();
     driveSubsystem.periodic();
 
-	// Cancel all actions regardless of whats happening
-	if (Constants.operatorController.getXButtonPressed()) {
-		setState(ManagerStates.IDLE);
-	}
+    // Cancel all actions regardless of whats happening
+    if (Constants.operatorController.getXButtonPressed()) {
+      setState(ManagerStates.IDLE);
+    }
   }
 
   public void stop() {
@@ -143,5 +148,8 @@ public class Manager extends Subsystem<ManagerStates> {
   }
 
   @Override
-  protected void runState() {}
+  protected void runState() {
+    NoteSimulator.update();
+    NoteSimulator.logNoteInfo();
+  }
 }

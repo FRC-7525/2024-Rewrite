@@ -58,4 +58,11 @@ public class ShooterIOTalonFX implements ShooterIO {
         && Math.abs(speedPoint - rightMotor.getVelocity().getValueAsDouble())
             < Constants.Shooter.ERROR_OF_MARGIN;
   }
+
+  @Override
+  public double getAverageSpeed() {
+    return (leftMotor.getVelocity().getValueAsDouble()
+            + rightMotor.getVelocity().getValueAsDouble())
+        / 2;
+  }
 }

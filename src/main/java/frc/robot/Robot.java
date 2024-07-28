@@ -14,6 +14,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.manager.*;
+import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -90,6 +91,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     managerSubsystem.periodic();
+
+    // Logs note sim logging and updating sims
+    NoteSimulator.update();
+    NoteSimulator.logNoteInfo();
   }
 
   /** This function is called once when the robot is disabled. */
@@ -112,8 +117,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {
-  }
+  public void teleopInit() {}
 
   /** This function is called periodically during operator control. */
   @Override
@@ -121,8 +125,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {
-  }
+  public void testInit() {}
 
   /** This function is called periodically during test mode. */
   @Override
