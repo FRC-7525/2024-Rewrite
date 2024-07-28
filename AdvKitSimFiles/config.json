@@ -1,0 +1,70 @@
+{
+    "name": "Brysala",
+    "sourceUrl": "https://cad.onshape.com/documents/2ad45fd2d07b25004d4a1b69/w/43e98844b0278e0c2f1d182a/e/f5d325306461f68e6a7bb5c5?renderMode=0&uiState=6674cc65b74237201daf6380",
+    "rotations": [
+      {
+        "axis": "x",
+        "degrees": 90
+      },
+      {
+        "axis": "y",
+        "degrees": 0
+      },
+      {
+        "axis": "z",
+        "degrees": 90
+      }
+    ],
+    "position": [
+      0,
+      0,
+      0.045
+    ],
+    "cameras": [
+
+    ],
+    "components": [
+      {
+        "zeroedRotations": [
+          {
+            "axis": "x",
+            "degrees": 90
+          },
+          {
+            "axis": "z",
+            "degrees": 90
+          },
+          {
+            "axis": "y",
+            "degrees": 0
+          }     
+        ],
+        "zeroedPosition": [
+          -0.31,
+          0,
+          -0.195
+        ]
+      },
+      {
+        "zeroedRotations": [
+          {
+            "axis": "x",
+            "degrees": 90
+          },
+          {
+            "axis": "z",
+            "degrees": 90
+          },
+          {
+            "axis": "y",
+            "degrees": 0
+          }     
+        ],
+        "zeroedPosition": [
+          0.317,
+          0.0,
+          -0.48
+        ]
+      }
+    ]
+  }
