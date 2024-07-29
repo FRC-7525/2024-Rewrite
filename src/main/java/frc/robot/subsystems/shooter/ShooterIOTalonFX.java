@@ -63,6 +63,6 @@ public class ShooterIOTalonFX implements ShooterIO {
   public double getAverageSpeed() {
     return (leftMotor.getVelocity().getValueAsDouble()
             + rightMotor.getVelocity().getValueAsDouble())
-        / 2;
+        / Constants.AVG_TWO_ITEM_F;
   }
 }

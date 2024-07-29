@@ -17,6 +17,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.ParentDevice;
+import frc.robot.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -63,7 +64,7 @@ public class PhoenixOdometryThread extends Thread {
   }
 
   public Queue<Double> registerSignal(ParentDevice device, StatusSignal<Double> signal) {
-    Queue<Double> queue = new ArrayBlockingQueue<>(20);
+    Queue<Double> queue = new ArrayBlockingQueue<>(Constants.Drive.OdoThread.Phoenix.QUE_CAPACITY);
     signalsLock.lock();
     Drive.odometryLock.lock();
     try {
@@ -81,7 +82,7 @@ public class PhoenixOdometryThread extends Thread {
   }
 
   public Queue<Double> makeTimestampQueue() {
-    Queue<Double> queue = new ArrayBlockingQueue<>(20);
+    Queue<Double> queue = new ArrayBlockingQueue<>(Constants.Drive.OdoThread.Phoenix.QUE_CAPACITY);
     Drive.odometryLock.lock();
     try {
       timestampQueues.add(queue);
@@ -98,13 +99,16 @@ public class PhoenixOdometryThread extends Thread {
       signalsLock.lock();
       try {
         if (isCANFD) {
-          BaseStatusSignal.waitForAll(2.0 / Module.ODOMETRY_FREQUENCY, signals);
+          BaseStatusSignal.waitForAll(2.0 / Constants.Drive.Module.ODOMETRY_FREQUENCY, signals);
         } else {
           // "waitForAll" does not support blocking on multiple
           // signals with a bus that is not CAN FD, regardless
           // of Pro licensing. No reasoning for this behavior
           // is provided by the documentation.
-          Thread.sleep((long) (1000.0 / Module.ODOMETRY_FREQUENCY));
+          Thread.sleep(
+              (long)
+                  (Constants.Drive.OdoThread.Phoenix.SLEEP_TIME
+                      / Constants.Drive.Module.ODOMETRY_FREQUENCY));
           if (signals.length > 0) BaseStatusSignal.refreshAll(signals);
         }
       } catch (InterruptedException e) {
