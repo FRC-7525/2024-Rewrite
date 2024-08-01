@@ -13,7 +13,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -152,6 +155,33 @@ public final class Constants {
     public static final double AA_TM = 0.8;
     public static final double FAST_RM = 1.5;
     public static final double FAST_TM = 2.0;
+  }
+
+  public static final class AutoAlign {
+    public static final PIDController X_VELOCITY_CONTROLLER = new PIDController(3, 0, 0);
+    public static final PIDController Y_VELOCITY_CONTROLLER = new PIDController(3, 0, 0);
+    public static final PIDController ROTATIONAL_VELOCITY_CONTROLLER = new PIDController(5, 0, 0);
+
+    public static final Pose2d redAmpSpeakerPose =
+        new Pose2d(15.59, 6.644, new Rotation2d(Math.toRadians(120.5)));
+    public static final Pose2d blueAmpSpeakerPose =
+        new Pose2d(0.909, 6.644, new Rotation2d(Math.toRadians(55.5)));
+    public static final Pose2d redSourceSpeakerPose =
+        new Pose2d(15.636, 4.39, new Rotation2d(Math.toRadians(-122.5)));
+    public static final Pose2d blueSourceSpeakerPose =
+        new Pose2d(0.864, 4.39, new Rotation2d(Math.toRadians(-62.5)));
+    public static final Pose2d redAmpPose =
+        new Pose2d(14.7, 7.72, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d blueAmpPose =
+        new Pose2d(1.85, 7.72, new Rotation2d(Math.toRadians(-90)));
+
+    public static final Pose2d blueSpeakerPose =
+        new Pose2d(1.45, 5.50, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d redSpeakerPose =
+        new Pose2d(15.1, 5.50, new Rotation2d(Math.toRadians(180)));
+
+    public static final double TRANSLATION_ERROR_MARGIN = 0.4;
+    public static final double ROTATION_ERROR_MARGIN = 0.4;
   }
 
   public static final class NoteSim {

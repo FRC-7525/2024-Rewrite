@@ -92,13 +92,19 @@ public class Drive extends Subsystem<DriveStates> {
 
   @Override
   public void runState() {
-    drive(
-        this,
-        () -> Constants.controller.getLeftY(),
-        () -> Constants.controller.getLeftX(),
-        () -> -Constants.controller.getRightX(),
-        getState().getRotationModifier(),
-        getState().getTranslationModifier());
+    Logger.recordOutput("drive State", getState());
+    AutoAlign.periodic();
+    if (getState() == DriveStates.AUTO_ALIGN) {
+      AutoAlign.calculateChassisSpeed();
+    } else {
+      drive(
+          this,
+          () -> Constants.controller.getLeftY(),
+          () -> Constants.controller.getLeftX(),
+          () -> -Constants.controller.getRightX(),
+          getState().getRotationModifier(),
+          getState().getTranslationModifier());
+    }
   }
 
   public void drive(

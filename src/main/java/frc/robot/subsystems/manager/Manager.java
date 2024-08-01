@@ -3,6 +3,7 @@ package frc.robot.subsystems.manager;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.ampBar.*;
+import frc.robot.subsystems.drive.AutoAlign;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -66,6 +67,7 @@ public class Manager extends Subsystem<ManagerStates> {
     }
 
     NoteSimulator.setDrive(driveSubsystem);
+    AutoAlign.setDrive(driveSubsystem);
 
     // State Transitions (Nothing Automatic YET)
 
