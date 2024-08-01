@@ -72,6 +72,8 @@ public class AutoAlign {
               ? Constants.AutoAlign.redAmpSpeakerPose
               : Constants.AutoAlign.blueSourceSpeakerPose);
       drive.setState(DriveStates.AUTO_ALIGN);
+    } else if (Constants.operatorController.getXButton()) {
+      drive.setState(DriveStates.REGULAR_DRIVE);
     }
   }
 }
