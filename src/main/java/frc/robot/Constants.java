@@ -14,6 +14,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.util.PIDConstants;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -185,6 +187,10 @@ public final class Constants {
     public static final double AA_TM = 0.8;
     public static final double FAST_RM = 1.5;
     public static final double FAST_TM = 2.0;
+
+    //Auto Config
+    public static final PIDConstants translationPID = new PIDConstants(5.0, 0.0, 0.0);
+    public static final PIDConstants rotationPID = new PIDConstants(5.0, 0.0, 0.0);
 
     // Configs
     public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
