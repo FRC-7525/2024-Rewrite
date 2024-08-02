@@ -26,6 +26,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
@@ -34,11 +36,20 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends Subsystem<DriveStates> {
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[Constants.Drive.NUM_MODULES]; // FL, FR, BL, BR
+
+  private DriveStates state;
+  private String subsystemName;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -59,7 +70,8 @@ public class Drive extends Subsystem<DriveStates> {
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
 
-    super("Drive", DriveStates.REGULAR_DRIVE);
+    subsystemName = "Drive";
+    state = DriveStates.REGULAR_DRIVE;
 
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
@@ -71,18 +83,9 @@ public class Drive extends Subsystem<DriveStates> {
     PhoenixOdometryThread.getInstance().start();
     SparkMaxOdometryThread.getInstance().start();
 
-    // Triggers
-    addTrigger(
-        DriveStates.REGULAR_DRIVE,
-        DriveStates.SLOW_MODE,
-        () -> Constants.controller.getRightBumper());
-    addTrigger(
-        DriveStates.REGULAR_DRIVE,
-        DriveStates.SPEED_MAXXING,
-        () -> Constants.controller.getLeftBumper());
+    pathPlannerInit();
   }
 
-  @Override
   public void runState() {
     drive(
         this,
@@ -92,6 +95,15 @@ public class Drive extends Subsystem<DriveStates> {
         getState().getRotationModifier(),
         getState().getTranslationModifier());
   }
+
+  public DriveStates getState() {
+    return state;
+  }
+
+  public void setState(DriveStates state) {
+    this.state = state;
+  }
+
 
   public void drive(
       Drive drive,
@@ -188,6 +200,12 @@ public class Drive extends Subsystem<DriveStates> {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+    }
+
+    if (Constants.controller.getRightBumper() && getState() == DriveStates.REGULAR_DRIVE) {
+      setState(DriveStates.SLOW_MODE);
+    } else if (Constants.controller.getLeftBumper() && getState() == DriveStates.REGULAR_DRIVE) {
+      setState(DriveStates.SPEED_MAXXING);
     }
   }
 
@@ -318,5 +336,33 @@ public class Drive extends Subsystem<DriveStates> {
           -Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
           -Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF)
     };
+  }
+
+  public void pathPlannerInit() {
+    AutoBuilder.configureHolonomic(
+      this::getPose, // Robot pose supplier
+      this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+      new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+              Constants.Drive.MAX_LINEAR_SPEED, // Max module speed, in m/s
+              Constants.Drive.DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to furthest module.
+              new ReplanningConfig() // Default path replanning config. See the API for the options here
+      ),
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this // Reference to this subsystem to set requirements
+    );
   }
 }
