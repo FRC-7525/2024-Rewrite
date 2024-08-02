@@ -191,6 +191,7 @@ public final class Constants {
     //Auto Config
     public static final PIDConstants translationPID = new PIDConstants(5.0, 0.0, 0.0);
     public static final PIDConstants rotationPID = new PIDConstants(5.0, 0.0, 0.0);
+    public static final double maxModuleSpeed = 6.0;
 
     // Configs
     public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);

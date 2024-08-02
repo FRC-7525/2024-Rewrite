@@ -15,6 +15,9 @@ package frc.robot;
 
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
+
+import java.time.Instant;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -26,8 +29,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -52,6 +58,8 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    NamedCommands.registerCommand("Example Command", Commands.sequence(new InstantCommand(managerSubsystem::intaking)));
+
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -133,6 +141,7 @@ public class Robot extends LoggedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
+      m_autonomousCommand.andThen(NamedCommands.getCommand("Example Command"));
       m_autonomousCommand.schedule();
     }
   }

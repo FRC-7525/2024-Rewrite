@@ -206,6 +206,8 @@ public class Drive extends SubsystemBase {
       setState(DriveStates.SLOW_MODE);
     } else if (Constants.controller.getLeftBumper() && getState() == DriveStates.REGULAR_DRIVE) {
       setState(DriveStates.SPEED_MAXXING);
+    } else if (!Constants.controller.getRightBumper() && !Constants.controller.getLeftBumper()) {
+      setState(DriveStates.REGULAR_DRIVE);
     }
   }
 
@@ -347,7 +349,7 @@ public class Drive extends SubsystemBase {
       new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
               Constants.Drive.translationPID, // Translation PID constants
               Constants.Drive.rotationPID, // Rotation PID constants
-              Constants.Drive.MAX_LINEAR_SPEED, // Max module speed, in m/s
+              Constants.Drive.maxModuleSpeed, // Max module speed, in m/s
               Constants.Drive.DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to furthest module.
               new ReplanningConfig() // Default path replanning config. See the API for the options here
       ),
