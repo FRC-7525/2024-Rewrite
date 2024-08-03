@@ -7,35 +7,42 @@ import frc.robot.Robot;
 import frc.robot.subsystems.manager.ManagerStates;
 
 public class AutoCommands {
-  Robot robot = null;
 
-  public AutoCommands(Robot robot) {
-    this.robot = robot;
-  }
+	Robot robot = null;
 
-  public Command intaking() {
-    return Commands.sequence(
-        new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.INTAKING)));
-  }
+	public AutoCommands(Robot robot) {
+		this.robot = robot;
+	}
 
-  public Command shooting() {
-    return Commands.sequence(
-        new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SHOOTING)));
-  }
+	public Command intaking() {
+		return Commands.sequence(
+			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.INTAKING))
+		);
+	}
 
-  public Command returnToIdle() {
-    return Commands.sequence(
-        new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.IDLE)));
-  }
+	public Command shooting() {
+		return Commands.sequence(
+			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SHOOTING))
+		);
+	}
 
-  public Command startSpinningUp() {
-    return Commands.sequence(
-        new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SPINNING_UP)));
-  }
+	public Command returnToIdle() {
+		return Commands.sequence(
+			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.IDLE))
+		);
+	}
 
-  public Command spinAndIntake() {
-    return Commands.sequence(
-        new InstantCommand(
-            () -> robot.managerSubsystem.setState(ManagerStates.SPINNING_AND_INTAKING)));
-  }
+	public Command startSpinningUp() {
+		return Commands.sequence(
+			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SPINNING_UP))
+		);
+	}
+
+	public Command spinAndIntake() {
+		return Commands.sequence(
+			new InstantCommand(() ->
+				robot.managerSubsystem.setState(ManagerStates.SPINNING_AND_INTAKING)
+			)
+		);
+	}
 }
