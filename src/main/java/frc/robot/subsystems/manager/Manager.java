@@ -152,8 +152,4 @@ public class Manager extends Subsystem<ManagerStates> {
     NoteSimulator.update();
     NoteSimulator.logNoteInfo();
   }
-
-  public void intaking() {
-    setState(ManagerStates.INTAKING);
-  }
 }
