@@ -186,6 +186,11 @@ public final class Constants {
     public static final double FAST_RM = 1.5;
     public static final double FAST_TM = 2.0;
 
+    // Auto Config
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(5.0, 0.0, 0.0);
+    public static final PIDConstants ROTATION_PID = new PIDConstants(5.0, 0.0, 0.0);
+    public static final double MAX_MODULE_SPEED = 6.0;
+
     // Configs
     public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
     public static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);

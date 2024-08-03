@@ -9,6 +9,8 @@ public enum ManagerStates implements SubsystemStates {
   IDLE("Idle", IntakeStates.OFF, AmpBarStates.OFF, ShooterStates.OFF),
   INTAKING("Intaking", IntakeStates.INTAKING, AmpBarStates.OFF, ShooterStates.OFF),
   SPINNING_UP("Spinning Up", IntakeStates.OFF, AmpBarStates.OFF, ShooterStates.SHOOTING),
+  SPINNING_AND_INTAKING(
+      "Spin and Intake", IntakeStates.INTAKING, AmpBarStates.OFF, ShooterStates.SHOOTING),
   SHOOTING("Shooting", IntakeStates.FEEDING, AmpBarStates.OFF, ShooterStates.SHOOTING),
   FEED_AMP("Feed Amp", IntakeStates.FEEDING, AmpBarStates.FEEDING, ShooterStates.PASSING_AMP),
   SCORE_AMP("Score Amp", IntakeStates.OFF, AmpBarStates.SHOOTING, ShooterStates.OFF);

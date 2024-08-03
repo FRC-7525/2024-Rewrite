@@ -13,6 +13,13 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.AutoCommands;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -30,7 +37,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  */
 public class Robot extends LoggedRobot {
 
-  private Manager managerSubsystem;
+  public Manager managerSubsystem;
+  private SendableChooser<Command> autoChooser;
+
+  private AutoCommands autoCommands = new AutoCommands(this);
+
+  private Command autonomousCommand;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -38,6 +50,14 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    managerSubsystem = new Manager();
+
+    NamedCommands.registerCommand("Intaking", autoCommands.intaking());
+    NamedCommands.registerCommand("Shooting", autoCommands.shooting());
+    NamedCommands.registerCommand("Return To Idle", autoCommands.returnToIdle());
+    NamedCommands.registerCommand("Speeding Up", autoCommands.startSpinningUp());
+    NamedCommands.registerCommand("Spin and Intake", autoCommands.spinAndIntake());
+
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -84,7 +104,8 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
 
-    managerSubsystem = new Manager();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /** This function is called periodically during all modes. */
@@ -95,6 +116,8 @@ public class Robot extends LoggedRobot {
     // Logs note sim logging and updating sims
     NoteSimulator.update();
     NoteSimulator.logNoteInfo();
+
+    CommandScheduler.getInstance().run();
   }
 
   /** This function is called once when the robot is disabled. */
@@ -109,7 +132,14 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once the robot enters Auto. */
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    autonomousCommand = getAutonomousCommand();
+
+    // schedule the autonomous command (example)
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
+    }
+  }
 
   /** This function is called periodically during autonomous. */
   @Override
@@ -117,7 +147,11 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
+    }
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -138,4 +172,8 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+  }
 }
