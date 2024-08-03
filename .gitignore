@@ -4,6 +4,8 @@
 # Node Modules
 node_modules/
 
+settings.json
+
 ### C++ ###
 # Prerequisites
 *.d
