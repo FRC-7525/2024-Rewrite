@@ -11,99 +11,111 @@ import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public class NoteSimulator {
-  private static Drive drive;
 
-  private static Pose3d currentFieldPose = new Pose3d();
-  private static Translation3d fieldVelocity = new Translation3d();
-  private static boolean inShooter = false;
-  private static List<Translation3d> noteTrajectory = new ArrayList<>();
+	private static Drive drive;
 
-  public static void setDrive(Drive drivesystem) {
-    drive = drivesystem;
-  }
+	private static Pose3d currentFieldPose = new Pose3d();
+	private static Translation3d fieldVelocity = new Translation3d();
+	private static boolean inShooter = false;
+	private static List<Translation3d> noteTrajectory = new ArrayList<>();
 
-  public static void attachToShooter() {
-    inShooter = true;
-    noteTrajectory.clear();
-  }
+	public static void setDrive(Drive drivesystem) {
+		drive = drivesystem;
+	}
 
-  public static boolean isAttached() {
-    return inShooter;
-  }
+	public static void attachToShooter() {
+		inShooter = true;
+		noteTrajectory.clear();
+	}
 
-  public static List<Translation3d> getNoteTrajectory() {
-    return noteTrajectory;
-  }
+	public static boolean isAttached() {
+		return inShooter;
+	}
 
-  public static void launch(double velocity) {
-    if (!inShooter) {
-      return;
-    }
+	public static List<Translation3d> getNoteTrajectory() {
+		return noteTrajectory;
+	}
 
-    Logger.recordOutput("Launch Velocity", velocity);
+	public static void launch(double velocity) {
+		if (!inShooter) {
+			return;
+		}
 
-    currentFieldPose = getFieldPose(Constants.NoteSim.SHOOTER_POSE3D);
-    inShooter = false;
+		Logger.recordOutput("Launch Velocity", velocity);
 
-    fieldVelocity = new Translation3d(velocity, currentFieldPose.getRotation());
+		currentFieldPose = getFieldPose(Constants.NoteSim.SHOOTER_POSE3D);
+		inShooter = false;
 
-    ChassisSpeeds robotVel = drive.getChassisSpeed();
-    ChassisSpeeds fieldRel = ChassisSpeeds.fromRobotRelativeSpeeds(robotVel, drive.getRotation());
+		fieldVelocity = new Translation3d(velocity, currentFieldPose.getRotation());
 
-    fieldVelocity =
-        fieldVelocity.plus(
-            new Translation3d(fieldRel.vxMetersPerSecond, fieldRel.vyMetersPerSecond, 0.0));
-  }
+		ChassisSpeeds robotVel = drive.getChassisSpeed();
+		ChassisSpeeds fieldRel = ChassisSpeeds.fromRobotRelativeSpeeds(
+			robotVel,
+			drive.getRotation()
+		);
 
-  public static Pose3d getFieldPose(Pose3d shooterPose) {
-    if (inShooter) {
-      return new Pose3d(drive.getPose())
-          .transformBy(new Transform3d(shooterPose.getTranslation(), shooterPose.getRotation()));
-    }
+		fieldVelocity = fieldVelocity.plus(
+			new Translation3d(fieldRel.vxMetersPerSecond, fieldRel.vyMetersPerSecond, 0.0)
+		);
+	}
 
-    return currentFieldPose;
-  }
+	public static Pose3d getFieldPose(Pose3d shooterPose) {
+		if (inShooter) {
+			return new Pose3d(drive.getPose()).transformBy(
+				new Transform3d(shooterPose.getTranslation(), shooterPose.getRotation())
+			);
+		}
 
-  public static void update() {
-    if (inShooter) {
-      return;
-    }
+		return currentFieldPose;
+	}
 
-    Translation3d posDelta = fieldVelocity.times(Constants.NoteSim.dt);
+	public static void update() {
+		if (inShooter) {
+			return;
+		}
 
-    currentFieldPose =
-        new Pose3d(
-            currentFieldPose.getTranslation().plus(posDelta), currentFieldPose.getRotation());
+		Translation3d posDelta = fieldVelocity.times(Constants.NoteSim.dt);
 
-    if (currentFieldPose.getX() <= -Constants.NoteSim.OUT_OF_FIELD_MARGIN
-        || currentFieldPose.getX()
-            >= Constants.NoteSim.FIELD_SIZE.getX() + Constants.NoteSim.OUT_OF_FIELD_MARGIN
-        || currentFieldPose.getY() <= -Constants.NoteSim.OUT_OF_FIELD_MARGIN
-        || currentFieldPose.getY()
-            >= Constants.NoteSim.FIELD_SIZE.getY() + Constants.NoteSim.OUT_OF_FIELD_MARGIN
-        || currentFieldPose.getZ() <= 0.0) {
-      fieldVelocity = new Translation3d();
-    } else {
-      fieldVelocity =
-          fieldVelocity.minus(Constants.NoteSim.GRAVITY_TRANSLATION3D.times(Constants.NoteSim.dt));
-      double norm = fieldVelocity.getNorm();
+		currentFieldPose = new Pose3d(
+			currentFieldPose.getTranslation().plus(posDelta),
+			currentFieldPose.getRotation()
+		);
 
-      double fDrag =
-              (Constants.NoteSim.AIR_DENSITY
-              * Math.pow(norm, 2)
-              * Constants.NoteSim.DRAG_COEFFICIENT
-              * Constants.NoteSim.CROSSECTION_AREA) / Constants.AVG_TWO_ITEM_F;
-      double deltaV = (Constants.NoteSim.MASS * fDrag) * Constants.NoteSim.dt;
+		if (
+			currentFieldPose.getX() <= -Constants.NoteSim.OUT_OF_FIELD_MARGIN ||
+			currentFieldPose.getX() >=
+			Constants.NoteSim.FIELD_SIZE.getX() + Constants.NoteSim.OUT_OF_FIELD_MARGIN ||
+			currentFieldPose.getY() <= -Constants.NoteSim.OUT_OF_FIELD_MARGIN ||
+			currentFieldPose.getY() >=
+			Constants.NoteSim.FIELD_SIZE.getY() + Constants.NoteSim.OUT_OF_FIELD_MARGIN ||
+			currentFieldPose.getZ() <= 0.0
+		) {
+			fieldVelocity = new Translation3d();
+		} else {
+			fieldVelocity = fieldVelocity.minus(
+				Constants.NoteSim.GRAVITY_TRANSLATION3D.times(Constants.NoteSim.dt)
+			);
+			double norm = fieldVelocity.getNorm();
 
-      double t = (norm - deltaV) / norm;
-      fieldVelocity = fieldVelocity.times(t);
-      noteTrajectory.add(currentFieldPose.getTranslation());
-    }
-  }
+			double fDrag =
+				(Constants.NoteSim.AIR_DENSITY *
+					Math.pow(norm, 2) *
+					Constants.NoteSim.DRAG_COEFFICIENT *
+					Constants.NoteSim.CROSSECTION_AREA) /
+				Constants.AVG_TWO_ITEM_F;
+			double deltaV = (Constants.NoteSim.MASS * fDrag) * Constants.NoteSim.dt;
 
-  public static void logNoteInfo() {
-    Logger.recordOutput(
-        "SimNoteTrajectory", NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0]));
-    Logger.recordOutput("SimNotePose3d", getFieldPose(Constants.NoteSim.SHOOTER_POSE3D));
-  }
+			double t = (norm - deltaV) / norm;
+			fieldVelocity = fieldVelocity.times(t);
+			noteTrajectory.add(currentFieldPose.getTranslation());
+		}
+	}
+
+	public static void logNoteInfo() {
+		Logger.recordOutput(
+			"SimNoteTrajectory",
+			NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0])
+		);
+		Logger.recordOutput("SimNotePose3d", getFieldPose(Constants.NoteSim.SHOOTER_POSE3D));
+	}
 }
