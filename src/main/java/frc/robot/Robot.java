@@ -13,6 +13,13 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.AutoCommands;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -29,113 +36,143 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * project.
  */
 public class Robot extends LoggedRobot {
+  public Manager managerSubsystem;
+  private SendableChooser<Command> autoChooser;
 
-	private Manager managerSubsystem;
+  private AutoCommands autoCommands = new AutoCommands(this);
 
-	/**
-	 * This function is run when the robot is first started up and should be used for any
-	 * initialization code.
-	 */
-	@Override
-	public void robotInit() {
-		// Record metadata
-		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-		Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-		Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-		Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-		Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-		switch (BuildConstants.DIRTY) {
-			case 0:
-				Logger.recordMetadata("GitDirty", "All changes committed");
-				break;
-			case 1:
-				Logger.recordMetadata("GitDirty", "Uncomitted changes");
-				break;
-			default:
-				Logger.recordMetadata("GitDirty", "Unknown");
-				break;
-		}
+  private Command autonomousCommand;
 
-		// Set up data receivers & replay source
-		switch (Constants.currentMode) {
-			case REAL:
-				// Running on a real robot, log to a USB stick ("/U/logs")
-				Logger.addDataReceiver(new WPILOGWriter());
-				Logger.addDataReceiver(new NT4Publisher());
-				break;
-			case SIM:
-				// Running a physics simulator, log to NT
-				Logger.addDataReceiver(new NT4Publisher());
-				break;
-			case REPLAY:
-				// Replaying a log, set up replay source
-				setUseTiming(false); // Run as fast as possible
-				String logPath = LogFileUtil.findReplayLog();
-				Logger.setReplaySource(new WPILOGReader(logPath));
-				Logger.addDataReceiver(
-					new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))
-				);
-				break;
-		}
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
+    managerSubsystem = new Manager();
 
-		// See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
-		// Logger.disableDeterministicTimestamps()
+    NamedCommands.registerCommand("Intaking", autoCommands.intaking());
+    NamedCommands.registerCommand("Shooting", autoCommands.shooting());
+    NamedCommands.registerCommand("Return To Idle", autoCommands.returnToIdle());
+    NamedCommands.registerCommand("Speeding Up", autoCommands.startSpinningUp());
+    NamedCommands.registerCommand("Spin and Intake", autoCommands.spinAndIntake());
 
-		// Start AdvantageKit logger
-		Logger.start();
+    // Record metadata
+    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        Logger.recordMetadata("GitDirty", "All changes committed");
+        break;
+      case 1:
+        Logger.recordMetadata("GitDirty", "Uncomitted changes");
+        break;
+      default:
+        Logger.recordMetadata("GitDirty", "Unknown");
+        break;
+    }
 
-		managerSubsystem = new Manager();
-	}
+    // Set up data receivers & replay source
+    switch (Constants.currentMode) {
+      case REAL:
+        // Running on a real robot, log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
 
-	/** This function is called periodically during all modes. */
-	@Override
-	public void robotPeriodic() {
-		managerSubsystem.periodic();
+      case SIM:
+        // Running a physics simulator, log to NT
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
 
-		// Logs note sim logging and updating sims
-		NoteSimulator.update();
-		NoteSimulator.logNoteInfo();
-	}
+      case REPLAY:
+        // Replaying a log, set up replay source
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        break;
+    }
 
-	/** This function is called once when the robot is disabled. */
-	@Override
-	public void disabledInit() {
-		managerSubsystem.stop();
-	}
+    // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
+    // Logger.disableDeterministicTimestamps()
 
-	/** This function is called periodically when disabled. */
-	@Override
-	public void disabledPeriodic() {}
+    // Start AdvantageKit logger
+    Logger.start();
 
-	/** This function is called once the robot enters Auto. */
-	@Override
-	public void autonomousInit() {}
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
 
-	/** This function is called periodically during autonomous. */
-	@Override
-	public void autonomousPeriodic() {}
+  /** This function is called periodically during all modes. */
+  @Override
+  public void robotPeriodic() {
+    managerSubsystem.periodic();
 
-	/** This function is called once when teleop is enabled. */
-	@Override
-	public void teleopInit() {}
+    // Logs note sim logging and updating sims
+    NoteSimulator.update();
+    NoteSimulator.logNoteInfo();
 
-	/** This function is called periodically during operator control. */
-	@Override
-	public void teleopPeriodic() {}
+    CommandScheduler.getInstance().run();
+  }
 
-	/** This function is called once when test mode is enabled. */
-	@Override
-	public void testInit() {}
+  /** This function is called once when the robot is disabled. */
+  @Override
+  public void disabledInit() {
+    managerSubsystem.stop();
+  }
 
-	/** This function is called periodically during test mode. */
-	@Override
-	public void testPeriodic() {}
+  /** This function is called periodically when disabled. */
+  @Override
+  public void disabledPeriodic() {}
 
-	/** This function is called once when the robot is first started up. */
-	@Override
-	public void simulationInit() {}
+  /** This function is called once the robot enters Auto. */
+  @Override
+  public void autonomousInit() {
+    autonomousCommand = getAutonomousCommand();
 
-	/** This function is called periodically whilst in simulation. */
-	@Override
-	public void simulationPeriodic() {}
+    // schedule the autonomous command (example)
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
+    }
+  }
+
+  /** This function is called periodically during autonomous. */
+  @Override
+  public void autonomousPeriodic() {}
+
+  /** This function is called once when teleop is enabled. */
+  @Override
+  public void teleopInit() {
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
+    }
+  }
+
+  /** This function is called periodically during operator control. */
+  @Override
+  public void teleopPeriodic() {}
+
+  /** This function is called once when test mode is enabled. */
+  @Override
+  public void testInit() {}
+
+  /** This function is called periodically during test mode. */
+  @Override
+  public void testPeriodic() {}
+
+  /** This function is called once when the robot is first started up. */
+  @Override
+  public void simulationInit() {}
+
+  /** This function is called periodically whilst in simulation. */
+  @Override
+  public void simulationPeriodic() {}
+
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+  }
 }
