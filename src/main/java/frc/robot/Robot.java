@@ -105,7 +105,7 @@ public class Robot extends LoggedRobot {
 
 		// Start AdvantageKit logger
 		Logger.start();
-
+    // TODO: Make default auto a "cross line" auto
 		autoChooser = AutoBuilder.buildAutoChooser("Example Auto");
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 	}
@@ -138,10 +138,8 @@ public class Robot extends LoggedRobot {
 		autonomousCommand = getAutonomousCommand();
 
 		// schedule the autonomous command (example)
-		System.out.println(":( womp womp");
 		if (autonomousCommand != null) {
 			autonomousCommand.schedule();
-			System.out.println("hi");
 		}
 	}
 
