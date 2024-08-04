@@ -9,81 +9,88 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
 public class IntakeIOSparkMax implements IntakeIO {
-  private CANSparkMax pivotMotor;
-  public TalonFX intakeMotor;
-  private RelativeEncoder pivotEncoder;
 
-  PIDController outPivotController;
-  PIDController inPIDController;
+	private CANSparkMax pivotMotor;
+	public TalonFX intakeMotor;
+	private RelativeEncoder pivotEncoder;
 
-  PIDController pivotController;
+	PIDController outPivotController;
+	PIDController inPIDController;
 
-  double pivotMotorSetpoint = 0.0;
-  double intakeMotorSetpoint = 0.0;
+	PIDController pivotController;
 
-  double wheelAppliedVoltage;
-  double pivotAppliedVoltage;
+	double pivotMotorSetpoint = 0.0;
+	double intakeMotorSetpoint = 0.0;
 
-  double wheelSpeedpoint;
-  double pivotSetpoint;
+	double wheelAppliedVoltage;
+	double pivotAppliedVoltage;
 
-  boolean usingInPID;
+	double wheelSpeedpoint;
+	double pivotSetpoint;
 
-  public IntakeIOSparkMax() {
-    intakeMotor = new TalonFX(Constants.Intake.SPINNER_ID);
-    pivotMotor = new CANSparkMax(Constants.Intake.PIVOT_ID, MotorType.kBrushless);
-    pivotEncoder = pivotMotor.getEncoder();
+	boolean usingInPID;
 
-    outPivotController = new PIDController(0, 0, 0);
-    inPIDController = new PIDController(0, 0, 0);
+	public IntakeIOSparkMax() {
+		intakeMotor = new TalonFX(Constants.Intake.SPINNER_ID);
+		pivotMotor = new CANSparkMax(Constants.Intake.PIVOT_ID, MotorType.kBrushless);
+		pivotEncoder = pivotMotor.getEncoder();
 
-    pivotEncoder.setPositionConversionFactor(Constants.RADIAN_CF);
-    pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
-  }
+		outPivotController = new PIDController(0, 0, 0);
+		inPIDController = new PIDController(0, 0, 0);
 
-  public void setSetpoints(
-      double pivotMotorSetpoint, double intakeMotorSetpoint, boolean useInPID) {
-    usingInPID = useInPID;
+		pivotEncoder.setPositionConversionFactor(Constants.RADIAN_CF);
+		pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
+	}
 
-    if (useInPID) pivotController = inPIDController;
-    else pivotController = outPivotController;
+	public void setSetpoints(
+		double pivotMotorSetpoint,
+		double intakeMotorSetpoint,
+		boolean useInPID
+	) {
+		usingInPID = useInPID;
 
-    pivotAppliedVoltage = pivotController.calculate(pivotEncoder.getPosition(), pivotMotorSetpoint);
-    wheelAppliedVoltage = intakeMotorSetpoint;
+		if (useInPID) pivotController = inPIDController;
+		else pivotController = outPivotController;
 
-    pivotMotor.setVoltage(pivotAppliedVoltage);
-    intakeMotor.setVoltage(wheelAppliedVoltage);
+		pivotAppliedVoltage = pivotController.calculate(
+			pivotEncoder.getPosition(),
+			pivotMotorSetpoint
+		);
+		wheelAppliedVoltage = intakeMotorSetpoint;
 
-    wheelSpeedpoint = intakeMotorSetpoint;
-    pivotSetpoint = pivotMotorSetpoint;
-  }
+		pivotMotor.setVoltage(pivotAppliedVoltage);
+		intakeMotor.setVoltage(wheelAppliedVoltage);
 
-  public void updateInputs(IntakeIOInputs inputs) {
-    inputs.wheelSpeed = intakeMotor.getVelocity().getValueAsDouble();
-    inputs.wheelAppliedVoltage = wheelAppliedVoltage;
-    inputs.wheelSpeedpoint = wheelSpeedpoint;
+		wheelSpeedpoint = intakeMotorSetpoint;
+		pivotSetpoint = pivotMotorSetpoint;
+	}
 
-    inputs.pivotPosition = pivotEncoder.getPosition();
-    inputs.pivotAppliedVoltage = pivotAppliedVoltage;
-    inputs.pivotSetpoint = pivotSetpoint;
-    inputs.pivotSetpointError = Math.abs(pivotEncoder.getPosition() - pivotSetpoint);
+	public void updateInputs(IntakeIOInputs inputs) {
+		inputs.wheelSpeed = intakeMotor.getVelocity().getValueAsDouble();
+		inputs.wheelAppliedVoltage = wheelAppliedVoltage;
+		inputs.wheelSpeedpoint = wheelSpeedpoint;
 
-    inputs.usingInPID = usingInPID;
-  }
+		inputs.pivotPosition = pivotEncoder.getPosition();
+		inputs.pivotAppliedVoltage = pivotAppliedVoltage;
+		inputs.pivotSetpoint = pivotSetpoint;
+		inputs.pivotSetpointError = Math.abs(pivotEncoder.getPosition() - pivotSetpoint);
 
-  public double getPosition() {
-    return pivotEncoder.getPosition();
-  }
+		inputs.usingInPID = usingInPID;
+	}
 
-  public void stop() {
-    wheelAppliedVoltage = 0.0;
-    pivotAppliedVoltage = 0.0;
-    pivotMotor.stopMotor();
-    intakeMotor.stopMotor();
-  }
+	public double getPosition() {
+		return pivotEncoder.getPosition();
+	}
 
-  public void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {
-    outPivotController.setPID(outPIDConst.kP, outPIDConst.kI, outPIDConst.kD);
-    inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
-  }
+	public void stop() {
+		wheelAppliedVoltage = 0.0;
+		pivotAppliedVoltage = 0.0;
+		pivotMotor.stopMotor();
+		intakeMotor.stopMotor();
+	}
+
+	public void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {
+		outPivotController.setPID(outPIDConst.kP, outPIDConst.kI, outPIDConst.kD);
+		inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
+	}
 }
