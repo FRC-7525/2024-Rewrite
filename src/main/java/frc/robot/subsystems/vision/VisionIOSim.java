@@ -65,21 +65,20 @@ public class VisionIOSim implements VisionIO {
     visionSim = new VisionSystemSim("main");
     visionSim.addAprilTags(Constants.Vision.aprilTagFieldLayout);
 
-    // TODO: Get accurate numbers & put these in constants
-    // Both Arducam OV9281, IDK IF THATS RIGHT
+  //CAM MODEL = OV9281
     SimCameraProperties frontCameraProp = new SimCameraProperties();
-    frontCameraProp.setCalibration(1280, 800, Rotation2d.fromDegrees(84.47));
-    frontCameraProp.setCalibError(0.25, 0.1);
-    frontCameraProp.setFPS(40);
-    frontCameraProp.setAvgLatencyMs(40);
-    frontCameraProp.setLatencyStdDevMs(10);
+    frontCameraProp.setCalibration(Constants.Vision.CAM_RES_WIDTH, Constants.Vision.CAM_RES_HEIGHT, Constants.Vision.CAM_FOV_DIAG);
+    frontCameraProp.setCalibError(Constants.Vision.CAM_CALIB_PX_ERROR, Constants.Vision.CAM_CALIB_STD_ERROR);
+    frontCameraProp.setFPS(Constants.Vision.CAM_FPS);
+    frontCameraProp.setAvgLatencyMs(Constants.Vision.CAM_LATENCY);
+    frontCameraProp.setLatencyStdDevMs(Constants.Vision.CAM_LATENCY_STDS);
 
-    SimCameraProperties sideCameraProp = new SimCameraProperties(); // Arducam OV9281, not Spinel
-    sideCameraProp.setCalibration(1280, 800, Rotation2d.fromDegrees(84.47));
-    sideCameraProp.setCalibError(0.25, 0.1);
-    sideCameraProp.setFPS(40);
-    sideCameraProp.setAvgLatencyMs(40);
-    sideCameraProp.setLatencyStdDevMs(10);
+    SimCameraProperties sideCameraProp = new SimCameraProperties();
+    sideCameraProp.setCalibration(Constants.Vision.CAM_RES_WIDTH, Constants.Vision.CAM_RES_HEIGHT, Constants.Vision.CAM_FOV_DIAG);
+    sideCameraProp.setCalibError(Constants.Vision.CAM_CALIB_PX_ERROR, Constants.Vision.CAM_CALIB_STD_ERROR);
+    sideCameraProp.setFPS(Constants.Vision.CAM_FPS);
+    sideCameraProp.setAvgLatencyMs(Constants.Vision.CAM_LATENCY);
+    sideCameraProp.setLatencyStdDevMs(Constants.Vision.CAM_LATENCY_STDS);
 
     frontCam = new PhotonCameraSim(front, frontCameraProp);
     sideCam = new PhotonCameraSim(side, sideCameraProp);

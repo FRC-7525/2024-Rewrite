@@ -17,6 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -159,6 +160,21 @@ public final class Constants {
     }
 
     public static final double LOST_VISION_THRESHOLD = 0.5;
+   //CAM = OV9281
+    public static final int CAM_RES_HEIGHT = 800;
+    public static final int CAM_RES_WIDTH = 1280;
+    public static final Rotation2d CAM_FOV_DIAG = Rotation2d.fromDegrees(84.47);
+
+    public static final double CAM_CALIB_PX_ERROR = 0.25;
+    public static final double CAM_CALIB_STD_ERROR = 0.1;
+
+    public static final double CAM_FPS = 40;
+
+    public static final double CAM_LATENCY = 40;
+    public static final double CAM_LATENCY_STDS = 10;
+
+
+
 
     public static final AprilTagFieldLayout aprilTagFieldLayout =
         AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
