@@ -86,6 +86,8 @@ public class Robot extends LoggedRobot {
 			case SIM:
 				// Running a physics simulator, log to NT
 				Logger.addDataReceiver(new NT4Publisher());
+				// Logger.addDataReceiver(new WPILOGWriter("C:\\Dev\\Robotics
+				// Related\\Controls\\2024-Rewrite\\logs", defaultPeriodSecs));
 				break;
 			case REPLAY:
 				// Replaying a log, set up replay source
@@ -103,8 +105,8 @@ public class Robot extends LoggedRobot {
 
 		// Start AdvantageKit logger
 		Logger.start();
-
-		autoChooser = AutoBuilder.buildAutoChooser();
+		// TODO: Make default auto a "cross line" auto
+		autoChooser = AutoBuilder.buildAutoChooser("Example Auto");
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 	}
 

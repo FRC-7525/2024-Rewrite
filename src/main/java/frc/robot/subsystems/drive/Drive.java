@@ -13,9 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,23 +26,21 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends SubsystemBase {
+public class Drive extends Subsystem<DriveStates> {
 
 	static final Lock odometryLock = new ReentrantLock();
 	private final GyroIO gyroIO;
 	private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 	private final Module[] modules = new Module[Constants.Drive.NUM_MODULES]; // FL, FR, BL, BR
-
-	private DriveStates state;
-	private String subsystemName;
+	private PPDriveWrapper autoConfig;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -70,8 +65,8 @@ public class Drive extends SubsystemBase {
 		ModuleIO blModuleIO,
 		ModuleIO brModuleIO
 	) {
-		subsystemName = "Drive";
-		state = DriveStates.REGULAR_DRIVE;
+		super("Drive", DriveStates.REGULAR_DRIVE);
+		autoConfig = new PPDriveWrapper(this);
 
 		this.gyroIO = gyroIO;
 		modules[0] = new Module(flModuleIO, 0);
@@ -83,26 +78,36 @@ public class Drive extends SubsystemBase {
 		PhoenixOdometryThread.getInstance().start();
 		SparkMaxOdometryThread.getInstance().start();
 
-		pathPlannerInit();
-	}
+		// Triggers
+		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SLOW_MODE, () ->
+			Constants.controller.getRightBumper()
+		);
+		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SPEED_MAXXING, () ->
+			Constants.controller.getLeftBumper()
+		);
 
-	public void runState() {
-		drive(
-			this,
-			() -> Constants.controller.getLeftY(),
-			() -> Constants.controller.getLeftX(),
-			() -> -Constants.controller.getRightX(),
-			getState().getRotationModifier(),
-			getState().getTranslationModifier()
+		// Back to Off
+		addTrigger(DriveStates.SPEED_MAXXING, DriveStates.SLOW_MODE, () ->
+			Constants.controller.getLeftBumperReleased()
+		);
+		addTrigger(DriveStates.SLOW_MODE, DriveStates.REGULAR_DRIVE, () ->
+			Constants.controller.getRightBumperReleased()
 		);
 	}
 
-	public DriveStates getState() {
-		return state;
-	}
-
-	public void setState(DriveStates state) {
-		this.state = state;
+	@Override
+	public void runState() {
+		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not good)
+		if (DriverStation.isTeleop()) {
+			drive(
+				this,
+				() -> Constants.controller.getLeftY(),
+				() -> Constants.controller.getLeftX(),
+				() -> -Constants.controller.getRightX(),
+				getState().getRotationModifier(),
+				getState().getTranslationModifier()
+			);
+		}
 	}
 
 	public void drive(
@@ -211,18 +216,6 @@ public class Drive extends SubsystemBase {
 
 			// Apply update
 			poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-		}
-
-		if (Constants.controller.getRightBumper() && getState() == DriveStates.REGULAR_DRIVE) {
-			setState(DriveStates.SLOW_MODE);
-		} else if (
-			Constants.controller.getLeftBumper() && getState() == DriveStates.REGULAR_DRIVE
-		) {
-			setState(DriveStates.SPEED_MAXXING);
-		} else if (
-			!Constants.controller.getRightBumper() && !Constants.controller.getLeftBumper()
-		) {
-			setState(DriveStates.REGULAR_DRIVE);
 		}
 	}
 
@@ -362,37 +355,5 @@ public class Drive extends SubsystemBase {
 				-Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF
 			),
 		};
-	}
-
-	public void pathPlannerInit() {
-		AutoBuilder.configureHolonomic(
-			this::getPose, // Robot pose supplier
-			this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-			this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-			this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-			new HolonomicPathFollowerConfig(
-				// HolonomicPathFollowerConfig, this should likely live in
-				// your Constants class
-				Constants.Drive.TRANSLATION_PID, // Translation PID constants
-				Constants.Drive.ROTATION_PID, // Rotation PID constants
-				Constants.Drive.MAX_MODULE_SPEED, // Max module speed, in m/s
-				Constants.Drive.DRIVE_BASE_RADIUS, // Drive base radius in meters. Distance from robot center to
-				// furthest module.
-				new ReplanningConfig() // Default path replanning config. See the API for the options
-				// here
-			),
-			() -> {
-				// Boolean supplier that controls when the path will be mirrored for the red alliance
-				// This will flip the path being followed to the red side of the field.
-				// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-				var alliance = DriverStation.getAlliance();
-				if (alliance.isPresent()) {
-					return alliance.get() == DriverStation.Alliance.Red;
-				}
-				return false;
-			},
-			this // Reference to this subsystem to set requirements
-		);
 	}
 }
