@@ -3,54 +3,65 @@ package frc.robot.subsystems.intake;
 import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends Subsystem<IntakeStates> {
-  IntakeIO io;
-  IntakeIOInputsAutoLogged inputs;
 
-  public Intake(IntakeIO io) {
-    super("Intake", IntakeStates.OFF);
-    this.io = io;
-    inputs = new IntakeIOInputsAutoLogged();
+	IntakeIO io;
+	IntakeIOInputsAutoLogged inputs;
 
-    // Configure PIDs here
-    switch (Constants.currentMode) {
-      case REAL:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
-        break;
-      case REPLAY:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
-        break;
-      case SIM:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
-        break;
-      default:
-        break;
-    }
-  }
+	public Intake(IntakeIO io) {
+		super("Intake", IntakeStates.OFF);
+		this.io = io;
+		inputs = new IntakeIOInputsAutoLogged();
 
-  protected void runState() {
-    io.setSetpoints(
-        getState().getPivotSetPoint(), getState().getMotorSetPoint(), getState().getUsingPID());
-  }
+		// Configure PIDs here
+		switch (Constants.currentMode) {
+			case REAL:
+				io.configurePID(Constants.Intake.REAL_OUT_PID, Constants.Intake.REAL_IN_PID);
+				break;
+			case REPLAY:
+				io.configurePID(new PIDConstants(0, 0, 0), new PIDConstants(0, 0, 0));
+				break;
+			case SIM:
+				io.configurePID(Constants.Intake.REAL_OUT_PID, Constants.Intake.REAL_IN_PID);
+				break;
+			default:
+				break;
+		}
+	}
 
-  public void stop() {
-    io.stop();
-  }
+	protected void runState() {
+		io.setSetpoints(
+			getState().getPivotSetPoint(),
+			getState().getMotorSetPoint(),
+			getState().getUsingPID()
+		);
+		if (getState() == IntakeStates.INTAKING) {
+			NoteSimulator.attachToShooter();
+		}
+	}
 
-  @Override
-  public void periodic() {
-    super.periodic();
+	public void stop() {
+		io.stop();
+	}
 
-    Logger.recordOutput(
-        "Intake/Intake Pose",
-        new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, io.getPosition(), 0)));
+	@Override
+	public void periodic() {
+		super.periodic();
 
-    Logger.processInputs("Intake", inputs);
-    io.updateInputs(inputs);
-  }
+		Logger.recordOutput(
+			"Intake/Intake Pose",
+			new Pose3d(
+				Constants.Intake.ZEROED_PIVOT_TRANSLATION,
+				new Rotation3d(0, io.getPosition(), 0)
+			)
+		);
+
+		Logger.processInputs("Intake", inputs);
+		io.updateInputs(inputs);
+	}
 }
