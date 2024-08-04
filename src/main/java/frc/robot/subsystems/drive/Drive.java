@@ -85,6 +85,14 @@ public class Drive extends Subsystem<DriveStates> {
 		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SPEED_MAXXING, () ->
 			Constants.controller.getLeftBumper()
 		);
+
+		// Back to Off
+		addTrigger(DriveStates.SPEED_MAXXING, DriveStates.SLOW_MODE, () ->
+			Constants.controller.getLeftBumperReleased()
+		);
+		addTrigger(DriveStates.SLOW_MODE, DriveStates.REGULAR_DRIVE, () ->
+			Constants.controller.getRightBumperReleased()
+		);
 	}
 
 	@Override
