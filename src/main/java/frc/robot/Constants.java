@@ -160,7 +160,7 @@ public final class Constants {
     }
 
     public static final double LOST_VISION_THRESHOLD = 0.5;
-   //CAM = OV9281
+    // CAM = OV9281
     public static final int CAM_RES_HEIGHT = 800;
     public static final int CAM_RES_WIDTH = 1280;
     public static final Rotation2d CAM_FOV_DIAG = Rotation2d.fromDegrees(84.47);
@@ -172,9 +172,6 @@ public final class Constants {
 
     public static final double CAM_LATENCY = 40;
     public static final double CAM_LATENCY_STDS = 10;
-
-
-
 
     public static final AprilTagFieldLayout aprilTagFieldLayout =
         AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
