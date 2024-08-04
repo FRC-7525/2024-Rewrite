@@ -89,11 +89,10 @@ public class NoteSimulator {
       double norm = fieldVelocity.getNorm();
 
       double fDrag =
-          0.5
-              * Constants.NoteSim.AIR_DENSITY
+              (Constants.NoteSim.AIR_DENSITY
               * Math.pow(norm, 2)
               * Constants.NoteSim.DRAG_COEFFICIENT
-              * Constants.NoteSim.CROSSECTION_AREA;
+              * Constants.NoteSim.CROSSECTION_AREA) / Constants.AVG_TWO_ITEM_F;
       double deltaV = (Constants.NoteSim.MASS * fDrag) * Constants.NoteSim.dt;
 
       double t = (norm - deltaV) / norm;

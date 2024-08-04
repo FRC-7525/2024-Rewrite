@@ -20,13 +20,13 @@ public class Intake extends Subsystem<IntakeStates> {
     // Configure PIDs here
     switch (Constants.currentMode) {
       case REAL:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
+        io.configurePID(Constants.Intake.REAL_OUT_PID, Constants.Intake.REAL_IN_PID);
         break;
       case REPLAY:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
+        io.configurePID(new PIDConstants(0, 0, 0), new PIDConstants(0, 0, 0));
         break;
       case SIM:
-        io.configurePID(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0));
+        io.configurePID(Constants.Intake.REAL_OUT_PID, Constants.Intake.REAL_IN_PID);
         break;
       default:
         break;
