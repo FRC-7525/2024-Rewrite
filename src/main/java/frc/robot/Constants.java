@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -157,10 +158,9 @@ public final class Constants {
   }
 
   public static final class AutoAlign {
-    public static final double TRANSLATIONAL_PID_CONTROLLER_KP = 3;
-    public static final double ROTATIONAL_PID_KP = 5;
-    public static final double TIME_TO_FEED = 1.0; // seconds
-    public static final double TIME_FOR_SCORING = .5; // seconds
+    public static final PIDController X_VELOCITY_CONTROLLER = new PIDController(3, 0, 0);
+    public static final PIDController Y_VELOCITY_CONTROLLER = new PIDController(3, 0, 0);
+    public static final PIDController ROTATIONAL_VELOCITY_CONTROLLER = new PIDController(5, 0, 0);
 
     public static final Pose2d redAmpSpeakerPose =
         new Pose2d(15.59, 6.644, new Rotation2d(Math.toRadians(120.5)));

@@ -13,7 +13,6 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.drive.AutoAlign;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -86,7 +85,6 @@ public class Robot extends LoggedRobot {
     Logger.start();
 
     managerSubsystem = new Manager();
-    AutoAlign.setManager(managerSubsystem);
   }
 
   /** This function is called periodically during all modes. */
