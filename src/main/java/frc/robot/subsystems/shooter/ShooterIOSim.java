@@ -14,7 +14,7 @@ public class ShooterIOSim implements ShooterIO {
   public ShooterIOSim() {
     sim =
         new FlywheelSim(
-            DCMotor.getFalcon500(Constants.Shooter.NUM_MOTORS),
+            DCMotor.getFalcon500(2),
             Constants.Shooter.SHOOTER_GEARING,
             Constants.Shooter.SHOOTER_MOI);
     pid = new PIDController(0.0, 0.0, 0.0);
@@ -25,8 +25,8 @@ public class ShooterIOSim implements ShooterIO {
   public void updateInputs(ShooterIOInputs inputs) {
     sim.update(Constants.SIM_UPDATE_TIME);
 
-    inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
-    inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
+    inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / 60;
+    inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / 60;
     inputs.shooterSpeedPoint = speedPoint;
     inputs.leftShooterAppliedVolts = appliedVolts;
     inputs.rightShooterAppliedVolts = appliedVolts;
@@ -46,18 +46,18 @@ public class ShooterIOSim implements ShooterIO {
   @Override
   public void setSpeed(double rps) {
     speedPoint = rps;
-    appliedVolts = pid.calculate(sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF, rps);
+    appliedVolts = pid.calculate(sim.getAngularVelocityRPM() / 60, rps);
     sim.setInputVoltage(appliedVolts);
   }
 
   @Override
   public boolean nearSpeedPoint() {
-    return Math.abs((sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF) - speedPoint)
+    return Math.abs((sim.getAngularVelocityRPM() / 60) - speedPoint)
         > Constants.Shooter.ERROR_OF_MARGIN;
   }
 
   @Override
   public double getAverageSpeed() {
-    return sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
+    return sim.getAngularVelocityRPM() / 60;
   }
 }

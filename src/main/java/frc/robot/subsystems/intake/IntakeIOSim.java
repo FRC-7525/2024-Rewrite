@@ -27,7 +27,7 @@ public class IntakeIOSim implements IntakeIO {
   public IntakeIOSim() {
     pivotSimModel =
         new SingleJointedArmSim(
-            DCMotor.getKrakenX60(Constants.Intake.NUM_PIVOT_MOTORS),
+            DCMotor.getKrakenX60(1),
             Constants.Intake.PIVOT_GEARING, // gearing
             Constants.Intake.PIVOT_MOI, // MOI
             Constants.Intake.PIVOT_LENGTH_METERS, // arm length
@@ -38,7 +38,7 @@ public class IntakeIOSim implements IntakeIO {
 
     spinnerWheelSim =
         new DCMotorSim(
-            DCMotor.getFalcon500(Constants.Intake.NUM_SPINNER_MOTORS),
+            DCMotor.getFalcon500(1),
             Constants.Intake.SPINNER_GEARING,
             Constants.Intake.SPINNER_MOI);
 
@@ -66,7 +66,7 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.wheelSpeed = spinnerWheelSim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
+    inputs.wheelSpeed = spinnerWheelSim.getAngularVelocityRPM() / 60;
     inputs.wheelAppliedVoltage = wheelAppliedVoltage;
     inputs.wheelSpeedpoint = wheelSpeedpoint;
 
