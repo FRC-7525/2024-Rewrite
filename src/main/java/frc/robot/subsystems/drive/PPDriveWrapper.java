@@ -3,6 +3,8 @@ package frc.robot.subsystems.drive;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -15,13 +17,30 @@ public class PPDriveWrapper extends SubsystemBase {
     pathPlannerInit();
   }
 
+  private Pose2d getPose() {
+    return drive.getPose();
+  }
+
+  private void setPose(Pose2d pose) {
+    drive.setPose(pose);
+  }
+
+  private ChassisSpeeds getChassisSpeed() {
+    return drive.getChassisSpeed();
+  }
+
+  private void runVelocity(ChassisSpeeds chassisSpeeds) {
+    drive.runVelocity(chassisSpeeds);
+  }
+
+  public void periodic() {}
+
   public void pathPlannerInit() {
     AutoBuilder.configureHolonomic(
-        drive::getPose, // Robot pose supplier
-        drive
-            ::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        drive::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        drive::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        this::getPose, // Robot pose supplier
+        this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::runVelocity, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig(
             // HolonomicPathFollowerConfig, this should likely live in
             // your Constants class

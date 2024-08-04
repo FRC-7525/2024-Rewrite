@@ -35,12 +35,11 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends Subsystem<DriveStates> {
-
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[Constants.Drive.NUM_MODULES]; // FL, FR, BL, BR
-  private PPDriveWrapper ppConfig;
+  private PPDriveWrapper autoConfig;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -49,7 +48,7 @@ public class Drive extends Subsystem<DriveStates> {
         new SwerveModulePosition(),
         new SwerveModulePosition(),
         new SwerveModulePosition(),
-        new SwerveModulePosition(),
+        new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
@@ -60,9 +59,9 @@ public class Drive extends Subsystem<DriveStates> {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
-    super("Drive", DriveStates.REGULAR_DRIVE);
 
-    ppConfig = new PPDriveWrapper(this);
+    super("Drive", DriveStates.REGULAR_DRIVE);
+    autoConfig = new PPDriveWrapper(this);
 
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
@@ -73,16 +72,30 @@ public class Drive extends Subsystem<DriveStates> {
     // Start threads (no-op for each if no signals have been created)
     PhoenixOdometryThread.getInstance().start();
     SparkMaxOdometryThread.getInstance().start();
+
+    // Triggers
+    addTrigger(
+        DriveStates.REGULAR_DRIVE,
+        DriveStates.SLOW_MODE,
+        () -> Constants.controller.getRightBumper());
+    addTrigger(
+        DriveStates.REGULAR_DRIVE,
+        DriveStates.SPEED_MAXXING,
+        () -> Constants.controller.getLeftBumper());
   }
 
+  @Override
   public void runState() {
-    drive(
-        this,
-        () -> Constants.controller.getLeftY(),
-        () -> Constants.controller.getLeftX(),
-        () -> -Constants.controller.getRightX(),
-        getState().getRotationModifier(),
-        getState().getTranslationModifier());
+	// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not good)
+    if (DriverStation.isTeleop()) {
+      drive(
+          this,
+          () -> Constants.controller.getLeftY(),
+          () -> Constants.controller.getLeftX(),
+          () -> -Constants.controller.getRightX(),
+          getState().getRotationModifier(),
+          getState().getTranslationModifier());
+    }
   }
 
   public void drive(
@@ -308,7 +321,7 @@ public class Drive extends Subsystem<DriveStates> {
           Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
       new Translation2d(
           -Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
-          -Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
+          -Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF)
     };
   }
 }
