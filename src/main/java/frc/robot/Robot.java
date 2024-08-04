@@ -52,7 +52,7 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void robotInit() {
 		managerSubsystem = new Manager();
-		AutoAlign.setManager(managerSubsystem);;
+		AutoAlign.setManager(managerSubsystem);
 
 		NamedCommands.registerCommand("Intaking", autoCommands.intaking());
 		NamedCommands.registerCommand("Shooting", autoCommands.shooting());
