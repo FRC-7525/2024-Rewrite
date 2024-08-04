@@ -11,11 +11,11 @@ import frc.robot.subsystems.manager.ManagerStates;
 
 public class AutoAlign {
   private static PIDController xPIDController =
-      new PIDController(Constants.AutoAlign.TRANSLATIONAL_PID_CONTROLLER_KP, 0, 0);
+      new PIDController(Constants.AutoAlign.TRANSLATIONAL_PID.kP, Constants.AutoAlign.TRANSLATIONAL_PID.kI, Constants.AutoAlign.TRANSLATIONAL_PID.kD);
   private static PIDController yPIDController =
-      new PIDController(Constants.AutoAlign.TRANSLATIONAL_PID_CONTROLLER_KP, 0, 0);
+      new PIDController(Constants.AutoAlign.TRANSLATIONAL_PID.kP, Constants.AutoAlign.TRANSLATIONAL_PID.kI, Constants.AutoAlign.TRANSLATIONAL_PID.kD);
   private static final PIDController rotationalPIDController =
-      new PIDController(Constants.AutoAlign.ROTATIONAL_PID_KP, 0, 0);
+      new PIDController(Constants.AutoAlign.ROTATIONAL_PID.kP, Constants.AutoAlign.ROTATIONAL_PID.kI, Constants.AutoAlign.ROTATIONAL_PID.kD);
   private static Pose2d targetPose2d;
   private static AutoAlignInstruction autoAlignInstruction;
   private static Timer timer = new Timer();
