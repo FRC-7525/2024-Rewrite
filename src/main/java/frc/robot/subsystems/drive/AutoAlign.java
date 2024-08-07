@@ -61,8 +61,8 @@ public class AutoAlign {
 				)
 			);
 		} else {
-				manager.setState(autoAlignInstruction.atSetPoint);
-				drive.setState(DriveStates.REGULAR_DRIVE);
+			manager.setState(autoAlignInstruction.atSetPoint);
+			drive.setState(DriveStates.REGULAR_DRIVE);
 		}
 	}
 
@@ -73,10 +73,11 @@ public class AutoAlign {
 			Math.abs(currentPose2d.getX() - targetPose2d.getX()) <
 				Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
 			Math.abs(currentPose2d.getY() - targetPose2d.getY()) <
-				Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+			Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
 			Math.abs(
-				currentPose2d.getRotation().getDegrees() - targetPose2d.getRotation().getDegrees()) <
-				Constants.AutoAlign.ROTATION_ERROR_MARGIN
+				currentPose2d.getRotation().getDegrees() - targetPose2d.getRotation().getDegrees()
+			) <
+			Constants.AutoAlign.ROTATION_ERROR_MARGIN
 		);
 	}
 
@@ -95,7 +96,7 @@ public class AutoAlign {
 					? Constants.AutoAlign.redAmpSpeakerPose
 					: Constants.AutoAlign.blueSourceSpeakerPose
 			);
-			autoAlignInstruction = AutoAlignInstruction.SHOOT;;
+			autoAlignInstruction = AutoAlignInstruction.SHOOT;
 			drive.setState(DriveStates.AUTO_ALIGN);
 		} else if (Constants.operatorController.getAButton()) {
 			setTargetPose(
