@@ -97,8 +97,11 @@ public class Drive extends Subsystem<DriveStates> {
 
 	@Override
 	public void runState() {
-		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not good)
-		if (DriverStation.isTeleop()) {
+		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not
+		// good)
+
+		if (!DriverStation.isAutonomous()) AutoAlign.periodic();
+		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
 				() -> Constants.controller.getLeftY(),
@@ -107,6 +110,8 @@ public class Drive extends Subsystem<DriveStates> {
 				getState().getRotationModifier(),
 				getState().getTranslationModifier()
 			);
+		} else if (DriverStation.isTeleop() && getState() == DriveStates.AUTO_ALIGN) {
+			AutoAlign.calculateChassisSpeed();
 		}
 	}
 
