@@ -4,10 +4,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.subsystems.manager.Manager;
-import frc.robot.subsystems.manager.ManagerStates;
 
 public class AutoAlign {
 
@@ -28,8 +26,6 @@ public class AutoAlign {
 	);
 	private static Pose2d targetPose2d;
 	private static AutoAlignInstruction autoAlignInstruction;
-	private static Timer timer = new Timer();
-	private static boolean setStateAlready;
 
 	private static Drive drive;
 	private static Manager manager;
@@ -65,47 +61,23 @@ public class AutoAlign {
 				)
 			);
 		} else {
-			// this is the only way i could think of to make the code pretty. please don't murder me
-			// Amp bar needs time to be able to be fed
-			if (timer.hasElapsed(Constants.AutoAlign.TIME_FOR_SCORING) && setStateAlready) {
-				manager.setState(ManagerStates.IDLE);
+				manager.setState(autoAlignInstruction.atSetPoint);
 				drive.setState(DriveStates.REGULAR_DRIVE);
-			} else if (
-				autoAlignInstruction == AutoAlignInstruction.SCORE_AMP_BAR &&
-				timer.hasElapsed(Constants.AutoAlign.TIME_TO_FEED)
-			) {
-				manager.setState(autoAlignInstruction.atSetPoint);
-			} else if (
-				autoAlignInstruction == AutoAlignInstruction.SHOOT &&
-				timer.hasElapsed(Constants.AutoAlign.TIME_TO_FEED)
-			) {
-				manager.setState(autoAlignInstruction.atSetPoint);
-			}
-
-			if (!setStateAlready) {
-				setStateAlready = true;
-				timer.reset();
-				timer.start();
-			}
 		}
 	}
 
 	public static boolean nearSetPoint() {
 		Pose2d currentPose2d = drive.getPose();
 
-		if (
+		return (
 			Math.abs(currentPose2d.getX() - targetPose2d.getX()) <
 				Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
 			Math.abs(currentPose2d.getY() - targetPose2d.getY()) <
-			Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+				Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
 			Math.abs(
-				currentPose2d.getRotation().getDegrees() - targetPose2d.getRotation().getDegrees()
-			) <
-			Constants.AutoAlign.ROTATION_ERROR_MARGIN
-		) {
-			return true;
-		}
-		return false;
+				currentPose2d.getRotation().getDegrees() - targetPose2d.getRotation().getDegrees()) <
+				Constants.AutoAlign.ROTATION_ERROR_MARGIN
+		);
 	}
 
 	public static void periodic() {
@@ -116,7 +88,6 @@ public class AutoAlign {
 					: Constants.AutoAlign.blueAmpSpeakerPose
 			);
 			autoAlignInstruction = AutoAlignInstruction.SHOOT;
-			setStateAlready = false;
 			drive.setState(DriveStates.AUTO_ALIGN);
 		} else if (Constants.operatorController.getRightBumper()) {
 			setTargetPose(
@@ -124,8 +95,7 @@ public class AutoAlign {
 					? Constants.AutoAlign.redAmpSpeakerPose
 					: Constants.AutoAlign.blueSourceSpeakerPose
 			);
-			autoAlignInstruction = AutoAlignInstruction.SHOOT;
-			setStateAlready = false;
+			autoAlignInstruction = AutoAlignInstruction.SHOOT;;
 			drive.setState(DriveStates.AUTO_ALIGN);
 		} else if (Constants.operatorController.getAButton()) {
 			setTargetPose(
@@ -134,14 +104,9 @@ public class AutoAlign {
 					: Constants.AutoAlign.blueAmpPose
 			);
 			autoAlignInstruction = AutoAlignInstruction.SCORE_AMP_BAR;
-			timer.restart();
-			timer.start();
-			setStateAlready = false;
 			drive.setState(DriveStates.AUTO_ALIGN);
 		} else if (Constants.operatorController.getXButton()) {
 			drive.setState(DriveStates.REGULAR_DRIVE);
 		}
 	}
-	// #TODO add drive to amp bar and auto shoot.
-	// create timer for feeding and holding
 }
