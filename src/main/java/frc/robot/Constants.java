@@ -219,11 +219,15 @@ public final class Constants {
 			public static final double UPDATE_FREQUENCY = 100.0;
 		}
 
+		public static final class Navx2 {
+
+			public static final double UPDATE_FREQUENCY = 1000.0;
+		}
+
 		public static final class Module {
 
 			public static final double ODOMETRY_FREQUENCY = 250.0;
 
-			// There isnt one for real its just all 0 so idk whats good with that
 			public static final FFConstants REPLAY_FF = new FFConstants(0.1, 0.13);
 			public static final PIDConstants REPLAY_DRIVE_PID = new PIDConstants(0.05, 0.0, 0.0);
 			public static final PIDConstants REPLAY_TURN_PID = new PIDConstants(7.0, 0.0, 0.0);
@@ -231,6 +235,11 @@ public final class Constants {
 			public static final FFConstants SIM_FF = new FFConstants(0.0, 0.13);
 			public static final PIDConstants SIM_DRIVE_PID = new PIDConstants(0.1, 0.0, 0.0);
 			public static final PIDConstants SIM_TURN_PID = new PIDConstants(10.0, 0.0, 0.0);
+
+			// Hope this works??? This should be tuned using SYSID or Power, I, and Damping method
+			public static final FFConstants REAL_FF = new FFConstants(0, 0);
+			public static final PIDConstants REAL_DRIVE_PID = new PIDConstants(0.05, 0.0, 0.0);
+			public static final PIDConstants REAL_TURN_PID = new PIDConstants(7.0, 0.0, 0.0);
 
 			public static final int NUM_TURN_MOTORS = 1;
 			public static final int NUM_DRIVE_MOTORS = 1;
@@ -269,26 +278,33 @@ public final class Constants {
 				public static final int SPARK_AVG_DEPTH = 2;
 				public static final double SPARK_FRAME_PERIOD = 1000.0 / ODOMETRY_FREQUENCY;
 
-				// CAN/Device IDS and offsets
-				public static final int DRIVE0_ID = 0;
-				public static final int TURN0_ID = 1;
-				public static final int CANCODER0_ID = 2;
-				public static final double OFFSET0 = 0.0;
+				// CAN/Device IDS and offsets (May be Wrong, guessed which ids are correct off vibes)
 
-				public static final int DRIVE1_ID = 0;
+				// TODO: Confirm module IDs are associated with correct module and tune module offsets if last years dont work
+
+				// Front Left Module
+				public static final int DRIVE0_ID = 8;
+				public static final int TURN0_ID = 7;
+				public static final int CANCODER0_ID = 9;
+				public static final double OFFSET0 = 290.0;
+
+				// Front Right Module
+				public static final int DRIVE1_ID = 2;
 				public static final int TURN1_ID = 1;
-				public static final int CANCODER1_ID = 2;
-				public static final double OFFSET1 = 0.0;
+				public static final int CANCODER1_ID = 3;
+				public static final double OFFSET1 = 170.0;
 
-				public static final int DRIVE2_ID = 0;
-				public static final int TURN2_ID = 1;
-				public static final int CANCODER2_ID = 2;
-				public static final double OFFSET2 = 0.0;
+				// Back Left Module
+				public static final int DRIVE2_ID = 5;
+				public static final int TURN2_ID = 4;
+				public static final int CANCODER2_ID = 6;
+				public static final double OFFSET2 = 342.2;
 
-				public static final int DRIVE3_ID = 0;
-				public static final int TURN3_ID = 1;
-				public static final int CANCODER3_ID = 2;
-				public static final double OFFSET3 = 0.0;
+				// Back Right Module
+				public static final int DRIVE3_ID = 11;
+				public static final int TURN3_ID = 10;
+				public static final int CANCODER3_ID = 12;
+				public static final double OFFSET3 = 220.5;
 			}
 		}
 
