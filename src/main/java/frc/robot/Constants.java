@@ -219,6 +219,10 @@ public final class Constants {
 			public static final double UPDATE_FREQUENCY = 100.0;
 		}
 
+		public static final class Navx2 {
+			public static final double UPDATE_FREQUENCY = 1000.0;
+		}
+
 		public static final class Module {
 
 			public static final double ODOMETRY_FREQUENCY = 250.0;
