@@ -287,7 +287,7 @@ public final class Constants {
 				public static final int TURN0_ID = 7;
 				public static final int CANCODER0_ID = 9;
 				public static final double OFFSET0 = 290.0;
- 
+
 				// Front Right Module
 				public static final int DRIVE1_ID = 2;
 				public static final int TURN1_ID = 1;
