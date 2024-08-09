@@ -45,7 +45,7 @@ public class Module {
 		// Switch constants based on mode (the physics simulator is treated as a
 		// separate robot with different tuning)
 		switch (Constants.currentMode) {
-			// TODO: Configure PID in rela mabye? idk why its off
+			// TODO: Configure PID in real mabye? idk why its off
 			case REAL:
 			case REPLAY:
 				driveFeedforward = new SimpleMotorFeedforward(
