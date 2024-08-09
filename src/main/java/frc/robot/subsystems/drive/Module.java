@@ -45,7 +45,7 @@ public class Module {
 		// Switch constants based on mode (the physics simulator is treated as a
 		// separate robot with different tuning)
 		switch (Constants.currentMode) {
-			// TODO: Configure PID in real mabye? idk why its off
+			// TODO: Leaving this as a warning incase I did something bad, before "REAL" didnt assign any PID/FF values for controllers idk why
 			case REAL:
 				driveFeedforward = new SimpleMotorFeedforward(
 					Constants.Drive.Module.REAL_FF.kS,
