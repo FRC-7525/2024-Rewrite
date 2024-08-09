@@ -1,12 +1,13 @@
 package frc.robot.subsystems.manager;
 
+import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.ampBar.*;
 import frc.robot.subsystems.drive.AutoAlign;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIONavx2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOHybrid;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -31,7 +32,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				ampBarSubsystem = new AmpBar(new AmpBarIOReal());
 				shooterSubsystem = new Shooter(new ShooterIOTalonFX());
 				driveSubsystem = new Drive(
-					new GyroIOPigeon2(false),
+					new GyroIONavx2(SPI.Port.kMXP),
 					new ModuleIOHybrid(0),
 					new ModuleIOHybrid(1),
 					new ModuleIOHybrid(2),
