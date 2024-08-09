@@ -223,7 +223,6 @@ public final class Constants {
 
 			public static final double ODOMETRY_FREQUENCY = 250.0;
 
-			// There isnt one for real its just all 0 so idk whats good with that
 			public static final FFConstants REPLAY_FF = new FFConstants(0.1, 0.13);
 			public static final PIDConstants REPLAY_DRIVE_PID = new PIDConstants(0.05, 0.0, 0.0);
 			public static final PIDConstants REPLAY_TURN_PID = new PIDConstants(7.0, 0.0, 0.0);
@@ -231,6 +230,11 @@ public final class Constants {
 			public static final FFConstants SIM_FF = new FFConstants(0.0, 0.13);
 			public static final PIDConstants SIM_DRIVE_PID = new PIDConstants(0.1, 0.0, 0.0);
 			public static final PIDConstants SIM_TURN_PID = new PIDConstants(10.0, 0.0, 0.0);
+
+			// Hope this works??? This should be tuned using SYSID or Power, I, and Damping method
+			public static final FFConstants REAL_FF = new FFConstants(0, 0);
+			public static final PIDConstants REAL_DRIVE_PID = new PIDConstants(0.05, 0.0, 0.0);
+			public static final PIDConstants REAL_TURN_PID = new PIDConstants(7.0, 0.0, 0.0);
 
 			public static final int NUM_TURN_MOTORS = 1;
 			public static final int NUM_DRIVE_MOTORS = 1;
