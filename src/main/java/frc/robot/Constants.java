@@ -220,6 +220,7 @@ public final class Constants {
 		}
 
 		public static final class Navx2 {
+
 			public static final double UPDATE_FREQUENCY = 1000.0;
 		}
 

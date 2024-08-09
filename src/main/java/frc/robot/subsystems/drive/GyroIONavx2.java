@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -26,7 +25,9 @@ public class GyroIONavx2 implements GyroIO {
 		inputs.yawPosition = Rotation2d.fromDegrees(navx.getYaw());
 		inputs.yawVelocityRadPerSec = Units.degreesToRadians(navx.getRate());
 
-		yawTimestampQueue.add((double) System.currentTimeMillis() / Constants.Drive.Navx2.UPDATE_FREQUENCY); // Time in seconds
+		yawTimestampQueue.add(
+			(double) System.currentTimeMillis() / Constants.Drive.Navx2.UPDATE_FREQUENCY
+		); // Time in seconds
 		yawPositionQueue.add((double) navx.getYaw());
 
 		inputs.odometryYawTimestamps = yawTimestampQueue
