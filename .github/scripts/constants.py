@@ -13,7 +13,7 @@ excused_dirs = [
 ]
 
 # Weird stuff that shouldn't go in constants, dont put function/var names in here theyre already checked
-excused_cases = ["ModuleIOSparkMax", "case", "new Module(", "new BaseStatusSignal[", "BaseStatusSignal.waitForAll(", "new ModuleIOHybrid(", "Math.pow("]
+excused_cases = ["ModuleIOSparkMax", "case", "new Module(", "new BaseStatusSignal[", "BaseStatusSignal.waitForAll(", "new ModuleIOHybrid(", "Math.pow(", "(applyHeadingCorrection ? rotationMultiplier : 1)"]
 
 def check_for_magic_numbers(file_path):
     magic_numbers = []
