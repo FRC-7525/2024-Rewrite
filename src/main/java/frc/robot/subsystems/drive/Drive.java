@@ -14,6 +14,7 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,10 +27,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantLock;import frc.robot.Constants;
+
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -40,7 +41,10 @@ public class Drive extends Subsystem<DriveStates> {
 	private final GyroIO gyroIO;
 	private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 	private final Module[] modules = new Module[Constants.Drive.NUM_MODULES]; // FL, FR, BL, BR
+
 	private PPDriveWrapper autoConfig;
+	private PIDController headingCorrectionController;
+	private double cachedTargetRotation;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -74,6 +78,8 @@ public class Drive extends Subsystem<DriveStates> {
 		modules[2] = new Module(blModuleIO, 2);
 		modules[3] = new Module(brModuleIO, 3);
 
+		cachedTargetRotation = gyroInputs.yawPosition.getRadians();
+		headingCorrectionController = new PIDController(Constants.Drive.HEADING_CORRECTION_PID.kP, Constants.Drive.HEADING_CORRECTION_PID.kI , Constants.Drive.HEADING_CORRECTION_PID.kD);
 		// Start threads (no-op for each if no signals have been created)
 		PhoenixOdometryThread.getInstance().start();
 		SparkMaxOdometryThread.getInstance().start();
@@ -102,13 +108,18 @@ public class Drive extends Subsystem<DriveStates> {
 
 		if (!DriverStation.isAutonomous()) AutoAlign.periodic();
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
+			DoubleSupplier vX = () -> Constants.controller.getLeftY();
+			DoubleSupplier vY = () -> Constants.controller.getLeftX();
+			DoubleSupplier omega = () -> Constants.controller.getLeftX();
+
 			drive(
 				this,
-				() -> Constants.controller.getLeftY(),
-				() -> Constants.controller.getLeftX(),
-				() -> -Constants.controller.getRightX(),
+				vX,
+				vY,
+				omega,
 				getState().getRotationModifier(),
-				getState().getTranslationModifier()
+				getState().getTranslationModifier(),
+				true
 			);
 		} else if (DriverStation.isTeleop() && getState() == DriveStates.AUTO_ALIGN) {
 			AutoAlign.calculateChassisSpeed();
@@ -121,7 +132,8 @@ public class Drive extends Subsystem<DriveStates> {
 		DoubleSupplier ySupplier,
 		DoubleSupplier omegaSupplier,
 		double rotationMultiplier,
-		double translationMultiplier
+		double translationMultiplier,
+		boolean headingCorrection
 	) {
 		// Apply deadband
 		double linearMagnitude = MathUtil.applyDeadband(
@@ -136,10 +148,20 @@ public class Drive extends Subsystem<DriveStates> {
 			omegaSupplier.getAsDouble(),
 			Constants.Drive.CONTROLLER_DEADBAND
 		);
+		boolean applyHeadingCorrection = headingCorrection & omega == 0;
 
-		// Square values
-		linearMagnitude = linearMagnitude * linearMagnitude;
-		omega = Math.copySign(omega * omega, omega);
+		if (applyHeadingCorrection) {
+			omega = headingCorrectionController.calculate(gyroInputs.yawPosition.getRadians(), cachedTargetRotation);
+		} else {
+			// Like stored the good rotation?? idk
+			cachedTargetRotation = gyroInputs.yawPosition.getRadians();
+
+			// Square values (zzzzz)
+			linearMagnitude = linearMagnitude * linearMagnitude;
+			omega = Math.copySign(omega * omega, omega);
+		}
+
+		
 
 		// Calcaulate new linear velocity
 		Translation2d linearVelocity = new Pose2d(new Translation2d(), linearDirection)
@@ -158,7 +180,7 @@ public class Drive extends Subsystem<DriveStates> {
 				linearVelocity.getY() *
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
+				omega * drive.getMaxAngularSpeedRadPerSec() * (applyHeadingCorrection ? rotationMultiplier : 1),
 				isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()
 			)
 		);

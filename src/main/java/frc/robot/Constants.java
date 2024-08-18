@@ -179,6 +179,9 @@ public final class Constants {
 
 	public static final class Drive {
 
+		// TODO: Test and tune!
+		public static final PIDConstants HEADING_CORRECTION_PID = new PIDConstants(1, 0, 0);
+
 		public static final double DISCRETIZE_TIME_SECONDS = 0.02;
 		public static final double CONTROLLER_DEADBAND = 0.1;
 		public static final int NUM_MODULES = 4;
