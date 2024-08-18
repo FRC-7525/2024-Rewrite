@@ -27,10 +27,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;import frc.robot.Constants;
-
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -79,7 +79,11 @@ public class Drive extends Subsystem<DriveStates> {
 		modules[3] = new Module(brModuleIO, 3);
 
 		cachedTargetRotation = gyroInputs.yawPosition.getRadians();
-		headingCorrectionController = new PIDController(Constants.Drive.HEADING_CORRECTION_PID.kP, Constants.Drive.HEADING_CORRECTION_PID.kI , Constants.Drive.HEADING_CORRECTION_PID.kD);
+		headingCorrectionController = new PIDController(
+			Constants.Drive.HEADING_CORRECTION_PID.kP,
+			Constants.Drive.HEADING_CORRECTION_PID.kI,
+			Constants.Drive.HEADING_CORRECTION_PID.kD
+		);
 		// Start threads (no-op for each if no signals have been created)
 		PhoenixOdometryThread.getInstance().start();
 		SparkMaxOdometryThread.getInstance().start();
@@ -148,10 +152,13 @@ public class Drive extends Subsystem<DriveStates> {
 			omegaSupplier.getAsDouble(),
 			Constants.Drive.CONTROLLER_DEADBAND
 		);
-		boolean applyHeadingCorrection = headingCorrection & omega == 0;
+		boolean applyHeadingCorrection = headingCorrection & (omega == 0);
 
 		if (applyHeadingCorrection) {
-			omega = headingCorrectionController.calculate(gyroInputs.yawPosition.getRadians(), cachedTargetRotation);
+			omega = headingCorrectionController.calculate(
+				gyroInputs.yawPosition.getRadians(),
+				cachedTargetRotation
+			);
 		} else {
 			// Like stored the good rotation?? idk
 			cachedTargetRotation = gyroInputs.yawPosition.getRadians();
@@ -160,8 +167,6 @@ public class Drive extends Subsystem<DriveStates> {
 			linearMagnitude = linearMagnitude * linearMagnitude;
 			omega = Math.copySign(omega * omega, omega);
 		}
-
-		
 
 		// Calcaulate new linear velocity
 		Translation2d linearVelocity = new Pose2d(new Translation2d(), linearDirection)
@@ -180,7 +185,9 @@ public class Drive extends Subsystem<DriveStates> {
 				linearVelocity.getY() *
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() * (applyHeadingCorrection ? rotationMultiplier : 1),
+				omega *
+				drive.getMaxAngularSpeedRadPerSec() *
+				(applyHeadingCorrection ? rotationMultiplier : 1),
 				isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()
 			)
 		);
