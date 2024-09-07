@@ -32,7 +32,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				ampBarSubsystem = new AmpBar(new AmpBarIOReal());
 				shooterSubsystem = new Shooter(new ShooterIOTalonFX());
 				driveSubsystem = new Drive(
-					new GyroIONavx2(SPI.Port.kMXP),
+					new GyroIONavx2(false),
 					new ModuleIOHybrid(0),
 					new ModuleIOHybrid(1),
 					new ModuleIOHybrid(2),
