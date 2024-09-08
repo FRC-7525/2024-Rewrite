@@ -77,6 +77,7 @@ public class Drive extends Subsystem<DriveStates> {
 		// Start threads (no-op for each if no signals have been created)
 		PhoenixOdometryThread.getInstance().start();
 		SparkMaxOdometryThread.getInstance().start();
+		HybridOdometryThread.getInstance().start();
 
 		// Triggers
 		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SLOW_MODE, () ->

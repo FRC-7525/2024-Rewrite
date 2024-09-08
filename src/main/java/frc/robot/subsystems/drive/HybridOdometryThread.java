@@ -40,12 +40,13 @@ public class HybridOdometryThread extends Thread {
 	private HybridOdometryThread() {
 		setName("HybridOdometryThread");
 		setDaemon(true);
-		super.start();
 	}
 
 	@Override
 	public void start() {
-		// Start was buggin so I just put the super.start call in the constructor (peak idea)
+        if (timestampQueues.size() > 0) {
+            super.start();
+        }
 	}
 
 	public Queue<Double> registerSignal(ParentDevice device, StatusSignal<Double> signal) {
