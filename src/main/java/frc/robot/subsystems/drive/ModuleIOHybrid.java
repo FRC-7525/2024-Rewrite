@@ -34,6 +34,7 @@ public class ModuleIOHybrid implements ModuleIO {
 
 	private final Queue<Double> timestampQueue;
 
+	private final StatusSignal<Double> turnAbsolutePosition;
 	private final StatusSignal<Double> drivePosition;
 	private final Queue<Double> drivePositionQueue;
 	private final StatusSignal<Double> driveVelocity;
@@ -88,7 +89,7 @@ public class ModuleIOHybrid implements ModuleIO {
 				throw new RuntimeException("Invalid module index");
 		}
 
-		// TalonFX configuration
+		// Phoenix configuration
 		var driveConfig = new TalonFXConfiguration();
 		driveConfig.CurrentLimits.SupplyCurrentLimit =
 			Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
@@ -107,19 +108,23 @@ public class ModuleIOHybrid implements ModuleIO {
 		driveAppliedVolts = driveTalon.getMotorVoltage();
 		driveCurrent = driveTalon.getSupplyCurrent();
 
+		turnAbsolutePosition = cancoder.getAbsolutePosition();
+
+
 		BaseStatusSignal.setUpdateFrequencyForAll(
-			Constants.Drive.Module.ODOMETRY_FREQUENCY,
+			250.0,
 			drivePosition
 		);
 		BaseStatusSignal.setUpdateFrequencyForAll(
-			Constants.Drive.Module.Hybrid.TALON_UPDATE_FREQUENCY_HZ,
+			50.0,
 			driveVelocity,
 			driveAppliedVolts,
+			turnAbsolutePosition,
 			driveCurrent
 		);
 		driveTalon.optimizeBusUtilization();
 
-		// SparkMax configuration
+		// Rev configs
 		turnSparkMax.restoreFactoryDefaults();
 		turnSparkMax.setCANTimeout(Constants.Drive.Module.Hybrid.SPARK_TIMEOUT_MS);
 		turnRelativeEncoder = turnSparkMax.getEncoder();
@@ -154,11 +159,11 @@ public class ModuleIOHybrid implements ModuleIO {
 
 	@Override
 	public void updateInputs(ModuleIOInputs inputs) {
-		BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+		BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent, turnAbsolutePosition);
 
 		// Turn Stuff
 		inputs.turnAbsolutePosition = Rotation2d.fromRotations(
-			cancoder.getAbsolutePosition().getValueAsDouble()
+			turnAbsolutePosition.getValueAsDouble()
 		).minus(absoluteEncoderOffset);
 		inputs.turnPosition = Rotation2d.fromRotations(
 			turnRelativeEncoder.getPosition() / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO
