@@ -110,11 +110,7 @@ public class ModuleIOHybrid implements ModuleIO {
 
 		turnAbsolutePosition = cancoder.getAbsolutePosition();
 
-
-		BaseStatusSignal.setUpdateFrequencyForAll(
-			250.0,
-			drivePosition
-		);
+		BaseStatusSignal.setUpdateFrequencyForAll(250.0, drivePosition);
 		BaseStatusSignal.setUpdateFrequencyForAll(
 			50.0,
 			driveVelocity,
@@ -159,7 +155,13 @@ public class ModuleIOHybrid implements ModuleIO {
 
 	@Override
 	public void updateInputs(ModuleIOInputs inputs) {
-		BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent, turnAbsolutePosition);
+		BaseStatusSignal.refreshAll(
+			drivePosition,
+			driveVelocity,
+			driveAppliedVolts,
+			driveCurrent,
+			turnAbsolutePosition
+		);
 
 		// Turn Stuff
 		inputs.turnAbsolutePosition = Rotation2d.fromRotations(
