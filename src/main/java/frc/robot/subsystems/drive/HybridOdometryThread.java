@@ -44,9 +44,9 @@ public class HybridOdometryThread extends Thread {
 
 	@Override
 	public void start() {
-        if (timestampQueues.size() > 0) {
-            super.start();
-        }
+		if (timestampQueues.size() > 0) {
+			super.start();
+		}
 	}
 
 	public Queue<Double> registerSignal(ParentDevice device, StatusSignal<Double> signal) {
