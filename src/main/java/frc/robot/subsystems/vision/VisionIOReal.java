@@ -4,6 +4,7 @@ import static java.lang.System.arraycopy;
 import static org.photonvision.PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -30,21 +31,19 @@ public class VisionIOReal implements VisionIO {
 
   public VisionIOReal() {
     frontCam = new PhotonCamera("front");
-    frontPhotonPoseEstimator =
-        new PhotonPoseEstimator(
-            Constants.Vision.aprilTagFieldLayout,
-            MULTI_TAG_PNP_ON_COPROCESSOR,
-            frontCam,
-            Constants.Vision.frontCamToRobot);
+    frontPhotonPoseEstimator = new PhotonPoseEstimator(
+        Constants.Vision.aprilTagFieldLayout,
+        MULTI_TAG_PNP_ON_COPROCESSOR,
+        frontCam,
+        Constants.Vision.frontCamToRobot);
 
-    //  Side Camera
+    // Side Camera
     sideCam = new PhotonCamera("side");
-    sidePhotonPoseEstimator =
-        new PhotonPoseEstimator(
-            Constants.Vision.aprilTagFieldLayout,
-            MULTI_TAG_PNP_ON_COPROCESSOR,
-            sideCam,
-            Constants.Vision.sideCamToRobot);
+    sidePhotonPoseEstimator = new PhotonPoseEstimator(
+        Constants.Vision.aprilTagFieldLayout,
+        MULTI_TAG_PNP_ON_COPROCESSOR,
+        sideCam,
+        Constants.Vision.sideCamToRobot);
   }
 
   @Override
@@ -67,8 +66,7 @@ public class VisionIOReal implements VisionIO {
         estimatedRobotPose -> {
           poseArray[0] = estimatedRobotPose.estimatedPose;
           timestampArray[0] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs =
-              getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
+          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
           latencyArray[0] = frontCam.getLatestResult().getLatencyMillis() / 1.0e3;
         },
@@ -82,8 +80,7 @@ public class VisionIOReal implements VisionIO {
         estimatedRobotPose -> {
           poseArray[1] = estimatedRobotPose.estimatedPose;
           timestampArray[1] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs =
-              getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
+          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
           latencyArray[1] = sideCam.getLatestResult().getLatencyMillis() / 1.0e3;
         },
@@ -92,5 +89,15 @@ public class VisionIOReal implements VisionIO {
           timestampArray[1] = 0.0;
           latencyArray[1] = 0.0;
         });
+  }
+
+  public Pose2d getNotePose(double pitch, double yaw, Pose2d botPose2d) {
+    double height = 10;
+    yaw = Math.abs(yaw);
+    pitch = Math.abs(pitch);
+    double xToBot = Math.sin(yaw) * (height / Math.tan(pitch));
+    double yToBot = Math.cos(yaw) * (height / Math.tan(pitch));
+    Pose2d notePose2d = new Pose2d(botPose2d.getX() + xToBot, botPose2d.getY() + yToBot, botPose2d.getRotation());
+    return notePose2d;
   }
 }

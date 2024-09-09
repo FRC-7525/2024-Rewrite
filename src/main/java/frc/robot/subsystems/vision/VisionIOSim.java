@@ -118,6 +118,16 @@ public class VisionIOSim implements VisionIO {
     visionSim.update(pose);
   }
 
+  public Pose2d getNotePose(double pitch, double yaw, Pose2d botPose2d) {
+    double height = 10;
+    yaw = Math.abs(yaw);
+    pitch = Math.abs(pitch);
+    double xToBot = Math.sin(yaw) * (height / Math.tan(pitch));
+    double yToBot = Math.cos(yaw) * (height / Math.tan(pitch));
+    Pose2d notePose2d = new Pose2d(botPose2d.getX() + xToBot, botPose2d.getY() + yToBot, botPose2d.getRotation());
+    return notePose2d;
+  }
+
   public void getEstimatedPoseUpdates() {
     Optional<EstimatedRobotPose> pose = frontPhotonPoseEstimator.update();
     pose.ifPresentOrElse(
