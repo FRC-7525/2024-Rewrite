@@ -8,11 +8,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+
+import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionIOReal implements VisionIO {
   // Forward Camera
@@ -91,13 +96,19 @@ public class VisionIOReal implements VisionIO {
         });
   }
 
-  public Pose2d getNotePose(double pitch, double yaw, Pose2d botPose2d) {
+  public Pose2d getNotePose(Pose2d botPose2d) {
     double height = 10;
-    yaw = Math.abs(yaw);
-    pitch = Math.abs(pitch);
-    double xToBot = Math.sin(yaw) * (height / Math.tan(pitch));
-    double yToBot = Math.cos(yaw) * (height / Math.tan(pitch));
-    Pose2d notePose2d = new Pose2d(botPose2d.getX() + xToBot, botPose2d.getY() + yToBot, botPose2d.getRotation());
-    return notePose2d;
+    PhotonPipelineResult lastResult = sideCam.getLatestResult();
+    List<PhotonTrackedTarget> noteData = lastResult.targets;
+
+    for (PhotonTrackedTarget t : noteData) {
+      double yaw = Math.abs(Units.degreesToRadians(t.getYaw()));
+      double pitch = Math.abs(Units.degreesToRadians(t.getPitch()));
+
+      double xToBot = Math.sin(yaw) * (height / Math.tan(pitch));
+      double yToBot = Math.cos(yaw) * (height / Math.tan(pitch));
+      Pose2d notePose2d = new Pose2d(botPose2d.getX() + xToBot, botPose2d.getY() + yToBot, botPose2d.getRotation());
+      return notePose2d;
+    } return null;
   }
 }
