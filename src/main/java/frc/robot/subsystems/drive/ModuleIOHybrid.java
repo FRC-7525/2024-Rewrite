@@ -28,197 +28,175 @@ import java.util.Queue;
  */
 public class ModuleIOHybrid implements ModuleIO {
 
-	private final TalonFX driveTalon;
-	private final CANSparkMax turnSparkMax;
-	private final CANcoder cancoder;
+  private final TalonFX driveTalon;
+  private final CANSparkMax turnSparkMax;
+  private final CANcoder cancoder;
 
-	private final Queue<Double> timestampQueue;
+  private final Queue<Double> timestampQueue;
 
-	private final StatusSignal<Double> turnAbsolutePosition;
-	private final StatusSignal<Double> drivePosition;
-	private final Queue<Double> drivePositionQueue;
-	private final StatusSignal<Double> driveVelocity;
-	private final StatusSignal<Double> driveAppliedVolts;
-	private final StatusSignal<Double> driveCurrent;
+  private final StatusSignal<Double> turnAbsolutePosition;
+  private final StatusSignal<Double> drivePosition;
+  private final Queue<Double> drivePositionQueue;
+  private final StatusSignal<Double> driveVelocity;
+  private final StatusSignal<Double> driveAppliedVolts;
+  private final StatusSignal<Double> driveCurrent;
 
-	private final RelativeEncoder turnRelativeEncoder;
-	private final Queue<Double> turnPositionQueue;
+  private final RelativeEncoder turnRelativeEncoder;
+  private final Queue<Double> turnPositionQueue;
 
-	private final boolean isTurnMotorInverted = true;
-	private final Rotation2d absoluteEncoderOffset;
+  private final boolean isTurnMotorInverted = true;
+  private final Rotation2d absoluteEncoderOffset;
 
-	public ModuleIOHybrid(int index) {
-		switch (index) {
-			case 0:
-				driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE0_ID);
-				turnSparkMax = new CANSparkMax(
-					Constants.Drive.Module.Hybrid.TURN0_ID,
-					MotorType.kBrushless
-				);
-				cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER0_ID);
-				absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET0);
-				break;
-			case 1:
-				driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE1_ID);
-				turnSparkMax = new CANSparkMax(
-					Constants.Drive.Module.Hybrid.TURN1_ID,
-					MotorType.kBrushless
-				);
-				cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER1_ID);
-				absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET1);
-				break;
-			case 2:
-				driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE2_ID);
-				turnSparkMax = new CANSparkMax(
-					Constants.Drive.Module.Hybrid.TURN2_ID,
-					MotorType.kBrushless
-				);
-				cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER2_ID);
-				absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET2);
-				break;
-			case 3:
-				driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE3_ID);
-				turnSparkMax = new CANSparkMax(
-					Constants.Drive.Module.Hybrid.TURN3_ID,
-					MotorType.kBrushless
-				);
-				cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER3_ID);
-				absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET3);
-				break;
-			default:
-				throw new RuntimeException("Invalid module index");
-		}
+  public ModuleIOHybrid(int index) {
+    switch (index) {
+      case 0:
+        driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE0_ID);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN0_ID, MotorType.kBrushless);
+        cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER0_ID);
+        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET0);
+        break;
+      case 1:
+        driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE1_ID);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN1_ID, MotorType.kBrushless);
+        cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER1_ID);
+        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET1);
+        break;
+      case 2:
+        driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE2_ID);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN2_ID, MotorType.kBrushless);
+        cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER2_ID);
+        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET2);
+        break;
+      case 3:
+        driveTalon = new TalonFX(Constants.Drive.Module.Hybrid.DRIVE3_ID);
+        turnSparkMax =
+            new CANSparkMax(Constants.Drive.Module.Hybrid.TURN3_ID, MotorType.kBrushless);
+        cancoder = new CANcoder(Constants.Drive.Module.Hybrid.CANCODER3_ID);
+        absoluteEncoderOffset = new Rotation2d(Constants.Drive.Module.Hybrid.OFFSET3);
+        break;
+      default:
+        throw new RuntimeException("Invalid module index");
+    }
 
-		// Phoenix configuration
-		var driveConfig = new TalonFXConfiguration();
-		driveConfig.CurrentLimits.SupplyCurrentLimit =
-			Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
-		driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-		driveTalon.getConfigurator().apply(driveConfig);
-		setDriveBrakeMode(true);
+    // Phoenix configuration
+    var driveConfig = new TalonFXConfiguration();
+    driveConfig.CurrentLimits.SupplyCurrentLimit =
+        Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
+    driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveTalon.getConfigurator().apply(driveConfig);
+    setDriveBrakeMode(true);
 
-		cancoder.getConfigurator().apply(new CANcoderConfiguration());
+    cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
-		timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
+    timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 
-		drivePosition = driveTalon.getPosition();
-		drivePositionQueue = HybridOdometryThread.getInstance()
-			.registerSignal(driveTalon, driveTalon.getPosition());
-		driveVelocity = driveTalon.getVelocity();
-		driveAppliedVolts = driveTalon.getMotorVoltage();
-		driveCurrent = driveTalon.getSupplyCurrent();
+    drivePosition = driveTalon.getPosition();
+    drivePositionQueue =
+        HybridOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
+    driveVelocity = driveTalon.getVelocity();
+    driveAppliedVolts = driveTalon.getMotorVoltage();
+    driveCurrent = driveTalon.getSupplyCurrent();
 
-		turnAbsolutePosition = cancoder.getAbsolutePosition();
+    turnAbsolutePosition = cancoder.getAbsolutePosition();
 
-		BaseStatusSignal.setUpdateFrequencyForAll(250.0, drivePosition);
-		BaseStatusSignal.setUpdateFrequencyForAll(
-			50.0,
-			driveVelocity,
-			driveAppliedVolts,
-			turnAbsolutePosition,
-			driveCurrent
-		);
-		driveTalon.optimizeBusUtilization();
+    BaseStatusSignal.setUpdateFrequencyForAll(250.0, drivePosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0, driveVelocity, driveAppliedVolts, turnAbsolutePosition, driveCurrent);
+    driveTalon.optimizeBusUtilization();
 
-		// Rev configs
-		turnSparkMax.restoreFactoryDefaults();
-		turnSparkMax.setCANTimeout(Constants.Drive.Module.Hybrid.SPARK_TIMEOUT_MS);
-		turnRelativeEncoder = turnSparkMax.getEncoder();
+    // Rev configs
+    turnSparkMax.restoreFactoryDefaults();
+    turnSparkMax.setCANTimeout(Constants.Drive.Module.Hybrid.SPARK_TIMEOUT_MS);
+    turnRelativeEncoder = turnSparkMax.getEncoder();
 
-		turnSparkMax.setInverted(isTurnMotorInverted);
-		turnSparkMax.setSmartCurrentLimit(Constants.Drive.Module.Hybrid.TURN_CURRENT_LIMIT);
-		turnSparkMax.enableVoltageCompensation(Constants.MAX_VOLTS);
+    turnSparkMax.setInverted(isTurnMotorInverted);
+    turnSparkMax.setSmartCurrentLimit(Constants.Drive.Module.Hybrid.TURN_CURRENT_LIMIT);
+    turnSparkMax.enableVoltageCompensation(Constants.MAX_VOLTS);
 
-		turnRelativeEncoder.setPosition(0.0);
-		turnRelativeEncoder.setMeasurementPeriod(
-			Constants.Drive.Module.Hybrid.SPARK_MEASURMENT_PERIOD_MS
-		);
-		turnRelativeEncoder.setAverageDepth(Constants.Drive.Module.Hybrid.SPARK_AVG_DEPTH);
+    turnRelativeEncoder.setPosition(0.0);
+    turnRelativeEncoder.setMeasurementPeriod(
+        Constants.Drive.Module.Hybrid.SPARK_MEASURMENT_PERIOD_MS);
+    turnRelativeEncoder.setAverageDepth(Constants.Drive.Module.Hybrid.SPARK_AVG_DEPTH);
 
-		turnSparkMax.setCANTimeout(0);
-		turnSparkMax.setPeriodicFramePeriod(
-			PeriodicFrame.kStatus2,
-			(int) (Constants.Drive.Module.Hybrid.SPARK_FRAME_PERIOD)
-		);
-		turnPositionQueue = HybridOdometryThread.getInstance()
-			.registerSignal(() -> {
-				double value = turnRelativeEncoder.getPosition();
-				if (turnSparkMax.getLastError() == REVLibError.kOk) {
-					return OptionalDouble.of(value);
-				} else {
-					return OptionalDouble.of(0);
-				}
-			});
+    turnSparkMax.setCANTimeout(0);
+    turnSparkMax.setPeriodicFramePeriod(
+        PeriodicFrame.kStatus2, (int) (Constants.Drive.Module.Hybrid.SPARK_FRAME_PERIOD));
+    turnPositionQueue =
+        HybridOdometryThread.getInstance()
+            .registerSignal(
+                () -> {
+                  double value = turnRelativeEncoder.getPosition();
+                  if (turnSparkMax.getLastError() == REVLibError.kOk) {
+                    return OptionalDouble.of(value);
+                  } else {
+                    return OptionalDouble.of(0);
+                  }
+                });
 
-		turnSparkMax.burnFlash();
-	}
+    turnSparkMax.burnFlash();
+  }
 
-	@Override
-	public void updateInputs(ModuleIOInputs inputs) {
-		BaseStatusSignal.refreshAll(
-			drivePosition,
-			driveVelocity,
-			driveAppliedVolts,
-			driveCurrent,
-			turnAbsolutePosition
-		);
+  @Override
+  public void updateInputs(ModuleIOInputs inputs) {
+    BaseStatusSignal.refreshAll(
+        drivePosition, driveVelocity, driveAppliedVolts, driveCurrent, turnAbsolutePosition);
 
-		// Turn Stuff
-		inputs.turnAbsolutePosition = Rotation2d.fromRotations(
-			turnAbsolutePosition.getValueAsDouble()
-		).minus(absoluteEncoderOffset);
-		inputs.turnPosition = Rotation2d.fromRotations(
-			turnRelativeEncoder.getPosition() / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO
-		);
-		inputs.turnVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(
-			turnRelativeEncoder.getVelocity()
-		) /
-		Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
-		inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
-		inputs.turnCurrentAmps = new double[] { turnSparkMax.getOutputCurrent() };
+    // Turn Stuff
+    inputs.turnAbsolutePosition =
+        Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
+            .minus(absoluteEncoderOffset);
+    inputs.turnPosition =
+        Rotation2d.fromRotations(
+            turnRelativeEncoder.getPosition() / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO);
+    inputs.turnVelocityRadPerSec =
+        Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
+            / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
+    inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
+    inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
 
-		// Other stuff
-		inputs.odometryTimestamps = timestampQueue
-			.stream()
-			.mapToDouble((Double value) -> value)
-			.toArray();
-		inputs.odometryDrivePositionsRad = drivePositionQueue
-			.stream()
-			.mapToDouble(
-				(Double value) ->
-					Units.rotationsToRadians(value) / Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO
-			)
-			.toArray();
-		inputs.odometryTurnPositions = turnPositionQueue
-			.stream()
-			.map((Double value) ->
-				Rotation2d.fromRotations(value / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO)
-			)
-			.toArray(Rotation2d[]::new);
-		timestampQueue.clear();
-		drivePositionQueue.clear();
-		turnPositionQueue.clear();
-	}
+    // Other stuff
+    inputs.odometryTimestamps =
+        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryDrivePositionsRad =
+        drivePositionQueue.stream()
+            .mapToDouble(
+                (Double value) ->
+                    Units.rotationsToRadians(value)
+                        / Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO)
+            .toArray();
+    inputs.odometryTurnPositions =
+        turnPositionQueue.stream()
+            .map(
+                (Double value) ->
+                    Rotation2d.fromRotations(value / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO))
+            .toArray(Rotation2d[]::new);
+    timestampQueue.clear();
+    drivePositionQueue.clear();
+    turnPositionQueue.clear();
+  }
 
-	@Override
-	public void setDriveVoltage(double volts) {
-		driveTalon.setControl(new VoltageOut(volts));
-	}
+  @Override
+  public void setDriveVoltage(double volts) {
+    driveTalon.setControl(new VoltageOut(volts));
+  }
 
-	@Override
-	public void setTurnVoltage(double volts) {
-		turnSparkMax.setVoltage(volts);
-	}
+  @Override
+  public void setTurnVoltage(double volts) {
+    turnSparkMax.setVoltage(volts);
+  }
 
-	@Override
-	public void setDriveBrakeMode(boolean enable) {
-		var config = new MotorOutputConfigs();
-		config.Inverted = InvertedValue.CounterClockwise_Positive;
-		config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-		driveTalon.getConfigurator().apply(config);
-	}
+  @Override
+  public void setDriveBrakeMode(boolean enable) {
+    var config = new MotorOutputConfigs();
+    config.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+    driveTalon.getConfigurator().apply(config);
+  }
 
-	public void setTurnBrakeMode(boolean enable) {
-		turnSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
-	}
+  public void setTurnBrakeMode(boolean enable) {
+    turnSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+  }
 }

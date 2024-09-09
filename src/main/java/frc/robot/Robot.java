@@ -13,13 +13,7 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.AutoCommands;
 import frc.robot.subsystems.drive.AutoAlign;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
@@ -38,146 +32,140 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  */
 public class Robot extends LoggedRobot {
 
-	public Manager managerSubsystem;
-	private SendableChooser<Command> autoChooser;
+  public Manager managerSubsystem;
+  // private SendableChooser<Command> autoChooser;
 
-	private AutoCommands autoCommands = new AutoCommands(this);
+  // private AutoCommands autoCommands = new AutoCommands(this);
 
-	private Command autonomousCommand;
+  // private Command autonomousCommand;
 
-	/**
-	 * This function is run when the robot is first started up and should be used for any
-	 * initialization code.
-	 */
-	@Override
-	public void robotInit() {
-		managerSubsystem = new Manager();
-		AutoAlign.setManager(managerSubsystem);
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
+    managerSubsystem = new Manager();
+    AutoAlign.setManager(managerSubsystem);
 
-		NamedCommands.registerCommand("Intaking", autoCommands.intaking());
-		NamedCommands.registerCommand("Shooting", autoCommands.shooting());
-		NamedCommands.registerCommand("Return To Idle", autoCommands.returnToIdle());
-		NamedCommands.registerCommand("Speeding Up", autoCommands.startSpinningUp());
-		NamedCommands.registerCommand("Spin and Intake", autoCommands.spinAndIntake());
+    // NamedCommands.registerCommand("Intaking", autoCommands.intaking());
+    // NamedCommands.registerCommand("Shooting", autoCommands.shooting());
+    // NamedCommands.registerCommand("Return To Idle", autoCommands.returnToIdle());
+    // NamedCommands.registerCommand("Speeding Up", autoCommands.startSpinningUp());
+    // NamedCommands.registerCommand("Spin and Intake", autoCommands.spinAndIntake());
 
-		// Record metadata
-		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-		Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-		Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-		Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-		Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-		switch (BuildConstants.DIRTY) {
-			case 0:
-				Logger.recordMetadata("GitDirty", "All changes committed");
-				break;
-			case 1:
-				Logger.recordMetadata("GitDirty", "Uncomitted changes");
-				break;
-			default:
-				Logger.recordMetadata("GitDirty", "Unknown");
-				break;
-		}
+    // Record metadata
+    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        Logger.recordMetadata("GitDirty", "All changes committed");
+        break;
+      case 1:
+        Logger.recordMetadata("GitDirty", "Uncomitted changes");
+        break;
+      default:
+        Logger.recordMetadata("GitDirty", "Unknown");
+        break;
+    }
 
-		// Set up data receivers & replay source
-		switch (Constants.currentMode) {
-			case REAL:
-				// Running on a real robot, log to a USB stick ("/U/logs")
-				Logger.addDataReceiver(new WPILOGWriter());
-				Logger.addDataReceiver(new NT4Publisher());
-				break;
-			case SIM:
-				// Running a physics simulator, log to NT
-				Logger.addDataReceiver(new NT4Publisher());
-				// Logger.addDataReceiver(new WPILOGWriter("C:\\Dev\\Robotics
-				// Related\\Controls\\2024-Rewrite\\logs", defaultPeriodSecs));
-				break;
-			case REPLAY:
-				// Replaying a log, set up replay source
-				setUseTiming(false); // Run as fast as possible
-				String logPath = LogFileUtil.findReplayLog();
-				Logger.setReplaySource(new WPILOGReader(logPath));
-				Logger.addDataReceiver(
-					new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))
-				);
-				break;
-		}
+    // Set up data receivers & replay source
+    switch (Constants.currentMode) {
+      case REAL:
+        // Running on a real robot, log to a USB stick ("/U/logs")
+        // Logger.addDataReceiver(new WPILOGWriter());
+        // Logger.addDataReceiver(new NT4Publisher());
+        break;
+      case SIM:
+        // Running a physics simulator, log to NT
+        Logger.addDataReceiver(new NT4Publisher());
+        // Logger.addDataReceiver(new WPILOGWriter("C:\\Dev\\Robotics
+        // Related\\Controls\\2024-Rewrite\\logs", defaultPeriodSecs));
+        break;
+      case REPLAY:
+        // Replaying a log, set up replay source
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        break;
+    }
 
-		// See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
-		// Logger.disableDeterministicTimestamps()
+    // See http://bit.ly/3YIzFZ6 for more information on timestamps in AdvantageKit.
+    // Logger.disableDeterministicTimestamps()
 
-		// Start AdvantageKit logger
-		Logger.start();
-		// TODO: Make default auto a "cross line" auto
-		autoChooser = AutoBuilder.buildAutoChooser("Example Auto");
-		SmartDashboard.putData("Auto Chooser", autoChooser);
-	}
+    // Start AdvantageKit logger
+    Logger.start();
+    // TODO: Make default auto a "cross line" auto
+    // autoChooser = AutoBuilder.buildAutoChooser("Example Auto");
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
 
-	/** This function is called periodically during all modes. */
-	@Override
-	public void robotPeriodic() {
-		managerSubsystem.periodic();
+  /** This function is called periodically during all modes. */
+  @Override
+  public void robotPeriodic() {
+    managerSubsystem.periodic();
 
-		// Logs note sim logging and updating sims
-		NoteSimulator.update();
-		NoteSimulator.logNoteInfo();
+    // Logs note sim logging and updating sims
+    NoteSimulator.update();
+    NoteSimulator.logNoteInfo();
 
-		CommandScheduler.getInstance().run();
-	}
+    CommandScheduler.getInstance().run();
+  }
 
-	/** This function is called once when the robot is disabled. */
-	@Override
-	public void disabledInit() {
-		managerSubsystem.stop();
-	}
+  /** This function is called once when the robot is disabled. */
+  @Override
+  public void disabledInit() {
+    managerSubsystem.stop();
+  }
 
-	/** This function is called periodically when disabled. */
-	@Override
-	public void disabledPeriodic() {}
+  /** This function is called periodically when disabled. */
+  @Override
+  public void disabledPeriodic() {}
 
-	/** This function is called once the robot enters Auto. */
-	@Override
-	public void autonomousInit() {
-		autonomousCommand = getAutonomousCommand();
+  /** This function is called once the robot enters Auto. */
+  @Override
+  public void autonomousInit() {
+    // autonomousCommand = getAutonomousCommand();
 
-		// schedule the autonomous command (example)
-		if (autonomousCommand != null) {
-			autonomousCommand.schedule();
-		}
-	}
+    // // schedule the autonomous command (example)
+    // if (autonomousCommand != null) {
+    //   autonomousCommand.schedule();
+    // }
+  }
 
-	/** This function is called periodically during autonomous. */
-	@Override
-	public void autonomousPeriodic() {}
+  /** This function is called periodically during autonomous. */
+  @Override
+  public void autonomousPeriodic() {}
 
-	/** This function is called once when teleop is enabled. */
-	@Override
-	public void teleopInit() {
-		if (autonomousCommand != null) {
-			autonomousCommand.cancel();
-		}
-	}
+  /** This function is called once when teleop is enabled. */
+  @Override
+  public void teleopInit() {
+    // if (autonomousCommand != null) {
+    //   autonomousCommand.cancel();
+    // }
+  }
 
-	/** This function is called periodically during operator control. */
-	@Override
-	public void teleopPeriodic() {}
+  /** This function is called periodically during operator control. */
+  @Override
+  public void teleopPeriodic() {}
 
-	/** This function is called once when test mode is enabled. */
-	@Override
-	public void testInit() {}
+  /** This function is called once when test mode is enabled. */
+  @Override
+  public void testInit() {}
 
-	/** This function is called periodically during test mode. */
-	@Override
-	public void testPeriodic() {}
+  /** This function is called periodically during test mode. */
+  @Override
+  public void testPeriodic() {}
 
-	/** This function is called once when the robot is first started up. */
-	@Override
-	public void simulationInit() {}
+  /** This function is called once when the robot is first started up. */
+  @Override
+  public void simulationInit() {}
 
-	/** This function is called periodically whilst in simulation. */
-	@Override
-	public void simulationPeriodic() {}
-
-	public Command getAutonomousCommand() {
-		return autoChooser.getSelected();
-	}
+  /** This function is called periodically whilst in simulation. */
+  @Override
+  public void simulationPeriodic() {}
 }
