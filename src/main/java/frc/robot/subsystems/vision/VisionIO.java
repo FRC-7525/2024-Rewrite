@@ -21,6 +21,8 @@ public interface VisionIO {
     public double[] visionStdDevs = new double[5];
     public boolean hasSideVision = false;
     public boolean hasFrontVision = false;
+    
+    public boolean hasNoteTarget = false;
   }
 
   /** Updates the set of loggable inputs. */
@@ -28,6 +30,8 @@ public interface VisionIO {
 
   /** Update the reference pose of the vision system. Currently only used in sim. */
   public default void updatePose(Pose2d pose) {}
+
+  public default void getNotePose(Pose2d botPose2d) {}
 
   /**
    * The standard deviations of the estimated poses from vision cameras, for use with {@link

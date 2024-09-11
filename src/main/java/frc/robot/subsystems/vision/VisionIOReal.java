@@ -28,6 +28,10 @@ public class VisionIOReal implements VisionIO {
   private final PhotonCamera sideCam;
   private final PhotonPoseEstimator sidePhotonPoseEstimator;
 
+  // Note Vision Camera
+  private final PhotonCamera noteCam; 
+
+
   private Pose3d[] poseArray = new Pose3d[3];
   private double[] timestampArray = new double[3];
   private double[] visionStdArray = new double[9];
@@ -49,6 +53,10 @@ public class VisionIOReal implements VisionIO {
         MULTI_TAG_PNP_ON_COPROCESSOR,
         sideCam,
         Constants.Vision.sideCamToRobot);
+
+    // Note Vision Camera
+    noteCam = new PhotonCamera("note");
+
   }
 
   @Override
@@ -59,9 +67,17 @@ public class VisionIOReal implements VisionIO {
     inputs.visionStdDevs = visionStdArray;
     inputs.latency = latencyArray;
     count += 1;
+    var noteResults = noteCam.getLatestResult();
     if (count % 500 == 0) {
       frontCam.takeOutputSnapshot();
       sideCam.takeOutputSnapshot();
+      noteCam.takeOutputSnapshot();
+    }
+    if (noteResults.hasTargets()) {
+      inputs.hasNoteTarget = true;
+    } else {
+      inputs.hasNoteTarget = false;
+
     }
   }
 
@@ -96,9 +112,10 @@ public class VisionIOReal implements VisionIO {
         });
   }
 
-  public Pose2d getNotePose(Pose2d botPose2d) {
+  public void getNotePose(Pose2d botPose2d) {
     double height = 10;
-    PhotonPipelineResult lastResult = sideCam.getLatestResult();
+    
+    PhotonPipelineResult lastResult = noteCam.getLatestResult();
     List<PhotonTrackedTarget> noteData = lastResult.targets;
 
     for (PhotonTrackedTarget t : noteData) {
@@ -108,7 +125,7 @@ public class VisionIOReal implements VisionIO {
       double xToBot = Math.sin(yaw) * (height / Math.tan(pitch));
       double yToBot = Math.cos(yaw) * (height / Math.tan(pitch));
       Pose2d notePose2d = new Pose2d(botPose2d.getX() + xToBot, botPose2d.getY() + yToBot, botPose2d.getRotation());
-      return notePose2d;
-    } return null;
+      
+    }
   }
 }
