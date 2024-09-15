@@ -1,6 +1,8 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
@@ -8,13 +10,13 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 	private TalonFX leftMotor;
 	private TalonFX rightMotor;
-	private PIDController feedbackController;
+	private BangBangController feedbackController;
 	private double speedPoint;
 	private double leftAppliedVolts;
 	private double rightAppliedVolts;
 
 	public ShooterIOTalonFX() {
-		feedbackController = new PIDController(0, 0, 0);
+		feedbackController = new BangBangController();
 		leftMotor = new TalonFX(Constants.Shooter.LEFT_SHOOTER_ID);
 		rightMotor = new TalonFX(Constants.Shooter.RIGHT_SHOOTER_ID);
 		speedPoint = 0.0;
@@ -50,10 +52,6 @@ public class ShooterIOTalonFX implements ShooterIO {
 		rightAppliedVolts = 0.0;
 		leftMotor.stopMotor();
 		rightMotor.stopMotor();
-	}
-
-	public void configurePID(double kP, double kI, double kD) {
-		feedbackController.setPID(kP, kI, kD);
 	}
 
 	public boolean nearSpeedPoint() {

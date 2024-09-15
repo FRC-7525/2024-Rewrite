@@ -1,6 +1,7 @@
 package frc.robot.subsystems.ampBar;
 
 import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public interface AmpBarIO {
 	@AutoLog
@@ -11,11 +12,15 @@ public interface AmpBarIO {
 		// Pivot
 		public double pivotPosition;
 		public double pivotSetpoint;
-		public double pivotAppliedVoltage;
+		
 		// Spinners
 		public double spinnerSpeed;
 		public double spinnerSetpoint;
+
+		@AutoLogOutput
 		public double spinnerAppliedVoltage;
+		@AutoLogOutput
+		public double pivotAppliedVoltage;
 	}
 
 	public default void updateInput(AmpBarIOInputs inputs) {}
