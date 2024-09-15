@@ -67,4 +67,8 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 		io.updateInput(inputs);
 		io.updateOutputs(outputs);
 	}
+
+	public boolean noteDetected() {
+		return io.noteDetected();
+	}
 }

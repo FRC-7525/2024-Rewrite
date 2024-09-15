@@ -89,6 +89,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () ->
 			Constants.controller.getBButtonPressed()
 		);
+		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () -> intakeSubsystem.noteDetected());
 
 		// Amping (Y)
 		addTrigger(ManagerStates.IDLE, ManagerStates.FEED_AMP, () ->
@@ -97,6 +98,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.FEED_AMP, ManagerStates.SCORE_AMP, () ->
 			Constants.controller.getYButtonPressed()
 		);
+		addTrigger(ManagerStates.FEED_AMP, ManagerStates.SCORE_AMP, () -> ampBarSubsystem.noteDetected());
 		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
 			Constants.controller.getYButtonPressed()
 		);

@@ -102,6 +102,9 @@ public final class Constants {
 		// In RPS (Spinner Setpoints)
 		public static final double REVERSE = -10.0;
 		public static final double ON = 10.0;
+
+		// Beam Break
+		public static final int BEAM_BREAK_PORT = 0;
 	}
 
 	public static final class Shooter {
@@ -171,6 +174,9 @@ public final class Constants {
 		public static final double OUT = -Units.degreesToRadians(100.0);
 		public static final double FEEDING_POSITION = -Units.degreesToRadians(93.0);
 		public static final double IN = Units.degreesToRadians(0.0);
+
+		// Beam Break
+		public static final int BEAM_BREAK_PORT = 1;
 	}
 
 	public static final class Drive {
