@@ -52,6 +52,6 @@ public interface AmpBarIO {
 	}
 
 	public default boolean noteDetected() {
-		return true;
+		return false;
 	}
 }

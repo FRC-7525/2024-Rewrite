@@ -49,6 +49,6 @@ public interface IntakeIO {
 	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIDConst) {}
 
 	public default boolean noteDetected() {
-		return true;
+		return false;
 	}
 }
