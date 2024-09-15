@@ -177,6 +177,9 @@ public final class Constants {
 
 		// Beam Break
 		public static final int BEAM_BREAK_PORT = 1;
+
+		//State Transitions
+		public static final double TIME_FOR_SCORING = 2;
 	}
 
 	public static final class Drive {

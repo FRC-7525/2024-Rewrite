@@ -22,6 +22,8 @@ public class Manager extends Subsystem<ManagerStates> {
 	Shooter shooterSubsystem;
 	Drive driveSubsystem;
 
+	double startScoreTime;
+
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
 		NoteSimulator.setDrive(driveSubsystem);
@@ -102,6 +104,12 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
 			Constants.controller.getYButtonPressed()
 		);
+		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> 
+			(getStateTime() - startScoreTime > Constants.AmpBar.TIME_FOR_SCORING)
+		);
+		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
+			Constants.controller.getYButtonPressed()
+		);
 		addTrigger(ManagerStates.FEED_AMP, ManagerStates.IDLE, () ->
 			Constants.controller.getXButtonPressed()
 		);
@@ -127,6 +135,10 @@ public class Manager extends Subsystem<ManagerStates> {
 	@Override
 	public void periodic() {
 		super.periodic();
+
+		if (getState() == ManagerStates.FEED_AMP) {
+			startScoreTime = getStateTime();
+		}
 
 		intakeSubsystem.setState(getState().getIntakeState());
 		ampBarSubsystem.setState(getState().getAmpBarState());
