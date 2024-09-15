@@ -175,6 +175,7 @@ public class ModuleIOHybrid implements ModuleIO {
 		) /
 		Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
 		inputs.turnCurrentAmps = new double[] { turnSparkMax.getOutputCurrent() };
+		inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
 
 		// Other stuff
 		inputs.odometryTimestamps = timestampQueue
