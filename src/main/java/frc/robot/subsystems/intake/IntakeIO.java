@@ -22,8 +22,10 @@ public interface IntakeIO {
 	}
 
 	public static class IntakeIOOutputs {
+
 		@AutoLogOutput
 		public double pivotAppliedVoltage;
+
 		@AutoLogOutput
 		public double wheelAppliedVoltage;
 	}

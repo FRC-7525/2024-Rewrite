@@ -12,15 +12,17 @@ public interface AmpBarIO {
 		// Pivot
 		public double pivotPosition;
 		public double pivotSetpoint;
-		
+
 		// Spinners
 		public double spinnerSpeed;
 		public double spinnerSetpoint;
 	}
 
 	public static class AmpBarIOOutputs {
+
 		@AutoLogOutput
 		public double spinnerAppliedVoltage = 0.0;
+
 		@AutoLogOutput
 		public double pivotAppliedVoltage = 0.0;
 	}

@@ -29,7 +29,7 @@ public class ShooterIOSim implements ShooterIO {
 
 		inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
 		inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
-		inputs.shooterSpeedPoint = speedPoint;	
+		inputs.shooterSpeedPoint = speedPoint;
 	}
 
 	@Override
@@ -47,7 +47,10 @@ public class ShooterIOSim implements ShooterIO {
 	@Override
 	public void setSpeed(double rps) {
 		speedPoint = rps;
-		appliedVolts = controller.calculate(sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF, rps);
+		appliedVolts = controller.calculate(
+			sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF,
+			rps
+		);
 		sim.setInputVoltage(appliedVolts);
 	}
 

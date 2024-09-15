@@ -32,7 +32,7 @@ public class AutoCommands {
 
 	public Command spinAndIntake() {
 		return new InstantCommand(() ->
-				robot.managerSubsystem.setState(ManagerStates.SPINNING_AND_INTAKING)
+			robot.managerSubsystem.setState(ManagerStates.SPINNING_AND_INTAKING)
 		);
 	}
 }

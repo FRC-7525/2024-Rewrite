@@ -21,7 +21,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.ModuleIO.ModuleIOOutputs;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -125,11 +124,17 @@ public class Module {
 
 	public void periodic() {
 		Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
-		
+
 		updateOutputs();
-		Logger.recordOutput("DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts", outputs.driveAppliedVolts);
-		Logger.recordOutput("DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts", outputs.turnAppliedVolts);
-		
+		Logger.recordOutput(
+			"DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts",
+			outputs.driveAppliedVolts
+		);
+		Logger.recordOutput(
+			"DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts",
+			outputs.turnAppliedVolts
+		);
+
 		// On first cycle, reset relative turn encoder
 		// Wait until absolute angle is nonzero in case it wasn't initialized yet
 		if (turnRelativeOffset == null && inputs.turnAbsolutePosition.getRadians() != 0.0) {

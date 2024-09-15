@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.ampBar.AmpBarIO.AmpBarIOOutputs;
-
 import org.littletonrobotics.junction.Logger;
 
 public class AmpBar extends Subsystem<AmpBarStates> {

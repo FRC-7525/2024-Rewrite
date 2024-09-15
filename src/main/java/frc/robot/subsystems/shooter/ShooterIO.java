@@ -13,8 +13,10 @@ public interface ShooterIO {
 	}
 
 	public static class ShooterIOOutputs {
+
 		@AutoLogOutput
 		public double leftShooterAppliedVolts = 0.0;
+
 		@AutoLogOutput
 		public double rightShooterAppliedVolts = 0.0;
 	}
