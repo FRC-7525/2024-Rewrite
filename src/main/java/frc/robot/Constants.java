@@ -105,6 +105,7 @@ public final class Constants {
 
 		// Beam Break
 		public static final int BEAM_BREAK_PORT = 0;
+		public static final double DEBOUNCE_TIME = 0.3;
 	}
 
 	public static final class Shooter {
@@ -177,6 +178,7 @@ public final class Constants {
 
 		// Beam Break
 		public static final int BEAM_BREAK_PORT = 1;
+		public static final double DEBOUNCE_TIME = 0.3;
 
 		//State Transitions
 		public static final double TIME_FOR_SCORING = 2;

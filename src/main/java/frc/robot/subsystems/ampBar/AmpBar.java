@@ -71,4 +71,8 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 	public boolean noteDetected() {
 		return io.noteDetected();
 	}
+
+	public boolean atSetPoint() {
+		return io.atSetPoint();
+	}
 }

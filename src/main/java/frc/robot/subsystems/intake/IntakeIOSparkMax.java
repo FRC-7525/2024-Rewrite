@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
@@ -32,6 +33,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 	boolean usingInPID;
 
 	private DigitalInput beamBreak;
+	Debouncer beamBreakDebouncer;
 
 	public IntakeIOSparkMax() {
 		intakeMotor = new TalonFX(Constants.Intake.SPINNER_ID);
@@ -45,6 +47,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 		pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
 
 		beamBreak = new DigitalInput(Constants.Intake.BEAM_BREAK_PORT);
+		beamBreakDebouncer = new Debouncer(Constants.Intake.DEBOUNCE_TIME, Debouncer.DebounceType.kBoth);
 	}
 
 	public void setSetpoints(
@@ -104,6 +107,9 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	@Override
 	public boolean noteDetected() {
-		return beamBreak.get();
+		if (beamBreakDebouncer.calculate(beamBreak.get())) {
+			return true;
+		}
+		return false;
 	}
 }

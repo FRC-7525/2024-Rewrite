@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
@@ -26,6 +27,7 @@ public class AmpBarIOReal implements AmpBarIO {
 	private double spinnerAppliedVoltage;
 
 	private DigitalInput beamBreak;
+	Debouncer beamBreakDebouncer;
 
 	public AmpBarIOReal() {
 		leftMotor = new CANSparkMax(Constants.AmpBar.LEFT_PIVOT_ID, MotorType.kBrushless);
@@ -52,6 +54,7 @@ public class AmpBarIOReal implements AmpBarIO {
 		spinnerAppliedVoltage = 0;
 
 		beamBreak = new DigitalInput(Constants.AmpBar.BEAM_BREAK_PORT);
+		beamBreakDebouncer = new Debouncer(Constants.AmpBar.DEBOUNCE_TIME, Debouncer.DebounceType.kBoth);
 	}
 
 	@Override
@@ -119,6 +122,9 @@ public class AmpBarIOReal implements AmpBarIO {
 
 	@Override
 	public boolean noteDetected() {
-		return beamBreak.get();
+		if (beamBreakDebouncer.calculate(beamBreak.get())) {
+			return true;
+		}
+		return false;
 	}
 }

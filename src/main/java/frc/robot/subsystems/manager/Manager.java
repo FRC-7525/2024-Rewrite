@@ -98,10 +98,9 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.FEED_AMP, ManagerStates.SCORE_AMP, () ->
 			Constants.controller.getYButtonPressed()
 		);
-		addTrigger(ManagerStates.FEED_AMP, ManagerStates.SCORE_AMP, () -> ampBarSubsystem.noteDetected());
-		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
-			Constants.controller.getYButtonPressed()
-		);
+		addTrigger(ManagerStates.FEED_AMP, ManagerStates.HOLDING_NOTE, () -> ampBarSubsystem.noteDetected());
+		addTrigger(ManagerStates.HOLDING_NOTE, ManagerStates.SCORE_AMP, () -> ampBarSubsystem.atSetPoint());
+		
 		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> 
 			(getStateTime() > Constants.AmpBar.TIME_FOR_SCORING)
 		);
