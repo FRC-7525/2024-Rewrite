@@ -27,8 +27,6 @@ public interface ShooterIO {
 
 	public default void stop() {}
 
-	public default void configurePID(double kP, double kI, double kD) {}
-
 	public default boolean nearSpeedPoint() {
 		return false;
 	}

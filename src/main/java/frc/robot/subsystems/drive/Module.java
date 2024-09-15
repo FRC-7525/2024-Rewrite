@@ -30,7 +30,7 @@ public class Module {
 
 	private final ModuleIO io;
 	private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-	private final ModuleIOOutputs outputs = new ModuleIOOutputs();
+	private final ModuleIOOutputs outputs;
 	private final int index;
 
 	private final SimpleMotorFeedforward driveFeedforward;
@@ -44,6 +44,8 @@ public class Module {
 	public Module(ModuleIO io, int index) {
 		this.io = io;
 		this.index = index;
+
+		outputs = new ModuleIOOutputs();
 
 		// Switch constants based on mode (the physics simulator is treated as a
 		// separate robot with different tuning)

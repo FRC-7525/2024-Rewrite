@@ -13,12 +13,13 @@ public class Intake extends Subsystem<IntakeStates> {
 
 	IntakeIO io;
 	IntakeIOInputsAutoLogged inputs;
-	IntakeIOOutputs outputs=  new IntakeIOOutputs();
+	IntakeIOOutputs outputs;
 
 	public Intake(IntakeIO io) {
 		super("Intake", IntakeStates.OFF);
 		this.io = io;
 		inputs = new IntakeIOInputsAutoLogged();
+		outputs = new IntakeIOOutputs();
 
 		// Configure PIDs here
 		switch (Constants.currentMode) {

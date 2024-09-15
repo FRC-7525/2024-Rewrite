@@ -12,30 +12,20 @@ public class Shooter extends Subsystem<ShooterStates> {
 	private ShooterIO io;
 	private ManagerStates managerState;
 	ShooterIOInputsAutoLogged inputs;
-	private ShooterIOOutputs outputs = new ShooterIOOutputs();
+	private ShooterIOOutputs outputs;
 
 	public Shooter(ShooterIO io) {
 		super("Shooter", ShooterStates.OFF);
 		this.io = io;
 		inputs = new ShooterIOInputsAutoLogged();
+		outputs = new ShooterIOOutputs();
 
 		switch (Constants.currentMode) {
 			case REAL:
-				io.configurePID(
-					Constants.Shooter.REAL_PID.kP,
-					Constants.Shooter.REAL_PID.kI,
-					Constants.Shooter.REAL_PID.kD
-				);
 				break;
 			case REPLAY:
-				io.configurePID(0.0, 0.0, 0.0);
 				break;
 			case SIM:
-				io.configurePID(
-					Constants.Shooter.SIM_PID.kP,
-					Constants.Shooter.SIM_PID.kI,
-					Constants.Shooter.SIM_PID.kD
-				);
 				break;
 			default:
 				break;

@@ -12,12 +12,13 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 
 	AmpBarIO io;
 	AmpBarIOInputsAutoLogged inputs;
-	AmpBarIOOutputs outputs = new AmpBarIOOutputs();
+	AmpBarIOOutputs outputs;
 
 	public AmpBar(AmpBarIO io) {
 		super("Amp Bar", AmpBarStates.OFF);
 		this.io = io;
 		inputs = new AmpBarIOInputsAutoLogged();
+		outputs = new AmpBarIOOutputs();
 
 		switch (Constants.currentMode) {
 			case REAL:
