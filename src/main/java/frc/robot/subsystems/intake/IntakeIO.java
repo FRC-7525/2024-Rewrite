@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose3d;
 import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public interface IntakeIO {
 	@AutoLog
@@ -11,18 +12,25 @@ public interface IntakeIO {
 		public Pose3d position;
 
 		public double wheelSpeed;
-		public double wheelAppliedVoltage;
 		public double wheelSpeedpoint;
 
 		public double pivotPosition;
-		public double pivotAppliedVoltage;
 		public double pivotSetpoint;
 		public double pivotSetpointError;
 
 		public boolean usingInPID;
 	}
 
+	public static class IntakeIOOutputs {
+		@AutoLogOutput
+		public double pivotAppliedVoltage;
+		@AutoLogOutput
+		public double wheelAppliedVoltage;
+	}
+
 	public default void updateInputs(IntakeIOInputs inputs) {}
+
+	public default void updateOutputs(IntakeIOOutputs outputs) {}
 
 	public default void setSetpoints(
 		double pivotMotorSetpoint,
@@ -36,5 +44,5 @@ public interface IntakeIO {
 		return 0.0;
 	}
 
-	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {}
+	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIDConst) {}
 }

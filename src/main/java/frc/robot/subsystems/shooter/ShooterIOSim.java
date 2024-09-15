@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -8,7 +9,7 @@ import frc.robot.Constants;
 public class ShooterIOSim implements ShooterIO {
 
 	FlywheelSim sim;
-	PIDController pid;
+	BangBangController controller;
 	private double speedPoint;
 	private double appliedVolts;
 
@@ -18,7 +19,7 @@ public class ShooterIOSim implements ShooterIO {
 			Constants.Shooter.SHOOTER_GEARING,
 			Constants.Shooter.SHOOTER_MOI
 		);
-		pid = new PIDController(0.0, 0.0, 0.0);
+		controller = new BangBangController();
 		speedPoint = 0.0;
 	}
 
@@ -28,9 +29,13 @@ public class ShooterIOSim implements ShooterIO {
 
 		inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
 		inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
-		inputs.shooterSpeedPoint = speedPoint;
-		inputs.leftShooterAppliedVolts = appliedVolts;
-		inputs.rightShooterAppliedVolts = appliedVolts;
+		inputs.shooterSpeedPoint = speedPoint;	
+	}
+
+	@Override
+	public void updateOutputs(ShooterIOOutputs outputs) {
+		outputs.leftShooterAppliedVolts = appliedVolts;
+		outputs.rightShooterAppliedVolts = appliedVolts;
 	}
 
 	@Override
@@ -40,14 +45,9 @@ public class ShooterIOSim implements ShooterIO {
 	}
 
 	@Override
-	public void configurePID(double kP, double kI, double kD) {
-		pid.setPID(kP, kI, kD);
-	}
-
-	@Override
 	public void setSpeed(double rps) {
 		speedPoint = rps;
-		appliedVolts = pid.calculate(sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF, rps);
+		appliedVolts = controller.calculate(sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF, rps);
 		sim.setInputVoltage(appliedVolts);
 	}
 

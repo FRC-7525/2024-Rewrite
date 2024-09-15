@@ -73,11 +73,9 @@ public class IntakeIOSim implements IntakeIO {
 
 	public void updateInputs(IntakeIOInputs inputs) {
 		inputs.wheelSpeed = spinnerWheelSim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
-		inputs.wheelAppliedVoltage = wheelAppliedVoltage;
 		inputs.wheelSpeedpoint = wheelSpeedpoint;
 
 		inputs.pivotPosition = pivotSimModel.getAngleRads();
-		inputs.pivotAppliedVoltage = pivotAppliedVoltage;
 		inputs.pivotSetpoint = pivotSetpoint;
 		inputs.pivotSetpointError = Math.abs(pivotSimModel.getAngleRads() - pivotSetpoint);
 
@@ -85,6 +83,11 @@ public class IntakeIOSim implements IntakeIO {
 
 		pivotSimModel.update(Constants.SIM_UPDATE_TIME);
 		spinnerWheelSim.update(Constants.SIM_UPDATE_TIME);
+	}
+
+	public void updateOutputs(IntakeIOOutputs outputs) {
+		outputs.wheelAppliedVoltage = wheelAppliedVoltage;
+		outputs.pivotAppliedVoltage = pivotAppliedVoltage;
 	}
 
 	public double getPosition() {

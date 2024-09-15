@@ -20,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.subsystems.drive.ModuleIO.ModuleIOOutputs;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -28,6 +30,7 @@ public class Module {
 
 	private final ModuleIO io;
 	private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
+	private final ModuleIOOutputs outputs;
 	private final int index;
 
 	private final SimpleMotorFeedforward driveFeedforward;
@@ -41,6 +44,8 @@ public class Module {
 	public Module(ModuleIO io, int index) {
 		this.io = io;
 		this.index = index;
+
+		outputs = new ModuleIOOutputs();
 
 		// Switch constants based on mode (the physics simulator is treated as a
 		// separate robot with different tuning)
@@ -114,9 +119,17 @@ public class Module {
 		io.updateInputs(inputs);
 	}
 
+	public void updateOutputs() {
+		io.updateOutputs(outputs);
+	}
+
 	public void periodic() {
 		Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
-
+		
+		updateOutputs();
+		Logger.recordOutput("DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts", outputs.driveAppliedVolts);
+		Logger.recordOutput("DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts", outputs.turnAppliedVolts);
+		
 		// On first cycle, reset relative turn encoder
 		// Wait until absolute angle is nonzero in case it wasn't initialized yet
 		if (turnRelativeOffset == null && inputs.turnAbsolutePosition.getRadians() != 0.0) {

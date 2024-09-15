@@ -42,7 +42,7 @@ public final class Constants {
 	public static final double DIAM_TO_RADIUS_CF = 2.0;
 	public static final double AVG_TWO_ITEM_F = 2.0;
 
-	public static final Mode currentMode = Mode.REAL;
+	public static final Mode currentMode = Mode.SIM;
 
 	public static final double MAX_VOLTS = 12.0;
 	public static final double MIN_VOLTS = -12.0;
@@ -107,10 +107,6 @@ public final class Constants {
 	public static final class Shooter {
 
 		public static final double ERROR_OF_MARGIN = 2.0;
-
-		// PID
-		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
-		public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
 
 		// CAN IDs
 		public static final int LEFT_SHOOTER_ID = 15;
