@@ -105,4 +105,8 @@ public class IntakeIOSim implements IntakeIO {
 		outPivotController.setPID(outPIDConst.kP, outPIDConst.kI, outPIDConst.kD);
 		inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
 	}
+
+	public boolean noteDetected() {
+		return false;
+	}
 }
