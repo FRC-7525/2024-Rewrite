@@ -42,7 +42,7 @@ public final class Constants {
 	public static final double DIAM_TO_RADIUS_CF = 2.0;
 	public static final double AVG_TWO_ITEM_F = 2.0;
 
-	public static final Mode currentMode = Mode.REAL;
+	public static final Mode currentMode = Mode.SIM;
 
 	public static final double MAX_VOLTS = 12.0;
 	public static final double MIN_VOLTS = -12.0;

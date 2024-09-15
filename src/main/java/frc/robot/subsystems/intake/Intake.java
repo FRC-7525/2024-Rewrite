@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOOutputs;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,6 +13,7 @@ public class Intake extends Subsystem<IntakeStates> {
 
 	IntakeIO io;
 	IntakeIOInputsAutoLogged inputs;
+	IntakeIOOutputs outputs=  new IntakeIOOutputs();
 
 	public Intake(IntakeIO io) {
 		super("Intake", IntakeStates.OFF);
@@ -63,5 +65,6 @@ public class Intake extends Subsystem<IntakeStates> {
 
 		Logger.processInputs("Intake", inputs);
 		io.updateInputs(inputs);
+		io.updateOutputs(outputs);
 	}
 }

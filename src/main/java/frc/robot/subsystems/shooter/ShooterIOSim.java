@@ -29,9 +29,13 @@ public class ShooterIOSim implements ShooterIO {
 
 		inputs.leftShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
 		inputs.rightShooterSpeed = sim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
-		inputs.shooterSpeedPoint = speedPoint;
-		inputs.leftShooterAppliedVolts = appliedVolts;
-		inputs.rightShooterAppliedVolts = appliedVolts;
+		inputs.shooterSpeedPoint = speedPoint;	
+	}
+
+	@Override
+	public void updateOutputs(ShooterIOOutputs outputs) {
+		outputs.leftShooterAppliedVolts = appliedVolts;
+		outputs.rightShooterAppliedVolts = appliedVolts;
 	}
 
 	@Override

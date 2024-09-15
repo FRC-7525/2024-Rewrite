@@ -174,7 +174,6 @@ public class ModuleIOHybrid implements ModuleIO {
 			turnRelativeEncoder.getVelocity()
 		) /
 		Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
-		inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
 		inputs.turnCurrentAmps = new double[] { turnSparkMax.getOutputCurrent() };
 
 		// Other stuff
@@ -198,6 +197,11 @@ public class ModuleIOHybrid implements ModuleIO {
 		timestampQueue.clear();
 		drivePositionQueue.clear();
 		turnPositionQueue.clear();
+	}
+
+	@Override
+	public void updateOutputs(ModuleIOOutputs outputs) {
+		outputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
 	}
 
 	@Override

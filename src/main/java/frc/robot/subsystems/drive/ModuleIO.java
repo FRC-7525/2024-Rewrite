@@ -33,25 +33,33 @@ public interface ModuleIO {
 		public double[] odometryTimestamps = new double[] {};
 		public double[] odometryDrivePositionsRad = new double[] {};
 		public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
+	}
 
-		@AutoLogOutput
+	public static class ModuleIOOutputs {
 		public double turnAppliedVolts = 0.0;
-		@AutoLogOutput
 		public double driveAppliedVolts = 0.0;
 	}
 
 	/** Updates the set of loggable inputs. */
-	public default void updateInputs(ModuleIOInputs inputs) {}
+	public default void updateInputs(ModuleIOInputs inputs) {
+	}
+
+	public default void updateOutputs(ModuleIOOutputs outputs) {
+	}
 
 	/** Run the drive motor at the specified voltage. */
-	public default void setDriveVoltage(double volts) {}
+	public default void setDriveVoltage(double volts) {
+	}
 
 	/** Run the turn motor at the specified voltage. */
-	public default void setTurnVoltage(double volts) {}
+	public default void setTurnVoltage(double volts) {
+	}
 
 	/** Enable or disable brake mode on the drive motor. */
-	public default void setDriveBrakeMode(boolean enable) {}
+	public default void setDriveBrakeMode(boolean enable) {
+	}
 
 	/** Enable or disable brake mode on the turn motor. */
-	public default void setTurnBrakeMode(boolean enable) {}
+	public default void setTurnBrakeMode(boolean enable) {
+	}
 }

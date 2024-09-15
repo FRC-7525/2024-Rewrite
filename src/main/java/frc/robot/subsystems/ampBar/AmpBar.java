@@ -4,12 +4,15 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.ampBar.AmpBarIO.AmpBarIOOutputs;
+
 import org.littletonrobotics.junction.Logger;
 
 public class AmpBar extends Subsystem<AmpBarStates> {
 
 	AmpBarIO io;
 	AmpBarIOInputsAutoLogged inputs;
+	AmpBarIOOutputs outputs = new AmpBarIOOutputs();
 
 	public AmpBar(AmpBarIO io) {
 		super("Amp Bar", AmpBarStates.OFF);
@@ -62,5 +65,6 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 		);
 		Logger.processInputs("Amp Bar", inputs);
 		io.updateInput(inputs);
+		io.updateOutputs(outputs);
 	}
 }

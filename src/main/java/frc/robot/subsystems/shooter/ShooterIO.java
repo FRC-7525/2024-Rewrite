@@ -10,7 +10,9 @@ public interface ShooterIO {
 		public double rightShooterSpeed = 0.0;
 		public double leftShooterSpeed = 0.0;
 		public double shooterSpeedPoint = 0.0;
+	}
 
+	public static class ShooterIOOutputs {
 		@AutoLogOutput
 		public double leftShooterAppliedVolts = 0.0;
 		@AutoLogOutput
@@ -18,6 +20,8 @@ public interface ShooterIO {
 	}
 
 	public default void updateInputs(ShooterIOInputs inputs) {}
+
+	public default void updateOutputs(ShooterIOOutputs outputs) {}
 
 	public default void setSpeed(double rps) {}
 

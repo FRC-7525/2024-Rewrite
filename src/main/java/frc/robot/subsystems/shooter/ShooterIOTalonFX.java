@@ -25,11 +25,14 @@ public class ShooterIOTalonFX implements ShooterIO {
 	}
 
 	public void updateInputs(ShooterIOInputs inputs) {
-		inputs.leftShooterAppliedVolts = leftAppliedVolts;
-		inputs.rightShooterAppliedVolts = rightAppliedVolts;
 		inputs.leftShooterSpeed = leftMotor.getVelocity().getValueAsDouble();
 		inputs.rightShooterSpeed = rightMotor.getVelocity().getValueAsDouble();
 		inputs.shooterSpeedPoint = speedPoint;
+	}
+
+	public void updateOutputs(ShooterIOOutputs outputs) {
+		outputs.leftShooterAppliedVolts = leftAppliedVolts;
+		outputs.rightShooterAppliedVolts = rightAppliedVolts;
 	}
 
 	public void setSpeed(double rps) {

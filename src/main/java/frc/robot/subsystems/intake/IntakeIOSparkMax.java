@@ -67,15 +67,18 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	public void updateInputs(IntakeIOInputs inputs) {
 		inputs.wheelSpeed = intakeMotor.getVelocity().getValueAsDouble();
-		inputs.wheelAppliedVoltage = wheelAppliedVoltage;
 		inputs.wheelSpeedpoint = wheelSpeedpoint;
 
 		inputs.pivotPosition = pivotEncoder.getPosition();
-		inputs.pivotAppliedVoltage = pivotAppliedVoltage;
 		inputs.pivotSetpoint = pivotSetpoint;
 		inputs.pivotSetpointError = Math.abs(pivotEncoder.getPosition() - pivotSetpoint);
 
 		inputs.usingInPID = usingInPID;
+	}
+
+	public void updateOutputs(IntakeIOOutputs outputs) {
+		outputs.pivotAppliedVoltage = pivotAppliedVoltage;
+		outputs.wheelAppliedVoltage = wheelAppliedVoltage;
 	}
 
 	public double getPosition() {

@@ -19,7 +19,9 @@ public interface IntakeIO {
 		public double pivotSetpointError;
 
 		public boolean usingInPID;
+	}
 
+	public static class IntakeIOOutputs {
 		@AutoLogOutput
 		public double pivotAppliedVoltage;
 		@AutoLogOutput
@@ -27,6 +29,8 @@ public interface IntakeIO {
 	}
 
 	public default void updateInputs(IntakeIOInputs inputs) {}
+
+	public default void updateOutputs(IntakeIOOutputs outputs) {}
 
 	public default void setSetpoints(
 		double pivotMotorSetpoint,
@@ -40,5 +44,5 @@ public interface IntakeIO {
 		return 0.0;
 	}
 
-	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {}
+	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIDConst) {}
 }
