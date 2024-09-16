@@ -36,10 +36,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 	public void setSpeed(double rps) {
 		speedPoint = rps;
-		leftAppliedVolts = 12 * feedbackController.calculate(
-			leftMotor.getRotorVelocity().getValueAsDouble(),
-			rps
-		);
+		leftAppliedVolts = 12 *
+		feedbackController.calculate(leftMotor.getRotorVelocity().getValueAsDouble(), rps);
 		// rightAppliedVolts = feedbackController.calculate(
 		//	rightMotor.getRotorVelocity().getValueAsDouble(),
 		//	rps
@@ -68,9 +66,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	@Override
 	public double getAverageSpeed() {
 		return (
-			(leftMotor.getVelocity().getValueAsDouble() /
-				Constants.AVG_TWO_ITEM_F//+ rightMotor.getVelocity().getValueAsDouble())
-			)
+			(leftMotor.getVelocity().getValueAsDouble() / Constants.AVG_TWO_ITEM_F) //+ rightMotor.getVelocity().getValueAsDouble())
 		);
 	}
 }
