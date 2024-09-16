@@ -1,12 +1,11 @@
 package frc.robot.subsystems.AutoAlign;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoAlign extends Subsystem<AutoAlignStates> {
 

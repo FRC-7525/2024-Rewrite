@@ -50,7 +50,10 @@ public class AutoAlignIO {
 		/*uses run velocity from drive and PID controllers to go to target pose */
 		appliedX = translationalPIDController.calculate(currentPose2d.getX(), targetPose2d.getX());
 		appliedY = translationalPIDController.calculate(currentPose2d.getY(), targetPose2d.getY());
-		appliedRotational = rotationalPIDController.calculate(currentPose2d.getRotation().getRadians(), targetPose2d.getRotation().getRadians());
+		appliedRotational = rotationalPIDController.calculate(
+			currentPose2d.getRotation().getRadians(),
+			targetPose2d.getRotation().getRadians()
+		);
 		driveSubsystem.runVelocity(
 			ChassisSpeeds.fromFieldRelativeSpeeds(
 				appliedX,
@@ -74,14 +77,16 @@ public class AutoAlignIO {
 	public Pose2d getTargetPose2d() {
 		return targetPose2d;
 	}
-	
+
 	/* return applied values */
 	public double getAppliedX() {
 		return appliedX;
 	}
+
 	public double getAppliedY() {
 		return appliedY;
 	}
+
 	public double getAppliedRotational() {
 		return appliedRotational;
 	}
@@ -90,12 +95,12 @@ public class AutoAlignIO {
 	public void setTargetPose(Pose2d target) {
 		targetPose2d = target;
 	}
-	
+
 	/*changes PID values */
 	public void configureTranslationalPID(double kP, double kI, double kD) {
 		translationalPIDController.setPID(kP, kI, kD);
 	}
-	
+
 	public void configurerotationalPID(double kP, double kI, double kD) {
 		rotationalPIDController.setPID(kP, kI, kD);
 	}
