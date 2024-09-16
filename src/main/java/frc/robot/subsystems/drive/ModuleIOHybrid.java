@@ -34,6 +34,7 @@ public class ModuleIOHybrid implements ModuleIO {
 
 	private final Queue<Double> timestampQueue;
 
+	private final StatusSignal<Double> turnAbsolutePosition;
 	private final StatusSignal<Double> drivePosition;
 	private final Queue<Double> drivePositionQueue;
 	private final StatusSignal<Double> driveVelocity;
@@ -88,7 +89,7 @@ public class ModuleIOHybrid implements ModuleIO {
 				throw new RuntimeException("Invalid module index");
 		}
 
-		// TalonFX configuration
+		// Phoenix configuration
 		var driveConfig = new TalonFXConfiguration();
 		driveConfig.CurrentLimits.SupplyCurrentLimit =
 			Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
@@ -98,28 +99,28 @@ public class ModuleIOHybrid implements ModuleIO {
 
 		cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
-		timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+		timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 
 		drivePosition = driveTalon.getPosition();
-		drivePositionQueue = PhoenixOdometryThread.getInstance()
+		drivePositionQueue = HybridOdometryThread.getInstance()
 			.registerSignal(driveTalon, driveTalon.getPosition());
 		driveVelocity = driveTalon.getVelocity();
 		driveAppliedVolts = driveTalon.getMotorVoltage();
 		driveCurrent = driveTalon.getSupplyCurrent();
 
+		turnAbsolutePosition = cancoder.getAbsolutePosition();
+
+		BaseStatusSignal.setUpdateFrequencyForAll(250.0, drivePosition);
 		BaseStatusSignal.setUpdateFrequencyForAll(
-			Constants.Drive.Module.ODOMETRY_FREQUENCY,
-			drivePosition
-		);
-		BaseStatusSignal.setUpdateFrequencyForAll(
-			Constants.Drive.Module.Hybrid.TALON_UPDATE_FREQUENCY_HZ,
+			50.0,
 			driveVelocity,
 			driveAppliedVolts,
+			turnAbsolutePosition,
 			driveCurrent
 		);
 		driveTalon.optimizeBusUtilization();
 
-		// SparkMax configuration
+		// Rev configs
 		turnSparkMax.restoreFactoryDefaults();
 		turnSparkMax.setCANTimeout(Constants.Drive.Module.Hybrid.SPARK_TIMEOUT_MS);
 		turnRelativeEncoder = turnSparkMax.getEncoder();
@@ -139,13 +140,13 @@ public class ModuleIOHybrid implements ModuleIO {
 			PeriodicFrame.kStatus2,
 			(int) (Constants.Drive.Module.Hybrid.SPARK_FRAME_PERIOD)
 		);
-		turnPositionQueue = SparkMaxOdometryThread.getInstance()
+		turnPositionQueue = HybridOdometryThread.getInstance()
 			.registerSignal(() -> {
 				double value = turnRelativeEncoder.getPosition();
 				if (turnSparkMax.getLastError() == REVLibError.kOk) {
 					return OptionalDouble.of(value);
 				} else {
-					return OptionalDouble.empty();
+					return OptionalDouble.of(0);
 				}
 			});
 
@@ -154,11 +155,17 @@ public class ModuleIOHybrid implements ModuleIO {
 
 	@Override
 	public void updateInputs(ModuleIOInputs inputs) {
-		BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+		BaseStatusSignal.refreshAll(
+			drivePosition,
+			driveVelocity,
+			driveAppliedVolts,
+			driveCurrent,
+			turnAbsolutePosition
+		);
 
 		// Turn Stuff
 		inputs.turnAbsolutePosition = Rotation2d.fromRotations(
-			cancoder.getAbsolutePosition().getValueAsDouble()
+			turnAbsolutePosition.getValueAsDouble()
 		).minus(absoluteEncoderOffset);
 		inputs.turnPosition = Rotation2d.fromRotations(
 			turnRelativeEncoder.getPosition() / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO
@@ -167,8 +174,8 @@ public class ModuleIOHybrid implements ModuleIO {
 			turnRelativeEncoder.getVelocity()
 		) /
 		Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
-		inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
 		inputs.turnCurrentAmps = new double[] { turnSparkMax.getOutputCurrent() };
+		inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
 
 		// Other stuff
 		inputs.odometryTimestamps = timestampQueue
@@ -191,6 +198,11 @@ public class ModuleIOHybrid implements ModuleIO {
 		timestampQueue.clear();
 		drivePositionQueue.clear();
 		turnPositionQueue.clear();
+	}
+
+	@Override
+	public void updateOutputs(ModuleIOOutputs outputs) {
+		outputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
 	}
 
 	@Override

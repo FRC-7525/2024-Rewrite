@@ -55,11 +55,15 @@ public class AmpBarIOReal implements AmpBarIO {
 
 		inputs.pivotPosition = pivotEncoder.getPosition();
 		inputs.pivotSetpoint = pivotPositionSetpoint;
-		inputs.pivotAppliedVoltage = pivotMotorAppliedVoltage;
 
 		inputs.spinnerSpeed = getSpinnerSpeed();
 		inputs.spinnerSetpoint = spinnerSpeedpoint;
-		inputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
+	}
+
+	@Override
+	public void updateOutputs(AmpBarIOOutputs outputs) {
+		outputs.pivotAppliedVoltage = pivotMotorAppliedVoltage;
+		outputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
 	}
 
 	@Override

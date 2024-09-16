@@ -108,10 +108,6 @@ public final class Constants {
 
 		public static final double ERROR_OF_MARGIN = 2.0;
 
-		// PID
-		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
-		public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
-
 		// CAN IDs
 		public static final int LEFT_SHOOTER_ID = 15;
 		public static final int RIGHT_SHOOTER_ID = 14;

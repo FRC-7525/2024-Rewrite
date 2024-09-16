@@ -4,6 +4,10 @@
 # Node Modules
 node_modules/
 
+# >:(s
+ctre_Sim/
+logs/
+
 settings.json
 
 ### C++ ###
