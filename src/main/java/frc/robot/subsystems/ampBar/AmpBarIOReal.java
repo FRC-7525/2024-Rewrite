@@ -11,7 +11,7 @@ import frc.robot.Constants;
 public class AmpBarIOReal implements AmpBarIO {
 
 	private final CANSparkMax leftMotor;
-	private final CANSparkMax rightMotor;
+	// private final CANSparkMax rightMotor;
 	private final TalonFX spinnerMotor;
 
 	private RelativeEncoder pivotEncoder;
@@ -26,13 +26,13 @@ public class AmpBarIOReal implements AmpBarIO {
 
 	public AmpBarIOReal() {
 		leftMotor = new CANSparkMax(Constants.AmpBar.LEFT_PIVOT_ID, MotorType.kBrushless);
-		rightMotor = new CANSparkMax(Constants.AmpBar.RIGHT_PIVOT_ID, MotorType.kBrushless);
+		// rightMotor = new CANSparkMax(Constants.AmpBar.RIGHT_PIVOT_ID, MotorType.kBrushless);
 		spinnerMotor = new TalonFX(Constants.AmpBar.SPINNER_ID);
 
 		leftMotor.setInverted(false);
-		rightMotor.follow(leftMotor, true);
+		// rightMotor.follow(leftMotor, true);
 		leftMotor.setIdleMode(IdleMode.kCoast);
-		rightMotor.setIdleMode(IdleMode.kCoast);
+		// rightMotor.setIdleMode(IdleMode.kCoast);
 
 		pivotEncoder = leftMotor.getEncoder();
 
@@ -80,7 +80,7 @@ public class AmpBarIOReal implements AmpBarIO {
 		spinnerAppliedVoltage = 0;
 		pivotMotorAppliedVoltage = 0;
 		leftMotor.stopMotor();
-		rightMotor.stopMotor();
+		// rightMotor.stopMotor();
 		spinnerMotor.stopMotor();
 	}
 

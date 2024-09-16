@@ -64,11 +64,11 @@ public class Manager extends Subsystem<ManagerStates> {
 					new ModuleIOSim(),
 					new ModuleIOSim()
 				);
-				autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
 				break;
 			default:
 				break;
 		}
+		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
 
 		NoteSimulator.setDrive(driveSubsystem);
 
