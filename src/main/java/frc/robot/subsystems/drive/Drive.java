@@ -98,8 +98,8 @@ public class Drive extends Subsystem<DriveStates> {
 	public void runState() {
 		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not
 		// good)
+		Logger.recordOutput("driveState", getState());
 
-		if (!DriverStation.isAutonomous()) AutoAlign.periodic();
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
@@ -109,8 +109,6 @@ public class Drive extends Subsystem<DriveStates> {
 				getState().getRotationModifier(),
 				getState().getTranslationModifier()
 			);
-		} else if (DriverStation.isTeleop() && getState() == DriveStates.AUTO_ALIGN) {
-			AutoAlign.calculateChassisSpeed();
 		}
 	}
 

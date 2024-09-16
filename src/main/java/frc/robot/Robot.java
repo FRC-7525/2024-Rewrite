@@ -14,7 +14,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.drive.AutoAlign;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -47,7 +46,6 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void robotInit() {
 		managerSubsystem = new Manager();
-		AutoAlign.setManager(managerSubsystem);
 
 		// NamedCommands.registerCommand("Intaking", autoCommands.intaking());
 		// NamedCommands.registerCommand("Shooting", autoCommands.shooting());
