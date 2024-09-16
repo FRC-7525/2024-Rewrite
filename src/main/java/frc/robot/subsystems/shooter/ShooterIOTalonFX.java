@@ -36,7 +36,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 	public void setSpeed(double rps) {
 		speedPoint = rps;
-		leftAppliedVolts = feedbackController.calculate(
+		leftAppliedVolts = 12 * feedbackController.calculate(
 			leftMotor.getRotorVelocity().getValueAsDouble(),
 			rps
 		);

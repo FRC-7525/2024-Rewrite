@@ -115,7 +115,7 @@ public final class Constants {
 		// Shooter Setpoints (RPS)
 		public static final double OFF = 0.0;
 		public static final double FEEDING_AMP = 25.0;
-		public static final double SHOOTING = 50.0;
+		public static final double SHOOTING = 25.0;
 
 		// Sim Configs
 		public static final int NUM_MOTORS = 2;
@@ -283,25 +283,25 @@ public final class Constants {
 				public static final int DRIVE0_ID = 2;
 				public static final int TURN0_ID = 1;
 				public static final int CANCODER0_ID = 3;
-				public static final double OFFSET0 = 0;
+				public static final double OFFSET0 = Units.degreesToRadians(171.826171875);
 
 				// Front Right Module
 				public static final int DRIVE1_ID = 5;
 				public static final int TURN1_ID = 4;
 				public static final int CANCODER1_ID = 6;
-				public static final double OFFSET1 = Units.degreesToRadians(27);
+				public static final double OFFSET1 = Units.degreesToRadians(-23.115234375);
 
 				// Back Left Module
 				public static final int DRIVE2_ID = 11;
 				public static final int TURN2_ID = 10;
 				public static final int CANCODER2_ID = 12;
-				public static final double OFFSET2 = 41;
+				public static final double OFFSET2 = Units.degreesToRadians(220.517578125);
 
 				// Back Right Module
 				public static final int DRIVE3_ID = 8;
 				public static final int TURN3_ID = 7;
 				public static final int CANCODER3_ID = 9;
-				public static final double OFFSET3 = Units.degreesToRadians(0);
+				public static final double OFFSET3 = Units.degreesToRadians(-67.939453125);
 			}
 		}
 
