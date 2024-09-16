@@ -6,43 +6,28 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveStates;
-import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignIO {
 
 	Drive driveSubsystem;
-	PIDController xPIDController;
-	PIDController yPIDController;
+	PIDController translationalPIDController;
 	PIDController rotationalPIDController;
 
 	Pose2d targetPose2d;
+	double appliedX;
+	double appliedY;
+	double appliedRotational;
 
 	public AutoAlignIO(Drive driveSubsystem) {
 		this.driveSubsystem = driveSubsystem;
 
-		xPIDController = new PIDController(0, 0, 0);
-		yPIDController = new PIDController(0, 0, 0);
+		translationalPIDController = new PIDController(0, 0, 0);
 		rotationalPIDController = new PIDController(0, 0, 0);
 
 		targetPose2d = new Pose2d();
 	}
 
-	public void setTargetPose(Pose2d target) {
-		targetPose2d = target;
-	}
-
-	public void configurexPID(double kP, double kI, double kD) {
-		xPIDController.setPID(kP, kI, kD);
-	}
-
-	public void configureyPID(double kP, double kI, double kD) {
-		yPIDController.setPID(kP, kI, kD);
-	}
-
-	public void configurerotationalPID(double kP, double kI, double kD) {
-		rotationalPIDController.setPID(kP, kI, kD);
-	}
-
+	/* Returns if the robot is near the target pose */
 	public boolean nearTargetPoint() {
 		Pose2d currentPose2d = driveSubsystem.getPose();
 
@@ -58,34 +43,60 @@ public class AutoAlignIO {
 		);
 	}
 
+	/*drives to target pose*/
 	public void driveToTargetPose() {
 		Pose2d currentPose2d = driveSubsystem.getPose();
 
-		Logger.recordOutput("AutoAlign/TARGETPOSE", targetPose2d);
-		Logger.recordOutput("AutoAlign/CURRENT", currentPose2d);
-		Logger.recordOutput(
-			"AutoAlign/calculatedX",
-			xPIDController.calculate(currentPose2d.getX(), currentPose2d.getX())
-		);
-
+		/*uses run velocity from drive and PID controllers to go to target pose */
+		appliedX = translationalPIDController.calculate(currentPose2d.getX(), targetPose2d.getX());
+		appliedY = translationalPIDController.calculate(currentPose2d.getY(), targetPose2d.getY());
+		appliedRotational = rotationalPIDController.calculate(currentPose2d.getRotation().getRadians(), targetPose2d.getRotation().getRadians());
 		driveSubsystem.runVelocity(
 			ChassisSpeeds.fromFieldRelativeSpeeds(
-				xPIDController.calculate(currentPose2d.getX(), targetPose2d.getX()),
-				yPIDController.calculate(currentPose2d.getY(), targetPose2d.getY()),
-				rotationalPIDController.calculate(
-					currentPose2d.getRotation().getRadians(),
-					targetPose2d.getRotation().getRadians()
-				),
+				appliedX,
+				appliedY,
+				appliedRotational,
 				driveSubsystem.getRotation()
 			)
 		);
 	}
 
+	/* sets drive states */
 	public void returnDriveToNormal() {
 		driveSubsystem.setState(DriveStates.REGULAR_DRIVE);
 	}
 
 	public void lockDrive() {
 		driveSubsystem.setState(DriveStates.AUTO_ALIGN);
+	}
+
+	/* returns target pose2d*/
+	public Pose2d getTargetPose2d() {
+		return targetPose2d;
+	}
+	
+	/* return applied values */
+	public double getAppliedX() {
+		return appliedX;
+	}
+	public double getAppliedY() {
+		return appliedY;
+	}
+	public double getAppliedRotational() {
+		return appliedRotational;
+	}
+
+	/* Sets target pose that the robot will auto align to*/
+	public void setTargetPose(Pose2d target) {
+		targetPose2d = target;
+	}
+	
+	/*changes PID values */
+	public void configureTranslationalPID(double kP, double kI, double kD) {
+		translationalPIDController.setPID(kP, kI, kD);
+	}
+	
+	public void configurerotationalPID(double kP, double kI, double kD) {
+		rotationalPIDController.setPID(kP, kI, kD);
 	}
 }

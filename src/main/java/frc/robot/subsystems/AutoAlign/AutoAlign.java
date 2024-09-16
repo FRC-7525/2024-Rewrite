@@ -1,11 +1,12 @@
 package frc.robot.subsystems.AutoAlign;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
-import org.littletonrobotics.junction.Logger;
 
 public class AutoAlign extends Subsystem<AutoAlignStates> {
 
@@ -15,19 +16,14 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		super("AutoAlign", AutoAlignStates.OFF);
 		this.io = io;
 
+		/* Sets PID values for each mode */
 		switch (Constants.currentMode) {
 			case REAL:
-				io.configurexPID(0, 0, 0);
-				io.configureyPID(0, 0, 0);
+				io.configureTranslationalPID(0, 0, 0);
 				io.configurerotationalPID(0, 0, 0);
 				break;
 			case SIM:
-				io.configurexPID(
-					Constants.AutoAlign.TRANSLATIONAL_PID.kP,
-					Constants.AutoAlign.TRANSLATIONAL_PID.kI,
-					Constants.AutoAlign.TRANSLATIONAL_PID.kD
-				);
-				io.configureyPID(
+				io.configureTranslationalPID(
 					Constants.AutoAlign.TRANSLATIONAL_PID.kP,
 					Constants.AutoAlign.TRANSLATIONAL_PID.kI,
 					Constants.AutoAlign.TRANSLATIONAL_PID.kD
@@ -39,12 +35,12 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 				);
 				break;
 			case REPLAY:
-				io.configurexPID(0, 0, 0);
-				io.configureyPID(0, 0, 0);
+				io.configureTranslationalPID(0, 0, 0);
 				io.configurerotationalPID(0, 0, 0);
 				break;
 		}
 
+		/* Create triggers for reading controller inputs */
 		addTrigger(AutoAlignStates.OFF, AutoAlignStates.SOURCE_SPEAKER, () ->
 			Constants.operatorController.getLeftBumper()
 		);
@@ -58,6 +54,7 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 
 	@Override
 	protected void runState() {
+		/* sets drive to auto align and drives to target pose*/
 		if (!(getState() == AutoAlignStates.OFF)) {
 			io.lockDrive();
 			io.setTargetPose(
@@ -67,20 +64,21 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 			);
 			io.driveToTargetPose();
 
+			/*returns controls to driver once at target  */
 			if (io.nearTargetPoint()) {
+				io.setTargetPose(new Pose2d());
 				io.returnDriveToNormal();
 				setState(AutoAlignStates.OFF);
 			}
 		}
-
-		Logger.recordOutput("testing", getState());
-
+		/*X button to abort*/
 		if (Constants.operatorController.getXButtonPressed()) {
 			setState(AutoAlignStates.OFF);
 		}
-	}
 
-	public void setAutoAlignTarget(Pose2d targetPose2d) {
-		io.setTargetPose(targetPose2d);
+		Logger.recordOutput("AutoAlign/Target Pose 2d", io.getTargetPose2d());
+		Logger.recordOutput("AutoAlign/Applied X", io.getAppliedX());
+		Logger.recordOutput("AutoAlign/Applied Y", io.getAppliedY());
+		Logger.recordOutput("AutoAlign/Applied Rotational", io.getAppliedRotational());
 	}
 }
