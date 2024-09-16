@@ -126,7 +126,8 @@ public class Module {
 		Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
 		Logger.recordOutput(
 			"Drive/Module" + Integer.toString(index) + "/" + "AbsoluteEncoderPositionAsDouble",
-			inputs.turnAbsolutePosition.getDegrees());
+			inputs.turnAbsolutePosition.getDegrees()
+		);
 
 		updateOutputs();
 		Logger.recordOutput(
