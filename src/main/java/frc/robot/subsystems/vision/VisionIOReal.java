@@ -10,7 +10,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -29,8 +28,7 @@ public class VisionIOReal implements VisionIO {
   private final PhotonPoseEstimator sidePhotonPoseEstimator;
 
   // Note Vision Camera
-  private final PhotonCamera noteCam; 
-
+  private final PhotonCamera noteCam;
 
   private Pose3d[] poseArray = new Pose3d[3];
   private double[] timestampArray = new double[3];
@@ -40,23 +38,24 @@ public class VisionIOReal implements VisionIO {
 
   public VisionIOReal() {
     frontCam = new PhotonCamera("front");
-    frontPhotonPoseEstimator = new PhotonPoseEstimator(
-        Constants.Vision.aprilTagFieldLayout,
-        MULTI_TAG_PNP_ON_COPROCESSOR,
-        frontCam,
-        Constants.Vision.frontCamToRobot);
+    frontPhotonPoseEstimator =
+        new PhotonPoseEstimator(
+            Constants.Vision.aprilTagFieldLayout,
+            MULTI_TAG_PNP_ON_COPROCESSOR,
+            frontCam,
+            Constants.Vision.frontCamToRobot);
 
     // Side Camera
     sideCam = new PhotonCamera("side");
-    sidePhotonPoseEstimator = new PhotonPoseEstimator(
-        Constants.Vision.aprilTagFieldLayout,
-        MULTI_TAG_PNP_ON_COPROCESSOR,
-        sideCam,
-        Constants.Vision.sideCamToRobot);
+    sidePhotonPoseEstimator =
+        new PhotonPoseEstimator(
+            Constants.Vision.aprilTagFieldLayout,
+            MULTI_TAG_PNP_ON_COPROCESSOR,
+            sideCam,
+            Constants.Vision.sideCamToRobot);
 
     // Note Vision Camera
     noteCam = new PhotonCamera("note");
-
   }
 
   @Override
@@ -77,7 +76,6 @@ public class VisionIOReal implements VisionIO {
       inputs.hasNoteTarget = true;
     } else {
       inputs.hasNoteTarget = false;
-
     }
   }
 
@@ -87,7 +85,8 @@ public class VisionIOReal implements VisionIO {
         estimatedRobotPose -> {
           poseArray[0] = estimatedRobotPose.estimatedPose;
           timestampArray[0] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
+          Matrix<N3, N1> stdDevs =
+              getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 0, 3);
           latencyArray[0] = frontCam.getLatestResult().getLatencyMillis() / 1.0e3;
         },
@@ -101,7 +100,8 @@ public class VisionIOReal implements VisionIO {
         estimatedRobotPose -> {
           poseArray[1] = estimatedRobotPose.estimatedPose;
           timestampArray[1] = estimatedRobotPose.timestampSeconds;
-          Matrix<N3, N1> stdDevs = getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
+          Matrix<N3, N1> stdDevs =
+              getEstimationStdDevs(estimatedRobotPose, Constants.Vision.CameraResolution.HIGH_RES);
           arraycopy(stdDevs.getData(), 0, visionStdArray, 3, 3);
           latencyArray[1] = sideCam.getLatestResult().getLatencyMillis() / 1.0e3;
         },
@@ -112,9 +112,9 @@ public class VisionIOReal implements VisionIO {
         });
   }
 
-  public void getNotePose(Pose2d botPose2d) {
+  public Pose2d getNotePose(Pose2d botPose2d) {
     double height = 10;
-    
+
     PhotonPipelineResult lastResult = noteCam.getLatestResult();
     List<PhotonTrackedTarget> noteData = lastResult.targets;
 
@@ -124,8 +124,9 @@ public class VisionIOReal implements VisionIO {
 
       double xToBot = Math.sin(yaw) * (height / Math.tan(pitch));
       double yToBot = Math.cos(yaw) * (height / Math.tan(pitch));
-      Pose2d notePose2d = new Pose2d(botPose2d.getX() + xToBot, botPose2d.getY() + yToBot, botPose2d.getRotation());
-      
-    }
+      Pose2d notePose2d =
+          new Pose2d(botPose2d.getX() + xToBot, botPose2d.getY() + yToBot, botPose2d.getRotation());
+      return notePose2d;
+    } return null;
   }
 }

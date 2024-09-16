@@ -15,12 +15,17 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.AutoCommands;
 import frc.robot.subsystems.manager.*;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOReal;
+import frc.robot.subsystems.vision.VisionIOSim;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -149,6 +154,8 @@ public class Robot extends LoggedRobot {
 	private AutoCommands autoCommands = new AutoCommands(this);
 
 	private Command autonomousCommand;
+  VisionIOReal vision = new VisionIOReal();
+
 
 	/**
 	 * This function is run when the robot is first started up and should be used for any
@@ -156,6 +163,7 @@ public class Robot extends LoggedRobot {
 	 */
 	@Override
 	public void robotInit() {
+
 		managerSubsystem = new Manager();
 
 		NamedCommands.registerCommand("Intaking", autoCommands.intaking());
@@ -221,11 +229,16 @@ public class Robot extends LoggedRobot {
 	public void robotPeriodic() {
 		managerSubsystem.periodic();
 
+
 		// Logs note sim logging and updating sims
 		NoteSimulator.update();
 		NoteSimulator.logNoteInfo();
 
 		CommandScheduler.getInstance().run();
+    Pose2d pose = new Pose2d();
+
+    SmartDashboard.putNumber("note pose X",vision.getNotePose(pose).getX());
+      SmartDashboard.putNumber("note pose Y",vision.getNotePose(pose).getY());
 	}
 
 	/** This function is called once when the robot is disabled. */

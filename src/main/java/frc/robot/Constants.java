@@ -427,4 +427,47 @@ public final class Constants {
 		public static final double TRANSLATION_ERROR_MARGIN = 0.4;
 		public static final double ROTATION_ERROR_MARGIN = 0.4;
 	}
+  	public static final class Vision {
+	// Stolen from Aembots vision
+
+	public static enum CameraResolution {
+		HIGH_RES,
+		NORMAL
+	}
+
+	public static final double LOST_VISION_THRESHOLD = 0.5;
+	// CAM = OV9281
+	public static final int CAM_RES_HEIGHT = 800;
+	public static final int CAM_RES_WIDTH = 1280;
+	public static final Rotation2d CAM_FOV_DIAG = Rotation2d.fromDegrees(84.47);
+
+	public static final double CAM_CALIB_PX_ERROR = 0.25;
+	public static final double CAM_CALIB_STD_ERROR = 0.1;
+
+	public static final double CAM_FPS = 40;
+
+	public static final double CAM_LATENCY = 40;
+	public static final double CAM_LATENCY_STDS = 10;
+
+	public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
+			.loadAprilTagLayoutField();
+
+	public static final Transform3d frontCamToRobot = new Transform3d(
+			new Translation3d(Units.inchesToMeters(-14.25), 0, Units.inchesToMeters(6)),
+			new Rotation3d(0, Units.degreesToRadians(-67), Units.degreesToRadians(180)));
+
+	public static final Transform3d sideCamToRobot = new Transform3d(
+			new Translation3d(
+					Units.inchesToMeters(-7.19), Units.inchesToMeters(11), Units.inchesToMeters(15.25)),
+			new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(90)));
+
+	public static final Matrix<N3, N1> highResSingleTagStdDev = VecBuilder.fill(0.4, 0.4, Double.MAX_VALUE);
+
+	public static final Matrix<N3, N1> normalSingleTagStdDev = VecBuilder.fill(0.8, 0.8, Double.MAX_VALUE);
+
+	public static final Matrix<N3, N1> highResMultiTagStdDev = VecBuilder.fill(0.2, 0.2, 3);
+
+	public static final Matrix<N3, N1> normalMultiTagStdDev = VecBuilder.fill(0.5, 0.5, Double.MAX_VALUE);
+}
+
 }

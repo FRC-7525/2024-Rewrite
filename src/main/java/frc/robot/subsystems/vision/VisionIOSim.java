@@ -7,11 +7,8 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
-
-import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -19,8 +16,6 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionIOSim implements VisionIO {
   private final VisionSystemSim visionSim;
@@ -123,7 +118,7 @@ public class VisionIOSim implements VisionIO {
     visionSim.update(pose);
   }
 
- /*public Pose2d getNotePose(Pose2d botPose2d) {
+  /*public Pose2d getNotePose(Pose2d botPose2d) {
     double height = 10;
     PhotonPipelineResult lastResult = sideCam.getLatestResult();
     List<PhotonTrackedTarget> noteData = lastResult.targets;
