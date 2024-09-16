@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AutoAlign.AutoAlign;
-import frc.robot.subsystems.AutoAlign.AutoAlignIOSim;
-import frc.robot.subsystems.AutoAlign.AutoAlignStates;
+import frc.robot.subsystems.AutoAlign.AutoAlignIO;
 import frc.robot.subsystems.ampBar.*;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -65,7 +64,7 @@ public class Manager extends Subsystem<ManagerStates> {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        autoAlignSubsystem = new AutoAlign(new AutoAlignIOSim(driveSubsystem));
+        autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
         break;
       default:
         break;
@@ -138,6 +137,7 @@ public class Manager extends Subsystem<ManagerStates> {
     intakeSubsystem.periodic();
     ampBarSubsystem.periodic();
     shooterSubsystem.periodic();
+    autoAlignSubsystem.periodic();
     driveSubsystem.periodic();
 
     // Cancel all actions regardless of whats happening

@@ -1,8 +1,11 @@
 package frc.robot.subsystems.AutoAlign;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoAlign extends Subsystem<AutoAlignStates> {
 
@@ -39,16 +42,39 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
         io.configurerotationalPID(0, 0, 0);
         break;
     }
+
+    addTrigger(
+        AutoAlignStates.OFF,
+        AutoAlignStates.SOURCE_SPEAKER,
+        () -> Constants.operatorController.getLeftBumper());
+    addTrigger(
+        AutoAlignStates.OFF,
+        AutoAlignStates.AMP_SPEAKER,
+        () -> Constants.operatorController.getRightBumper());
+    addTrigger(
+        AutoAlignStates.OFF, AutoAlignStates.AMP, () -> Constants.operatorController.getAButton());
   }
 
   @Override
   protected void runState() {
-    if (getState() == AutoAlignStates.ON) {
+    if (!(getState() == AutoAlignStates.OFF)) {
+      io.lockDrive();
+      io.setTargetPose(
+          (DriverStation.getAlliance().get() == Alliance.Red)
+              ? getState().getTargetPose2dRed()
+              : getState().getTargetPose2dBlue());
       io.driveToTargetPose();
 
       if (io.nearTargetPoint()) {
         io.returnDriveToNormal();
+        setState(AutoAlignStates.OFF);
       }
+    }
+
+    Logger.recordOutput("testing", getState());
+
+    if (Constants.operatorController.getXButtonPressed()) {
+      setState(AutoAlignStates.OFF);
     }
   }
 
