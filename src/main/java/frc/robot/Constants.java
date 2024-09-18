@@ -115,7 +115,7 @@ public final class Constants {
 		// Shooter Setpoints (RPS)
 		public static final double OFF = 0.0;
 		public static final double FEEDING_AMP = 25.0;
-		public static final double SHOOTING = 25.0;
+		public static final double SHOOTING = 50.0;
 
 		// Sim Configs
 		public static final int NUM_MOTORS = 2;
