@@ -3,10 +3,9 @@ package frc.robot.subsystems.drive;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.I2C.Port;
-
 import java.util.OptionalDouble;
 import java.util.Queue;
 
