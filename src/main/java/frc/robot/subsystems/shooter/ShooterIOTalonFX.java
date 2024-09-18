@@ -18,10 +18,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 	private StatusSignal leftVelocity;
 	private StatusSignal rightVelocity;
 	PIDController shooterPIDController;
-	
 
 	public ShooterIOTalonFX() {
-
 		shooterPIDController = new PIDController(1, 0, 0);
 
 		feedbackController = new BangBangController();
@@ -60,10 +58,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 		// leftAppliedVolts = shooterPIDController.calculate(leftVelocity.getValueAsDouble(), rps);
 		// rightAppliedVolts = shooterPIDController.calculate(rightVelocity.getValueAsDouble(), rps);
 
-		rightAppliedVolts = feedbackController.calculate(
-			rightVelocity.getValueAsDouble(),
-			rps
-		);
+		rightAppliedVolts = feedbackController.calculate(rightVelocity.getValueAsDouble(), rps);
 
 		leftMotor.set(leftAppliedVolts);
 		rightMotor.set(rightAppliedVolts);
