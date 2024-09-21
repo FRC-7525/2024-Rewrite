@@ -158,9 +158,17 @@ public class Manager extends Subsystem<ManagerStates> {
 		NoteSimulator.logNoteInfo();
 	}
 
-	// Random Stuff for Commands
+	// Near Setpoint functions for stuff
 	public boolean intakeNearSetpoints() {
 		return intakeSubsystem.nearSetpoints();
+	}
+
+	public boolean ampBarNearSetpoints() {
+		return ampBarSubsystem.nearSetPoints();
+	}
+
+	public boolean shooterNearSpeedPoint() {
+		return shooterSubsystem.nearSpeedPoint();
 	}
 
 	public boolean driveNearSetPose(Pose2d targetPose) {
