@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,9 +28,6 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -138,7 +137,7 @@ public class Robot extends LoggedRobot {
 		autonomousCommand = autoChooser.getSelected();
 
 		if (autonomousCommand != null) {
-		  autonomousCommand.schedule();
+			autonomousCommand.schedule();
 		}
 	}
 
@@ -150,7 +149,7 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void teleopInit() {
 		if (autonomousCommand != null) {
-		  autonomousCommand.cancel();
+			autonomousCommand.cancel();
 		}
 	}
 
