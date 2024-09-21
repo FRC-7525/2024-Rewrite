@@ -2,30 +2,30 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.3261709213256836,
-      "y": 0.7918335199356079
+      "x": 1.3,
+      "y": 5.5
     },
-    "rotation": -3.4297978034979217e-26
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Test Path"
+            "name": "Shooting"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Intaking"
+            "pathName": "cross line"
           }
         }
       ]
     }
   },
-  "folder": null,
-  "choreoAuto": true
+  "folder": "MISC",
+  "choreoAuto": false
 }
