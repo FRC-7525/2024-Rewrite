@@ -102,6 +102,12 @@ public final class Constants {
 		// In RPS (Spinner Setpoints)
 		public static final double REVERSE = -3;
 		public static final double ON = 3;
+
+		// RPS
+		public static final double WHEEL_ERROR_OF_MARGIN = 1;
+
+		// Degrees
+		public static final double PIVOT_ERROR_OF_MARGIN = 10;
 	}
 
 	public static final class Shooter {

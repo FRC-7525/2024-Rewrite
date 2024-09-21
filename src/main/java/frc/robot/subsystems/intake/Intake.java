@@ -52,6 +52,10 @@ public class Intake extends Subsystem<IntakeStates> {
 		io.stop();
 	}
 
+	public boolean nearSetpoints() {
+		return io.nearSetPoint() && io.nearSpeedPoint();
+	}
+
 	@Override
 	public void periodic() {
 		super.periodic();

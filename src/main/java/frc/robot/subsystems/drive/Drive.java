@@ -111,6 +111,22 @@ public class Drive extends Subsystem<DriveStates> {
 			);
 		}
 	}
+	
+	// L code??? (taken from AA) good enough
+	public boolean nearSetPose(Pose2d targetPose2d) {
+		Pose2d currentPose2d = getPose();
+
+		return (
+			Math.abs(currentPose2d.getX() - targetPose2d.getX()) <
+				Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+			Math.abs(currentPose2d.getY() - targetPose2d.getY()) <
+			Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+			Math.abs(
+				currentPose2d.getRotation().getDegrees() - targetPose2d.getRotation().getDegrees()
+			) <
+			Constants.AutoAlign.ROTATION_ERROR_MARGIN
+		);
+	}
 
 	public void drive(
 		Drive drive,

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.manager;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AutoAlign.AutoAlign;
@@ -155,5 +156,14 @@ public class Manager extends Subsystem<ManagerStates> {
 	protected void runState() {
 		NoteSimulator.update();
 		NoteSimulator.logNoteInfo();
+	}
+
+	// Random Stuff for Commands
+	public boolean intakeNearSetpoints() {
+		return intakeSubsystem.nearSetpoints();
+	}
+
+	public boolean driveNearSetPose(Pose2d targetPose) {
+		return driveSubsystem.nearSetPose(targetPose);
 	}
 }

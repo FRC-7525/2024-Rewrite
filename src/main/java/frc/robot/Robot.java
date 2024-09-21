@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.AutoCommands;
+import frc.robot.commands.ShootNearSpeakerCommand;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -102,7 +103,7 @@ public class Robot extends LoggedRobot {
 		NamedCommands.registerCommand("Return To Idle", autoCommands.returnToIdle());
 		NamedCommands.registerCommand("Speeding Up", autoCommands.startSpinningUp());
 		NamedCommands.registerCommand("Spin and Intake", autoCommands.spinAndIntake());
-		NamedCommands.registerCommand("Shoot Near Speaker", autoCommands.returnToIdle());
+		NamedCommands.registerCommand("Shoot Near Speaker", new ShootNearSpeakerCommand(this));
 
 		// Automatically Adds Autos??
 		autoChooser = AutoBuilder.buildAutoChooser();
