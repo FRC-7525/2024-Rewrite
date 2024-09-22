@@ -52,6 +52,10 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 		io.stop();
 	}
 
+	public boolean nearSetPoints() {
+		return io.nearSetPoint() && io.nearSpeedPoint();
+	}
+
 	@Override
 	public void periodic() {
 		super.periodic();
