@@ -8,7 +8,7 @@ import frc.robot.subsystems.Subsystem;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAlign extends Subsystem<AutoAlignStates> {
-
+    boolean useVisionPose = false;
 	AutoAlignIO io;
 
 	public AutoAlign(AutoAlignIO io) {
@@ -54,14 +54,24 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 	@Override
 	protected void runState() {
 		/* sets drive to auto align and drives to target pose*/
+
+		if (Constants.operatorController.getLeftBumperPressed()) {
+            useVisionPose = !useVisionPose;  // Toggle between note vision and the other set locations
+        }
 		if (!(getState() == AutoAlignStates.OFF)) {
 			io.lockDrive();
+			
+			if (useVisionPose) { //using vision aa	
+				io.driveToNotePose();
+
+			} else {
 			io.setTargetPose(
 				(DriverStation.getAlliance().get() == Alliance.Red)
 					? getState().getTargetPose2dRed()
 					: getState().getTargetPose2dBlue()
 			);
 			io.driveToTargetPose();
+		}
 
 			/*returns controls to driver once at target  */
 			if (io.nearTargetPoint()) {

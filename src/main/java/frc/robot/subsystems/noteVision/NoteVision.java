@@ -8,7 +8,6 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-// TODO: Implement the NoteVision subsystem in AA
 public class NoteVision {
 
 	private final PhotonCamera noteCam;
@@ -21,7 +20,7 @@ public class NoteVision {
 	}
 
 	public Pose2d getNotePose(Pose2d botPose2d) {
-		double height = 10;
+		double height = 22; // need to confirm
 		PhotonPipelineResult lastResult = noteCam.getLatestResult();
 		List<PhotonTrackedTarget> noteData = lastResult.targets;
 		for (PhotonTrackedTarget t : noteData) {
