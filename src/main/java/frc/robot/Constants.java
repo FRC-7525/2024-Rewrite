@@ -347,6 +347,10 @@ public final class Constants {
 		// TODO: Check if these are still right
 		public static final double LEFT_CURRENT_LIMIT = 10;
 		public static final double RIGHT_CURRENT_LIMIT = 10;
+
+		// TODO: TUNE
+		public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
+		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
 	}
 
 	public static final class AutoAlign {

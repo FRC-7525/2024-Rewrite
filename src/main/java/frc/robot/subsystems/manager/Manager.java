@@ -169,6 +169,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.stop();
 		ampBarSubsystem.stop();
 		shooterSubsystem.stop();
+		climberSubsystem.stop();
 		driveSubsystem.stop();
 	}
 

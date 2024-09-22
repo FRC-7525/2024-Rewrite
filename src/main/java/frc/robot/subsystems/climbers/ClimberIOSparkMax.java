@@ -26,6 +26,9 @@ public class ClimberIOSparkMax implements ClimberIO {
     private double leftClimberSetpoint;
     private double rightClimberSetpoint;
 
+    private double leftAppliedVolts;
+    private double rightAppliedVolts;
+
     public ClimberIOSparkMax() {
         leftClimberMotor = new CANSparkMax(Constants.Climber.LEFT_ID, CANSparkMax.MotorType.kBrushless);
         rightClimberMotor = new CANSparkMax(Constants.Climber.RIGHT_ID, CANSparkMax.MotorType.kBrushless);
@@ -46,6 +49,9 @@ public class ClimberIOSparkMax implements ClimberIO {
 
         leftClimberZeroed = false;
         rightClimberZeroed = false;
+
+        leftAppliedVolts = 0;
+        rightAppliedVolts = 0;
     }
 
     public void updateInput(ClimberIOInputs inputs) {
@@ -58,8 +64,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     }
 
     public void updateOutputs(ClimberIOOutputs outputs) {
-        outputs.leftClimberAppliedVoltage = leftClimberMotor.getAppliedOutput();
-        outputs.rightClimberAppliedVoltage = rightClimberMotor.getAppliedOutput();
+        outputs.leftClimberAppliedVoltage = leftAppliedVolts;
+        outputs.rightClimberAppliedVoltage = rightAppliedVolts;
     }
 
     public boolean nearSetpoints() {
@@ -80,8 +86,11 @@ public class ClimberIOSparkMax implements ClimberIO {
         this.leftClimberSetpoint = leftSetpoint;
         this.rightClimberSetpoint = rightSetpoint;
 
-        leftClimberMotor.set(climberController.calculate(leftClimberEncoder.getPosition(), rightSetpoint));
-        rightClimberMotor.set(climberController.calculate(rightClimberEncoder.getPosition(), rightSetpoint));
+        this.leftAppliedVolts = climberController.calculate(leftClimberEncoder.getPosition(), leftSetpoint);
+        this.rightAppliedVolts = climberController.calculate(leftClimberEncoder.getPosition(), rightSetpoint);
+
+        leftClimberMotor.set(leftAppliedVolts);
+        rightClimberMotor.set(rightAppliedVolts);
     }
 
     public void zeroClimbers() {
