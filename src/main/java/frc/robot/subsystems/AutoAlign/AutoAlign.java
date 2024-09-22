@@ -10,10 +10,12 @@ import org.littletonrobotics.junction.Logger;
 public class AutoAlign extends Subsystem<AutoAlignStates> {
 
 	AutoAlignIO io;
+	AutoAlignStates cachedState;
 
 	public AutoAlign(AutoAlignIO io) {
 		super("AutoAlign", AutoAlignStates.OFF);
 		this.io = io;
+		this.cachedState = AutoAlignStates.OFF;
 
 		/* Sets PID values for each mode */
 		switch (Constants.currentMode) {
@@ -64,12 +66,16 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 			io.driveToTargetPose();
 
 			/*returns controls to driver once at target  */
-			if (io.nearTargetPoint()) {
+			if (nearTargetPoint()) {
 				io.setTargetPose(new Pose2d());
 				io.returnDriveToNormal();
 				setState(AutoAlignStates.OFF);
 			}
 		}
+		
+		if (getState() != AutoAlignStates.OFF)
+			cachedState = getState();
+
 		/*X button to abort*/
 		if (Constants.operatorController.getXButtonPressed()) {
 			setState(AutoAlignStates.OFF);
@@ -79,5 +85,15 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		Logger.recordOutput("AutoAlign/Applied X", io.getAppliedX());
 		Logger.recordOutput("AutoAlign/Applied Y", io.getAppliedY());
 		Logger.recordOutput("AutoAlign/Applied Rotational", io.getAppliedRotational());
+		Logger.recordOutput("AutoAlign/Cached State", cachedState.getStateString());
+	}
+
+	public AutoAlignStates getCachedState() {
+		AutoAlignStates temp = cachedState;
+		cachedState = AutoAlignStates.OFF;
+		return temp;
+	}
+	public boolean nearTargetPoint() {
+		return io.nearTargetPoint();
 	}
 }
