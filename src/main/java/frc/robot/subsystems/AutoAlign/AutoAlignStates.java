@@ -3,6 +3,8 @@ package frc.robot.subsystems.AutoAlign;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemStates;
+import frc.robot.subsystems.noteVision.NoteVision;
+
 
 public enum AutoAlignStates implements SubsystemStates {
 	SOURCE_SPEAKER(
@@ -16,6 +18,7 @@ public enum AutoAlignStates implements SubsystemStates {
 		"DRIVING TO AMP SPEAKER"
 	),
 	AMP(Constants.AutoAlign.redAmpPose, Constants.AutoAlign.blueAmpPose, "DRIVING TO AMP"),
+	NOTE(new Pose2d(), new Pose2d(), "DRIVING TO NOTE VISION POSE"),
 	OFF(new Pose2d(), new Pose2d(), "OFF");
 
 	private String stateString;
