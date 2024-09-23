@@ -13,11 +13,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.manager.*;
-import frc.robot.subsystems.noteVision.NoteVision;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -35,8 +33,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
 
 	public Manager managerSubsystem;
-	NoteVision noteVision = new NoteVision(); //for testing note vision
-	Pose2d pose = new Pose2d();//for testing note vision
+
 
 
 	// private SendableChooser<Command> autoChooser;
@@ -122,8 +119,6 @@ public class Robot extends LoggedRobot {
 
 		CommandScheduler.getInstance().run();
 
-	SmartDashboard.putNumber("note X", noteVision.getNotePose(pose).getX());//for testing note vision
-	SmartDashboard.putNumber("note Y", noteVision.getNotePose(pose).getY());//for testing note vision
 	}
 
 	/** This function is called once when the robot is disabled. */

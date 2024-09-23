@@ -3,7 +3,6 @@ package frc.robot.subsystems.AutoAlign;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemStates;
-import frc.robot.subsystems.noteVision.NoteVision;
 
 
 public enum AutoAlignStates implements SubsystemStates {

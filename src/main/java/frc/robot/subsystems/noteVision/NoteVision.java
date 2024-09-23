@@ -2,6 +2,8 @@ package frc.robot.subsystems.noteVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -13,6 +15,7 @@ public class NoteVision {
 	private final PhotonCamera noteCam;
 
 	private boolean hasTarget;
+	Pose2d pose = new Pose2d(); // for note vision testing
 
 	public NoteVision() {
 		noteCam = new PhotonCamera("Note Cam");
@@ -45,7 +48,9 @@ public class NoteVision {
 		} else {
 			hasTarget = false;
 		}
-		// Sounds like an output??
+		SmartDashboard.putNumber("noteX", getNotePose(pose).getX()); // for note vision testing
+		SmartDashboard.putNumber("noteY", getNotePose(pose).getY()); // for note vision testing
+
 		Logger.recordOutput("NoteVision/hasTarget", hasTarget);
 	}
 }
