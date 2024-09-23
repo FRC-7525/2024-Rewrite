@@ -34,8 +34,6 @@ public class Robot extends LoggedRobot {
 
 	public Manager managerSubsystem;
 
-
-
 	// private SendableChooser<Command> autoChooser;
 
 	// private AutoCommands autoCommands = new AutoCommands(this);
@@ -118,7 +116,6 @@ public class Robot extends LoggedRobot {
 		NoteSimulator.logNoteInfo();
 
 		CommandScheduler.getInstance().run();
-
 	}
 
 	/** This function is called once when the robot is disabled. */

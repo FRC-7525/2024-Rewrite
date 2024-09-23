@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemStates;
 
-
 public enum AutoAlignStates implements SubsystemStates {
 	SOURCE_SPEAKER(
 		Constants.AutoAlign.redSourceSpeakerPose,
