@@ -5,11 +5,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.noteVision.NoteVision;
+
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAlign extends Subsystem<AutoAlignStates> {
-
 	AutoAlignIO io;
+	Drive driveSubsystem;
+	private NoteVision noteVision;
+
 
 	public AutoAlign(AutoAlignIO io) {
 		super("AutoAlign", AutoAlignStates.OFF);
@@ -49,19 +54,27 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		addTrigger(AutoAlignStates.OFF, AutoAlignStates.AMP, () ->
 			Constants.operatorController.getAButton()
 		);
+		addTrigger(AutoAlignStates.OFF, AutoAlignStates.NOTE, () ->
+        Constants.operatorController.getBButton()  // B button for note driving not sure if its a good button
+    );
 	}
 
 	@Override
 	protected void runState() {
 		/* sets drive to auto align and drives to target pose*/
+
 		if (!(getState() == AutoAlignStates.OFF)) {
 			io.lockDrive();
+			
 			io.setTargetPose(
-				(DriverStation.getAlliance().get() == Alliance.Red)
+				(getState() == AutoAlignStates.NOTE)
+                ? noteVision.getNotePose(driveSubsystem.getPose())  // Get the pose from NoteVision
+				:(DriverStation.getAlliance().get() == Alliance.Red)
 					? getState().getTargetPose2dRed()
 					: getState().getTargetPose2dBlue()
 			);
 			io.driveToTargetPose();
+		
 
 			/*returns controls to driver once at target  */
 			if (io.nearTargetPoint()) {
@@ -81,3 +94,4 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		Logger.recordOutput("AutoAlign/Applied Rotational", io.getAppliedRotational());
 	}
 }
+

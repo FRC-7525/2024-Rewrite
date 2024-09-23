@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
@@ -32,6 +33,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
 
 	public Manager managerSubsystem;
+
+
 
 	// private SendableChooser<Command> autoChooser;
 
@@ -115,6 +118,7 @@ public class Robot extends LoggedRobot {
 		NoteSimulator.logNoteInfo();
 
 		CommandScheduler.getInstance().run();
+
 	}
 
 	/** This function is called once when the robot is disabled. */
