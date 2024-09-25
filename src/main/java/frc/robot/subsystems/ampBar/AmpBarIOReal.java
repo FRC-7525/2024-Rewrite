@@ -54,7 +54,10 @@ public class AmpBarIOReal implements AmpBarIO {
 		spinnerAppliedVoltage = 0;
 
 		beamBreak = new DigitalInput(Constants.AmpBar.BEAM_BREAK_PORT);
-		beamBreakDebouncer = new Debouncer(Constants.AmpBar.DEBOUNCE_TIME, Debouncer.DebounceType.kBoth);
+		beamBreakDebouncer = new Debouncer(
+			Constants.AmpBar.DEBOUNCE_TIME,
+			Debouncer.DebounceType.kBoth
+		);
 	}
 
 	@Override

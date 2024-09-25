@@ -49,7 +49,10 @@ public class IntakeIOSparkMax implements IntakeIO {
 		pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
 
 		beamBreak = new DigitalInput(Constants.Intake.BEAM_BREAK_PORT);
-		beamBreakDebouncer = new Debouncer(Constants.Intake.DEBOUNCE_TIME, Debouncer.DebounceType.kBoth);
+		beamBreakDebouncer = new Debouncer(
+			Constants.Intake.DEBOUNCE_TIME,
+			Debouncer.DebounceType.kBoth
+		);
 	}
 
 	public void setSetpoints(
