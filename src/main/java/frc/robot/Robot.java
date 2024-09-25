@@ -13,8 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.drive.AutoAlign;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -47,7 +47,6 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void robotInit() {
 		managerSubsystem = new Manager();
-		AutoAlign.setManager(managerSubsystem);
 
 		// NamedCommands.registerCommand("Intaking", autoCommands.intaking());
 		// NamedCommands.registerCommand("Shooting", autoCommands.shooting());
@@ -78,7 +77,7 @@ public class Robot extends LoggedRobot {
 			case REAL:
 				// Running on a real robot, log to a USB stick ("/U/logs")
 				// Logger.addDataReceiver(new WPILOGWriter());
-				// Logger.addDataReceiver(new NT4Publisher());
+				Logger.addDataReceiver(new NT4Publisher());
 				break;
 			case SIM:
 				// Running a physics simulator, log to NT

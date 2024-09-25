@@ -10,6 +10,8 @@ public interface ShooterIO {
 		public double rightShooterSpeed = 0.0;
 		public double leftShooterSpeed = 0.0;
 		public double shooterSpeedPoint = 0.0;
+		public double rightShooterAmp = 0.0;
+		public double leftShooterAmp = 0.0;
 	}
 
 	public static class ShooterIOOutputs {

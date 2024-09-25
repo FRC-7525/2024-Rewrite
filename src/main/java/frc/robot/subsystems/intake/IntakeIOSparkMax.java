@@ -43,6 +43,8 @@ public class IntakeIOSparkMax implements IntakeIO {
 		outPivotController = new PIDController(0, 0, 0);
 		inPIDController = new PIDController(0, 0, 0);
 
+		pivotEncoder.setPosition(0);
+
 		pivotEncoder.setPositionConversionFactor(Constants.RADIAN_CF);
 		pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
 

@@ -3,7 +3,9 @@ package frc.robot.subsystems.drive;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
@@ -14,8 +16,8 @@ public class GyroIONavx2 implements GyroIO {
 	private final Queue<Double> yawPositionQueue;
 	private final Queue<Double> yawTimestampQueue;
 
-	public GyroIONavx2(SPI.Port port) {
-		navx = new AHRS(port);
+	public GyroIONavx2() {
+		navx = new AHRS(SerialPort.Port.kUSB1);
 		navx.reset();
 		yawTimestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 		yawPositionQueue = HybridOdometryThread.getInstance()

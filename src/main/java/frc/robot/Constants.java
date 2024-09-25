@@ -42,7 +42,7 @@ public final class Constants {
 	public static final double DIAM_TO_RADIUS_CF = 2.0;
 	public static final double AVG_TWO_ITEM_F = 2.0;
 
-	public static final Mode currentMode = Mode.SIM;
+	public static final Mode currentMode = Mode.REAL;
 
 	public static final double MAX_VOLTS = 12.0;
 	public static final double MIN_VOLTS = -12.0;
@@ -77,8 +77,8 @@ public final class Constants {
 		public static final PIDConstants SIM_IN_PID = new PIDConstants(1, 0, 0);
 		public static final PIDConstants SIM_OUT_PID = new PIDConstants(1, 0, 0);
 
-		public static final PIDConstants REAL_IN_PID = new PIDConstants(1, 0, 0);
-		public static final PIDConstants REAL_OUT_PID = new PIDConstants(1, 0, 0);
+		public static final PIDConstants REAL_IN_PID = new PIDConstants(0.08, 0, 0.001);
+		public static final PIDConstants REAL_OUT_PID = new PIDConstants(0.25, 0, 0.002);
 
 		// Sim Configs
 
@@ -95,9 +95,9 @@ public final class Constants {
 		public static final double SPINNER_GEARING = 1.0;
 		public static final double OFF = 0.0;
 
-		// In Rads (Pivot setpoints)
-		public static final double DOWN = Units.degreesToRadians(180.0);
-		public static final double IN = Units.degreesToRadians(0.0);
+		// In DEGREES (Pivot setpoints)
+		public static final double DOWN = -231;
+		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
 		public static final double REVERSE = -10.0;
@@ -142,11 +142,11 @@ public final class Constants {
 
 		// PID
 		public static final PIDConstants SIM_PID = new PIDConstants(3, 0, 1.5);
-		public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
+		public static final PIDConstants REAL_PID = new PIDConstants(0.1, 0, 0);
 
 		// Motor CAN IDs
-		public static final int LEFT_PIVOT_ID = 31;
-		public static final int RIGHT_PIVOT_ID = 30;
+		public static final int LEFT_PIVOT_ID = 30;
+		public static final int RIGHT_PIVOT_ID = 31;
 		public static final int SPINNER_ID = 38;
 
 		// Sim Configs
@@ -168,12 +168,12 @@ public final class Constants {
 
 		// In RPS (Spinner Setpoints)
 		public static final double SHOOTING = -0.5;
-		public static final double FEEDING = -0.1;
+		public static final double FEEDING = -1;
 		public static final double OFF = 0.0;
 
-		// IN Rads (Pivot Setpoints)
-		public static final double OUT = -Units.degreesToRadians(100.0);
-		public static final double FEEDING_POSITION = -Units.degreesToRadians(93.0);
+		// IN DEGREES (Pivot Setpoints)
+		public static final double OUT = -84;
+		public static final double FEEDING_POSITION = -82;
 		public static final double IN = Units.degreesToRadians(0.0);
 
 		// Beam Break
@@ -291,28 +291,28 @@ public final class Constants {
 				// last years dont work
 
 				// Front Left Module
-				public static final int DRIVE0_ID = 8;
-				public static final int TURN0_ID = 7;
-				public static final int CANCODER0_ID = 9;
-				public static final double OFFSET0 = 290.0;
+				public static final int DRIVE0_ID = 2;
+				public static final int TURN0_ID = 1;
+				public static final int CANCODER0_ID = 3;
+				public static final double OFFSET0 = Units.degreesToRadians(171.826171875);
 
 				// Front Right Module
-				public static final int DRIVE1_ID = 2;
-				public static final int TURN1_ID = 1;
-				public static final int CANCODER1_ID = 3;
-				public static final double OFFSET1 = 170.0;
+				public static final int DRIVE1_ID = 5;
+				public static final int TURN1_ID = 4;
+				public static final int CANCODER1_ID = 6;
+				public static final double OFFSET1 = Units.degreesToRadians(-23.115234375);
 
 				// Back Left Module
-				public static final int DRIVE2_ID = 5;
-				public static final int TURN2_ID = 4;
-				public static final int CANCODER2_ID = 6;
-				public static final double OFFSET2 = 342.2;
+				public static final int DRIVE2_ID = 11;
+				public static final int TURN2_ID = 10;
+				public static final int CANCODER2_ID = 12;
+				public static final double OFFSET2 = Units.degreesToRadians(220.517578125);
 
 				// Back Right Module
-				public static final int DRIVE3_ID = 11;
-				public static final int TURN3_ID = 10;
-				public static final int CANCODER3_ID = 12;
-				public static final double OFFSET3 = 220.5;
+				public static final int DRIVE3_ID = 8;
+				public static final int TURN3_ID = 7;
+				public static final int CANCODER3_ID = 9;
+				public static final double OFFSET3 = Units.degreesToRadians(-67.939453125);
 			}
 		}
 

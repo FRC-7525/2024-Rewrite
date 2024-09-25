@@ -3,8 +3,9 @@ package frc.robot.subsystems.manager;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.AutoAlign.AutoAlign;
+import frc.robot.subsystems.AutoAlign.AutoAlignIO;
 import frc.robot.subsystems.ampBar.*;
-import frc.robot.subsystems.drive.AutoAlign;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavx2;
@@ -21,6 +22,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	AmpBar ampBarSubsystem;
 	Shooter shooterSubsystem;
 	Drive driveSubsystem;
+	AutoAlign autoAlignSubsystem;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
@@ -32,7 +34,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				ampBarSubsystem = new AmpBar(new AmpBarIOReal());
 				shooterSubsystem = new Shooter(new ShooterIOTalonFX());
 				driveSubsystem = new Drive(
-					new GyroIONavx2(SPI.Port.kMXP),
+					new GyroIONavx2(),
 					new ModuleIOHybrid(0),
 					new ModuleIOHybrid(1),
 					new ModuleIOHybrid(2),
@@ -66,9 +68,9 @@ public class Manager extends Subsystem<ManagerStates> {
 			default:
 				break;
 		}
+		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
 
 		NoteSimulator.setDrive(driveSubsystem);
-		AutoAlign.setDrive(driveSubsystem);
 
 		// State Transitions (Nothing Automatic YET)
 
@@ -141,6 +143,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.periodic();
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
+		autoAlignSubsystem.periodic();
 		driveSubsystem.periodic();
 
 		// Cancel all actions regardless of whats happening
