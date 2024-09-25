@@ -50,4 +50,8 @@ public interface AmpBarIO {
 	public default boolean atSetPoint() {
 		return false;
 	}
+
+	public default boolean noteDetected() {
+		return false;
+	}
 }

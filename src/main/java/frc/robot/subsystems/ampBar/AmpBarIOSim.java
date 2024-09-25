@@ -109,4 +109,8 @@ public class AmpBarIOSim implements AmpBarIO {
 		double motorPosition = getPivotPosition();
 		return Math.abs(motorPosition - pivotSetpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
 	}
+
+	public boolean noteDetected() {
+		return false;
+	}
 }

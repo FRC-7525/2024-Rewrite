@@ -68,4 +68,8 @@ public class Intake extends Subsystem<IntakeStates> {
 		io.updateInputs(inputs);
 		io.updateOutputs(outputs);
 	}
+
+	public boolean noteDetected() {
+		return io.noteDetected();
+	}
 }

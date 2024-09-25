@@ -91,6 +91,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () ->
 			Constants.controller.getBButtonPressed()
 		);
+		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () -> intakeSubsystem.noteDetected());
 
 		// Amping (Y)
 		addTrigger(ManagerStates.IDLE, ManagerStates.FEED_AMP, () ->
@@ -98,6 +99,12 @@ public class Manager extends Subsystem<ManagerStates> {
 		);
 		addTrigger(ManagerStates.FEED_AMP, ManagerStates.SCORE_AMP, () ->
 			Constants.controller.getYButtonPressed()
+		);
+		addTrigger(ManagerStates.FEED_AMP, ManagerStates.AMP_HOLDING_NOTE, () -> ampBarSubsystem.noteDetected());
+		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP, () -> ampBarSubsystem.atSetPoint());
+
+		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> 
+			(getStateTime() > Constants.AmpBar.TIME_FOR_SCORING)
 		);
 		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
 			Constants.controller.getYButtonPressed()
