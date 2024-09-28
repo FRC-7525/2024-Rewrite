@@ -19,7 +19,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	private StatusSignal<Double> rightVelocity;
 	private StatusSignal<Double> leftAmps;
 	private StatusSignal<Double> rightAmps;
-	
+
 	PIDController shooterPIDController;
 
 	public ShooterIOTalonFX() {
@@ -35,7 +35,13 @@ public class ShooterIOTalonFX implements ShooterIO {
 		speedPoint = 0.0;
 		leftMotor.setInverted(true);
 		rightMotor.setInverted(false);
-		BaseStatusSignal.setUpdateFrequencyForAll(Constants.SLOW_UPDATE_FREQ, rightVelocity, leftVelocity, rightAmps, leftAmps);
+		BaseStatusSignal.setUpdateFrequencyForAll(
+			Constants.SLOW_UPDATE_FREQ,
+			rightVelocity,
+			leftVelocity,
+			rightAmps,
+			leftAmps
+		);
 	}
 
 	public void updateInputs(ShooterIOInputs inputs) {
@@ -76,7 +82,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	public boolean nearSpeedPoint() {
 		return (
 			Math.abs(speedPoint - leftVelocity.getValueAsDouble()) <
-			Constants.Shooter.ERROR_OF_MARGIN &&
+				Constants.Shooter.ERROR_OF_MARGIN &&
 			Math.abs(speedPoint - rightVelocity.getValueAsDouble()) <
 			Constants.Shooter.ERROR_OF_MARGIN
 		);
