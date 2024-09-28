@@ -102,8 +102,8 @@ public final class Constants {
 		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
-		public static final double REVERSE = -10.0;
-		public static final double ON = 10.0;
+		public static final double REVERSE = -1;
+		public static final double ON = 1;
 
 		// Beam Break
 		public static final int BEAM_BREAK_PORT = 0;
