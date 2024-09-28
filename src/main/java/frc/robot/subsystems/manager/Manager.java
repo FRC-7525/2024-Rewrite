@@ -95,10 +95,11 @@ public class Manager extends Subsystem<ManagerStates> {
 		);
 
 		// Amping (Y)
-		addTrigger(ManagerStates.IDLE, ManagerStates.FEED_AMP, () ->
-			Constants.controller.getYButtonPressed()
+		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_AMP, () -> Constants.controller.getYButtonPressed());
+		addTrigger(ManagerStates.STAGING_AMP, ManagerStates.FEED_AMP, () ->
+			ampBarSubsystem.atSetPoint()
 		);
-		addTrigger(ManagerStates.FEED_AMP, ManagerStates.SCORE_AMP, () ->
+		addTrigger(ManagerStates.FEED_AMP, ManagerStates.AMP_HOLDING_NOTE, () ->
 			Constants.controller.getYButtonPressed()
 		);
 		addTrigger(ManagerStates.FEED_AMP, ManagerStates.AMP_HOLDING_NOTE, () ->

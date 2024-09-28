@@ -112,7 +112,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	@Override
 	public boolean noteDetected() {
-		if (beamBreakDebouncer.calculate(beamBreak.get())) {
+		if (!beamBreakDebouncer.calculate(beamBreak.get())) {
 			return true;
 		}
 		return false;

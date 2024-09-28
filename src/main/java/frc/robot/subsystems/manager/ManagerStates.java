@@ -16,6 +16,7 @@ public enum ManagerStates implements SubsystemStates {
 		ShooterStates.SHOOTING
 	),
 	SHOOTING("Shooting", IntakeStates.FEEDING, AmpBarStates.OFF, ShooterStates.SHOOTING),
+	STAGING_AMP("Staging Amp", IntakeStates.OFF, AmpBarStates.FEEDING, ShooterStates.OFF),
 	FEED_AMP("Feed Amp", IntakeStates.FEEDING, AmpBarStates.FEEDING, ShooterStates.PASSING_AMP),
 	AMP_HOLDING_NOTE(
 		"Holding Note",
