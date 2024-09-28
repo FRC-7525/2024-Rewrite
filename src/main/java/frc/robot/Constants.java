@@ -403,6 +403,7 @@ public final class Constants {
 	}
 
 	public static final class NoteVision {
+
 		public static final double CAMERA_HEIGHT = 22; // need to confirm
 	}
 }
