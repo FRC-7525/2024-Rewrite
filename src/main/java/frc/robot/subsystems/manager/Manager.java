@@ -131,7 +131,9 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () ->
 			Constants.controller.getAButtonPressed()
 		);
-		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () -> shooterSubsystem.nearSpeedPoint());
+		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () ->
+			shooterSubsystem.nearSpeedPoint()
+		);
 		addTrigger(ManagerStates.OPERATOR_SPINNING_UP, ManagerStates.SHOOTING, () ->
 			Constants.controller.getAButtonPressed()
 		);
