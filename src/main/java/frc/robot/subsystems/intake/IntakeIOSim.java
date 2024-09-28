@@ -109,4 +109,9 @@ public class IntakeIOSim implements IntakeIO {
 	public boolean noteDetected() {
 		return false;
 	}
+
+	public boolean nearSetpoints() {
+		return true;
+	}
 }
+ 

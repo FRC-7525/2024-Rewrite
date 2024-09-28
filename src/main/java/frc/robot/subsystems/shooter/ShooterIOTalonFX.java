@@ -23,6 +23,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	PIDController shooterPIDController;
 
 	public ShooterIOTalonFX() {
+		// feedbackController = new PIDController(1, 0, 0);
 		feedbackController = new BangBangController();
 		leftMotor = new TalonFX(Constants.Shooter.LEFT_SHOOTER_ID);
 		leftVelocity = leftMotor.getVelocity();
@@ -45,6 +46,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	}
 
 	public void updateInputs(ShooterIOInputs inputs) {
+		BaseStatusSignal.refreshAll(rightVelocity, rightAmps, leftVelocity, leftAmps);
 		inputs.leftShooterSpeed = leftVelocity.getValueAsDouble();
 		inputs.rightShooterSpeed = rightVelocity.getValueAsDouble();
 		inputs.shooterSpeedPoint = speedPoint;
@@ -58,9 +60,13 @@ public class ShooterIOTalonFX implements ShooterIO {
 	}
 
 	public void setSpeed(double rps) {
-		if (rps == 0) return;
-
 		speedPoint = rps;
+		if (rps == 0) {
+			leftMotor.set(0);
+			rightMotor.set(0);
+			return;
+		}
+
 		leftAppliedVolts = feedbackController.calculate(leftVelocity.getValueAsDouble(), rps);
 
 		// leftAppliedVolts = shooterPIDController.calculate(leftVelocity.getValueAsDouble(), rps);
@@ -68,8 +74,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 		rightAppliedVolts = feedbackController.calculate(rightVelocity.getValueAsDouble(), rps);
 
-		leftMotor.set(leftAppliedVolts);
-		rightMotor.set(rightAppliedVolts);
+		leftMotor.setVoltage(leftAppliedVolts * 12);
+		rightMotor.setVoltage(rightAppliedVolts * 12);
 	}
 
 	public void stop() {

@@ -125,9 +125,6 @@ public class AmpBarIOReal implements AmpBarIO {
 
 	@Override
 	public boolean noteDetected() {
-		if (!beamBreakDebouncer.calculate(beamBreak.get())) {
-			return true;
-		}
-		return false;
+		return !beamBreakDebouncer.calculate(beamBreak.get());
 	}
 }

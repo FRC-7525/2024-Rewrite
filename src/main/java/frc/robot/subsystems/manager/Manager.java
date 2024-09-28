@@ -21,7 +21,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	AmpBar ampBarSubsystem;
 	Shooter shooterSubsystem;
 	Drive driveSubsystem;
-	AutoAlign autoAlignSubsystem;
+	// AutoAlign autoAlignSubsystem;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
@@ -67,7 +67,7 @@ public class Manager extends Subsystem<ManagerStates> {
 			default:
 				break;
 		}
-		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
+		// autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
 
 		NoteSimulator.setDrive(driveSubsystem);
 
@@ -90,7 +90,8 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () ->
 			Constants.controller.getBButtonPressed()
 		);
-		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () -> intakeSubsystem.noteDetected()
+		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () -> 
+			intakeSubsystem.noteDetected() && intakeSubsystem.nearSetpoints()
 		);
 
 		// Amping (Y)
@@ -133,6 +134,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () ->
 			shooterSubsystem.nearSpeedPoint()
 		);
+		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
 		addTrigger(ManagerStates.OPERATOR_SPINNING_UP, ManagerStates.SHOOTING, () ->
 			Constants.controller.getAButtonPressed()
 		);
@@ -153,7 +155,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.periodic();
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
-		autoAlignSubsystem.periodic();
+		// autoAlignSubsystem.periodic();
 		driveSubsystem.periodic();
 
 		// Cancel all actions regardless of whats happening

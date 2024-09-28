@@ -31,6 +31,9 @@ import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
+
+import javax.swing.text.TabExpander;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -98,14 +101,14 @@ public class Drive extends Subsystem<DriveStates> {
 	public void runState() {
 		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not
 		// good)
-		Logger.recordOutput("driveState", getState());
-
+		// Logger.recordOutput("driveState", getState());
+		double translationmult = .8 * (DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1);
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
-				() -> Constants.controller.getLeftY(),
-				() -> Constants.controller.getLeftX(),
-				() -> -Constants.controller.getRightX(),
+				() -> Constants.controller.getLeftY() * translationmult,
+				() -> Constants.controller.getLeftX() * translationmult,
+				() -> -Constants.controller.getRightX() * 0.5,
 				getState().getRotationModifier(),
 				getState().getTranslationModifier()
 			);

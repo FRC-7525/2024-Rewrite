@@ -112,9 +112,11 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	@Override
 	public boolean noteDetected() {
-		if (!beamBreakDebouncer.calculate(beamBreak.get())) {
-			return true;
-		}
-		return false;
+		return !beamBreakDebouncer.calculate(beamBreak.get());
+	}
+
+	@Override
+	public boolean nearSetpoints() {
+		return Math.abs(pivotMotor.getEncoder().getPosition() - pivotSetpoint) <= Constants.Intake.ERROR_OF_MARGIN;
 	}
 }
