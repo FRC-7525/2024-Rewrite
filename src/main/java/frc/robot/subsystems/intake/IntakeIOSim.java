@@ -114,4 +114,3 @@ public class IntakeIOSim implements IntakeIO {
 		return true;
 	}
 }
- 

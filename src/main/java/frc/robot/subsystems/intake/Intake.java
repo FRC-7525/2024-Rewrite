@@ -78,4 +78,3 @@ public class Intake extends Subsystem<IntakeStates> {
 		return io.nearSetpoints();
 	}
 }
- 

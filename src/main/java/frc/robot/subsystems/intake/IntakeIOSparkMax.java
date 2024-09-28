@@ -117,6 +117,9 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	@Override
 	public boolean nearSetpoints() {
-		return Math.abs(pivotMotor.getEncoder().getPosition() - pivotSetpoint) <= Constants.Intake.ERROR_OF_MARGIN;
+		return (
+			Math.abs(pivotMotor.getEncoder().getPosition() - pivotSetpoint) <=
+			Constants.Intake.ERROR_OF_MARGIN
+		);
 	}
 }
