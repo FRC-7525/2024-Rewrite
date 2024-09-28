@@ -36,6 +36,8 @@ public final class Constants {
 
 	public static final double SIM_UPDATE_TIME = 0.05;
 
+	public static final double SLOW_UPDATE_FREQ = 50;
+
 	// Conversion Factors
 	public static final double RADIAN_CF = (Math.PI * 2);
 	public static final double RPM_TO_RPS_CF = 60;

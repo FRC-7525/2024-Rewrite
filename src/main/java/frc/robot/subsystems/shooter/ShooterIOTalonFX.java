@@ -15,33 +15,35 @@ public class ShooterIOTalonFX implements ShooterIO {
 	private double speedPoint;
 	private double leftAppliedVolts;
 	private double rightAppliedVolts;
-	private StatusSignal leftVelocity;
-	private StatusSignal rightVelocity;
+	private StatusSignal<Double> leftVelocity;
+	private StatusSignal<Double> rightVelocity;
+	private StatusSignal<Double> leftAmps;
+	private StatusSignal<Double> rightAmps;
+	
 	PIDController shooterPIDController;
 
 	public ShooterIOTalonFX() {
-		shooterPIDController = new PIDController(1, 0, 0);
-
 		feedbackController = new BangBangController();
 		leftMotor = new TalonFX(Constants.Shooter.LEFT_SHOOTER_ID);
 		leftVelocity = leftMotor.getVelocity();
-		// leftMotor.getVelocity().setUpdateFrequency(50);
+		leftAmps = leftMotor.getSupplyCurrent();
 
 		rightMotor = new TalonFX(Constants.Shooter.RIGHT_SHOOTER_ID);
 		rightVelocity = rightMotor.getVelocity();
+		rightAmps = rightMotor.getSupplyCurrent();
+
 		speedPoint = 0.0;
 		leftMotor.setInverted(true);
 		rightMotor.setInverted(false);
-		// rightMotor.getVelocity().setUpdateFrequency(50);
-		BaseStatusSignal.setUpdateFrequencyForAll(50, rightVelocity, leftVelocity);
+		BaseStatusSignal.setUpdateFrequencyForAll(Constants.SLOW_UPDATE_FREQ, rightVelocity, leftVelocity, rightAmps, leftAmps);
 	}
 
 	public void updateInputs(ShooterIOInputs inputs) {
-		inputs.leftShooterSpeed = leftMotor.getVelocity().getValueAsDouble();
-		inputs.rightShooterSpeed = rightMotor.getVelocity().getValueAsDouble();
+		inputs.leftShooterSpeed = leftVelocity.getValueAsDouble();
+		inputs.rightShooterSpeed = rightVelocity.getValueAsDouble();
 		inputs.shooterSpeedPoint = speedPoint;
-		inputs.rightShooterAmp = rightMotor.getSupplyCurrent().getValueAsDouble();
-		inputs.leftShooterAmp = leftMotor.getSupplyCurrent().getValueAsDouble();
+		inputs.rightShooterAmp = rightAmps.getValueAsDouble();
+		inputs.leftShooterAmp = leftAmps.getValueAsDouble();
 	}
 
 	public void updateOutputs(ShooterIOOutputs outputs) {
@@ -73,9 +75,9 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 	public boolean nearSpeedPoint() {
 		return (
-			// Math.abs(speedPoint - leftVelocity.getValueAsDouble()) <
-			// Constants.Shooter.ERROR_OF_MARGIN
-			Math.abs(speedPoint - rightMotor.getVelocity().getValueAsDouble()) <
+			Math.abs(speedPoint - leftVelocity.getValueAsDouble()) <
+			Constants.Shooter.ERROR_OF_MARGIN &&
+			Math.abs(speedPoint - rightVelocity.getValueAsDouble()) <
 			Constants.Shooter.ERROR_OF_MARGIN
 		);
 	}
