@@ -1,6 +1,5 @@
 package frc.robot.subsystems.manager;
 
-import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AutoAlign.AutoAlign;

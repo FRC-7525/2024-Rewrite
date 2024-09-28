@@ -3,6 +3,8 @@ package frc.robot.subsystems.noteVision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
+
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -22,7 +24,7 @@ public class NoteVision {
 	}
 
 	public Pose2d getNotePose(Pose2d botPose2d) {
-		double height = 22; // need to confirm
+		double height = Constants.NoteVision.CAMERA_HEIGHT; // need to confirm
 		PhotonPipelineResult lastResult = noteCam.getLatestResult();
 		List<PhotonTrackedTarget> noteData = lastResult.targets;
 		for (PhotonTrackedTarget t : noteData) {

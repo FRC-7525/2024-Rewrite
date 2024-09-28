@@ -401,4 +401,8 @@ public final class Constants {
 		public static final double TRANSLATION_ERROR_MARGIN = 0.4;
 		public static final double ROTATION_ERROR_MARGIN = 0.4;
 	}
+
+	public static final class NoteVision {
+		public static final double CAMERA_HEIGHT = 22; // need to confirm
+	}
 }
