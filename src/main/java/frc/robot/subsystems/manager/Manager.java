@@ -21,8 +21,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	AmpBar ampBarSubsystem;
 	Shooter shooterSubsystem;
 	Drive driveSubsystem;
-
-	// AutoAlign autoAlignSubsystem;
+	AutoAlign autoAlignSubsystem;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
@@ -68,7 +67,7 @@ public class Manager extends Subsystem<ManagerStates> {
 			default:
 				break;
 		}
-		// autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
+		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
 
 		NoteSimulator.setDrive(driveSubsystem);
 
@@ -160,7 +159,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.periodic();
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
-		// autoAlignSubsystem.periodic();
+		autoAlignSubsystem.periodic();
 		driveSubsystem.periodic();
 
 		// Cancel all actions regardless of whats happening
