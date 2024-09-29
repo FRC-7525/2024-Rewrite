@@ -47,12 +47,15 @@ public interface AmpBarIO {
 
 	public default void configurePID(double kP, double kI, double kD) {}
 
-
 	public default boolean nearSpeedPoint() {
 		return false;
 	}
 
 	public default boolean nearSetPoint() {
+		return false;
+	}
+
+	public default boolean noteDetected() {
 		return false;
 	}
 }

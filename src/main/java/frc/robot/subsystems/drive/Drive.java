@@ -24,13 +24,18 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
+import javax.swing.text.TabExpander;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -41,6 +46,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 	private final Module[] modules = new Module[Constants.Drive.NUM_MODULES]; // FL, FR, BL, BR
 	private PPDriveWrapper autoConfig;
+	private Field2d field = new Field2d();
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -98,13 +104,13 @@ public class Drive extends Subsystem<DriveStates> {
 	public void runState() {
 		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not
 		// good)
-		Logger.recordOutput("driveState", getState());
-
+		// Logger.recordOutput("driveState", getState());
+		double translationmult = (DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1);
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
-				() -> Constants.controller.getLeftY(),
-				() -> Constants.controller.getLeftX(),
+				() -> Constants.controller.getLeftY() * translationmult,
+				() -> Constants.controller.getLeftX() * translationmult,
 				() -> -Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier()
@@ -179,6 +185,12 @@ public class Drive extends Subsystem<DriveStates> {
 
 	@Override
 	public void periodic() {
+		// Driver Dash Stuff
+		field.setRobotPose(getPose());
+		SmartDashboard.putData("Field", field);
+		Logger.recordOutput("Drive/speedmeter", calculateVelocity());
+
+		// Update odometry
 		super.periodic();
 		odometryLock.lock(); // Prevents odometry updates while reading data
 		gyroIO.updateInputs(gyroInputs);

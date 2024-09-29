@@ -112,5 +112,9 @@ public class IntakeIOSim implements IntakeIO {
 
 	public boolean nearSetPoint() {
 		return Math.abs(pivotSimModel.getAngleRads() - pivotSetpoint) < Constants.Intake.PIVOT_ERROR_OF_MARGIN;
+  }
+  
+   public boolean noteDetected() {
+		return false;
 	}
 }

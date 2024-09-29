@@ -20,6 +20,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.ShootNearSpeakerCommand;
@@ -74,6 +76,7 @@ public class Robot extends LoggedRobot {
 			case REAL:
 				// Running on a real robot, log to a USB stick ("/U/logs")
 				// Logger.addDataReceiver(new WPILOGWriter());
+				CameraServer.startAutomaticCapture();
 				Logger.addDataReceiver(new NT4Publisher());
 				break;
 			case SIM:
