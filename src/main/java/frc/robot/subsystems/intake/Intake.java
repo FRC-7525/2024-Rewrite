@@ -52,6 +52,10 @@ public class Intake extends Subsystem<IntakeStates> {
 		io.stop();
 	}
 
+	public boolean nearSetpoints() {
+		return io.nearSetPoint() && io.nearSpeedPoint();
+	}
+
 	@Override
 	public void periodic() {
 		super.periodic();
@@ -67,5 +71,18 @@ public class Intake extends Subsystem<IntakeStates> {
 		Logger.processInputs("Intake", inputs);
 		io.updateInputs(inputs);
 		io.updateOutputs(outputs);
+		Logger.recordOutput("Intake BB", io.noteDetected());
+	}
+
+	public boolean noteDetected() {
+		return io.noteDetected();
+	}
+
+	public boolean nearSetPoint() {
+		return io.nearSetPoint();
+	}
+
+	public boolean nearSpeedPoint() {
+		return io.nearSpeedPoint();
 	}
 }

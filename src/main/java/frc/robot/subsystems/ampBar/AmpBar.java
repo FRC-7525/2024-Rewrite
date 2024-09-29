@@ -52,6 +52,10 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 		io.stop();
 	}
 
+	public boolean nearSetPoints() {
+		return io.nearSetPoint() && io.nearSpeedPoint();
+	}
+
 	@Override
 	public void periodic() {
 		super.periodic();
@@ -66,5 +70,14 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 		Logger.processInputs("Amp Bar", inputs);
 		io.updateInput(inputs);
 		io.updateOutputs(outputs);
+		Logger.recordOutput("Amp Bar BB", io.noteDetected());
+	}
+
+	public boolean noteDetected() {
+		return io.noteDetected();
+	}
+
+	public boolean atSetPoint() {
+		return io.nearSetPoint();
 	}
 }

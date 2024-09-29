@@ -12,14 +12,15 @@ import org.littletonrobotics.junction.Logger;
 public class AutoAlign extends Subsystem<AutoAlignStates> {
 
 	AutoAlignIO io;
-	AutoAlignStates cachedState;
-	Drive driveSubsystem;
-	private NoteVision noteVision;
+	private AutoAlignStates cachedState;
+	private Drive driveSubsystem;
+	// private NoteVision noteVision;
 
 	public AutoAlign(AutoAlignIO io) {
 		super("AutoAlign", AutoAlignStates.OFF);
 		this.io = io;
 		this.cachedState = AutoAlignStates.OFF;
+		// noteVision = new NoteVision();
 
 		/* Sets PID values for each mode */
 		switch (Constants.currentMode) {
@@ -55,11 +56,11 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		addTrigger(AutoAlignStates.OFF, AutoAlignStates.AMP, () ->
 			Constants.operatorController.getAButton()
 		);
-		addTrigger(
-			AutoAlignStates.OFF,
-			AutoAlignStates.NOTE,
-			() -> Constants.operatorController.getBButton() // B button for note driving not sure if its a good button
-		);
+		// addTrigger(
+		// 	AutoAlignStates.OFF,
+		// 	AutoAlignStates.NOTE,
+		// 	() -> Constants.operatorController.getBButton() // B button for note driving not sure if its a good button
+		// );
 	}
 
 	@Override
@@ -70,11 +71,10 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 			io.lockDrive();
 
 			io.setTargetPose(
-				(getState() == AutoAlignStates.NOTE)
-					? noteVision.getNotePose(driveSubsystem.getPose()) // Get the pose from NoteVision
-					: (DriverStation.getAlliance().get() == Alliance.Red)
-						? getState().getTargetPose2dRed()
-						: getState().getTargetPose2dBlue()
+				// (getState() == AutoAlignStates.NOTE ? noteVision.getNotePose(io.getPose()) // Get the pose from NoteVision:
+				(DriverStation.getAlliance().get() == Alliance.Red)
+					? getState().getTargetPose2dRed()
+					: getState().getTargetPose2dBlue()
 			);
 			io.driveToTargetPose();
 

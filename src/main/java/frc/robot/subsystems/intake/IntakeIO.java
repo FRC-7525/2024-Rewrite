@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose3d;
+import java.security.PublicKey;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -46,5 +47,17 @@ public interface IntakeIO {
 		return 0.0;
 	}
 
+	public default boolean nearSetPoint() {
+		return false;
+	}
+
+	public default boolean nearSpeedPoint() {
+		return false;
+	}
+
 	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIDConst) {}
+
+	public default boolean noteDetected() {
+		return false;
+	}
 }

@@ -36,6 +36,8 @@ public final class Constants {
 
 	public static final double SIM_UPDATE_TIME = 0.05;
 
+	public static final double SLOW_UPDATE_FREQ = 50;
+
 	// Conversion Factors
 	public static final double RADIAN_CF = (Math.PI * 2);
 	public static final double RPM_TO_RPS_CF = 60;
@@ -96,17 +98,25 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// In DEGREES (Pivot setpoints)
-		public static final double DOWN = -231;
+		public static final double DOWN = -237;
 		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
 		public static final double REVERSE = -3;
-		public static final double ON = 3;
+		public static final double ON = 5;
+
+		// Erros of Margin
+		public static final double WHEEL_ERROR_OF_MARGIN = 1;
+		public static final double PIVOT_ERROR_OF_MARGIN = 10;
+
+		// Beam Break
+		public static final int BEAM_BREAK_PORT = 8;
+		public static final double DEBOUNCE_TIME = 0.3;
 	}
 
 	public static final class Shooter {
 
-		public static final double ERROR_OF_MARGIN = 2.0;
+		public static final double ERROR_OF_MARGIN = 1.0;
 
 		// CAN IDs
 		public static final int LEFT_SHOOTER_ID = 15;
@@ -114,8 +124,8 @@ public final class Constants {
 
 		// Shooter Setpoints (RPS)
 		public static final double OFF = 0.0;
-		public static final double FEEDING_AMP = 25.0;
-		public static final double SHOOTING = 50.0;
+		public static final double FEEDING_AMP = 20;
+		public static final double SHOOTING = 80.0;
 
 		// Sim Configs
 		public static final int NUM_MOTORS = 2;
@@ -134,7 +144,7 @@ public final class Constants {
 			0.525
 		);
 
-		public static final double ERROR_OF_MARGIN = 0.1;
+		public static final double ERROR_OF_MARGIN = 0.2;
 
 		// PID
 		public static final PIDConstants SIM_PID = new PIDConstants(3, 0, 1.5);
@@ -163,14 +173,21 @@ public final class Constants {
 		// Pivot and Spinner Setpoints
 
 		// In RPS (Spinner Setpoints)
-		public static final double SHOOTING = -0.5;
+		public static final double SHOOTING = -10;
 		public static final double FEEDING = -1;
 		public static final double OFF = 0.0;
 
 		// IN DEGREES (Pivot Setpoints)
-		public static final double OUT = -84;
-		public static final double FEEDING_POSITION = -82;
+		public static final double OUT = -87;
+		public static final double FEEDING_POSITION = -79;
 		public static final double IN = Units.degreesToRadians(0.0);
+
+		// Beam Break
+		public static final int BEAM_BREAK_PORT = 9;
+		public static final double DEBOUNCE_TIME = 0.3;
+
+		//State Transitions
+		public static final double TIME_FOR_SCORING = 3;
 	}
 
 	public static final class Drive {
@@ -194,8 +211,8 @@ public final class Constants {
 		public static final double FAST_TM = 2.0;
 
 		// Auto Config
-		public static final PIDConstants TRANSLATION_PID = new PIDConstants(5.0, 0.0, 0.0);
-		public static final PIDConstants ROTATION_PID = new PIDConstants(5.0, 0.0, 0.0);
+		public static final PIDConstants TRANSLATION_PID = new PIDConstants(7.0, 0.0, 0.25);
+		public static final PIDConstants ROTATION_PID = new PIDConstants(4.0, 0.0, 0.4);
 		public static final double MAX_MODULE_SPEED = 6.0;
 
 		// Configs
@@ -336,6 +353,24 @@ public final class Constants {
 		public static final double OUT_OF_FIELD_MARGIN = .025;
 	}
 
+	public static final class Climber {
+
+		public static final int LEFT_ID = 33;
+		public static final int RIGHT_ID = 34;
+
+		// IN ROTATIONS (climber rotates a lot ig)
+		// TODO: TUNE
+		public static final double ERROR_OF_MARGIN = 1;
+
+		// TODO: Check if these are still right
+		public static final double LEFT_CURRENT_LIMIT = 10;
+		public static final double RIGHT_CURRENT_LIMIT = 10;
+
+		// TODO: TUNE
+		public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
+		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
+	}
+
 	public static final class AutoAlign {
 
 		public static final PIDConstants TRANSLATIONAL_PID = new PIDConstants(3, 0, 0);
@@ -387,5 +422,10 @@ public final class Constants {
 
 		public static final double TRANSLATION_ERROR_MARGIN = 0.4;
 		public static final double ROTATION_ERROR_MARGIN = 0.4;
+	}
+
+	public static final class NoteVision {
+
+		public static final double CAMERA_HEIGHT = 22; // need to confirm
 	}
 }
