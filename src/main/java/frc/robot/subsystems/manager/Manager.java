@@ -22,7 +22,7 @@ import frc.robot.subsystems.shooter.*;
 import frc.robot.util.NoteSimulator;
 
 public class Manager extends Subsystem<ManagerStates> {
-  
+
 	private Climber climberSubsystem;
 	private Intake intakeSubsystem;
 	private AmpBar ampBarSubsystem;
@@ -186,14 +186,18 @@ public class Manager extends Subsystem<ManagerStates> {
 		);
 
 		// Climbing
-		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_FOR_CLIMB, () ->
-			Constants.controller.getPOV() == 0
+		addTrigger(
+			ManagerStates.IDLE,
+			ManagerStates.STAGING_FOR_CLIMB,
+			() -> Constants.controller.getPOV() == 0
 		);
 		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
 			ampBarSubsystem.nearSetPoints()
 		);
-		addTrigger(ManagerStates.CLIMBING, ManagerStates.IDLE, () ->
-			Constants.controller.getPOV() == 180
+		addTrigger(
+			ManagerStates.CLIMBING,
+			ManagerStates.IDLE,
+			() -> Constants.controller.getPOV() == 180
 		);
 	}
 

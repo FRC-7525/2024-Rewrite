@@ -113,9 +113,9 @@ public class AmpBarIOSim implements AmpBarIO {
 	@Override
 	public boolean nearSpeedPoint() {
 		return Math.abs(getSpinnerSpeed() - spinnerSpeedpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
-  }
-  
-  @Override
+	}
+
+	@Override
 	public boolean noteDetected() {
 		return false;
 	}

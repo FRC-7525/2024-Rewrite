@@ -2,120 +2,142 @@ package frc.robot.subsystems.climbers;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
 
 public class ClimberIOSparkMax implements ClimberIO {
-    
-    private CANSparkMax leftClimberMotor;
-    private CANSparkMax rightClimberMotor;
 
-    private RelativeEncoder leftClimberEncoder;
-    private RelativeEncoder rightClimberEncoder;
+	private CANSparkMax leftClimberMotor;
+	private CANSparkMax rightClimberMotor;
 
-    private PIDController climberController;
+	private RelativeEncoder leftClimberEncoder;
+	private RelativeEncoder rightClimberEncoder;
 
-    private LinearFilter leftFilter;
-    private LinearFilter rightFilter;
+	private PIDController climberController;
 
-    private boolean leftClimberZeroed;
-    private boolean rightClimberZeroed;
+	private LinearFilter leftFilter;
+	private LinearFilter rightFilter;
 
-    private double leftClimberSetpoint;
-    private double rightClimberSetpoint;
+	private boolean leftClimberZeroed;
+	private boolean rightClimberZeroed;
 
-    private double leftAppliedVolts;
-    private double rightAppliedVolts;
+	private double leftClimberSetpoint;
+	private double rightClimberSetpoint;
 
-    public ClimberIOSparkMax() {
-        leftClimberMotor = new CANSparkMax(Constants.Climber.LEFT_ID, CANSparkMax.MotorType.kBrushless);
-        rightClimberMotor = new CANSparkMax(Constants.Climber.RIGHT_ID, CANSparkMax.MotorType.kBrushless);
+	private double leftAppliedVolts;
+	private double rightAppliedVolts;
 
-        leftClimberMotor.setInverted(false);
-        rightClimberMotor.setInverted(true);
+	public ClimberIOSparkMax() {
+		leftClimberMotor = new CANSparkMax(
+			Constants.Climber.LEFT_ID,
+			CANSparkMax.MotorType.kBrushless
+		);
+		rightClimberMotor = new CANSparkMax(
+			Constants.Climber.RIGHT_ID,
+			CANSparkMax.MotorType.kBrushless
+		);
 
-        leftClimberEncoder = leftClimberMotor.getEncoder();
-        rightClimberEncoder = rightClimberMotor.getEncoder();
+		leftClimberMotor.setInverted(false);
+		rightClimberMotor.setInverted(true);
 
-        climberController.setPID(0, 0, 0);
+		leftClimberEncoder = leftClimberMotor.getEncoder();
+		rightClimberEncoder = rightClimberMotor.getEncoder();
 
-        leftFilter = LinearFilter.movingAverage(5);
-        rightFilter = LinearFilter.movingAverage(5);
+		climberController.setPID(0, 0, 0);
 
-        leftClimberSetpoint = 0;
-        rightClimberSetpoint = 0;
+		leftFilter = LinearFilter.movingAverage(5);
+		rightFilter = LinearFilter.movingAverage(5);
 
-        leftClimberZeroed = false;
-        rightClimberZeroed = false;
+		leftClimberSetpoint = 0;
+		rightClimberSetpoint = 0;
 
-        leftAppliedVolts = 0;
-        rightAppliedVolts = 0;
-    }
+		leftClimberZeroed = false;
+		rightClimberZeroed = false;
 
-    public void updateInput(ClimberIOInputs inputs) {
-        inputs.leftClimberPosition = leftClimberEncoder.getPosition();
-        inputs.rightClimberPosition = rightClimberEncoder.getPosition();
-        inputs.leftClimberSetpoint = leftClimberSetpoint;
-        inputs.rightClimberSetpoint = rightClimberSetpoint;
-        inputs.leftClimberSpeed = leftClimberEncoder.getVelocity()/60;
-        inputs.rightClimberSpeed = rightClimberEncoder.getVelocity()/60;
-    }
+		leftAppliedVolts = 0;
+		rightAppliedVolts = 0;
+	}
 
-    public void updateOutputs(ClimberIOOutputs outputs) {
-        outputs.leftClimberAppliedVoltage = leftAppliedVolts;
-        outputs.rightClimberAppliedVoltage = rightAppliedVolts;
-    }
+	public void updateInput(ClimberIOInputs inputs) {
+		inputs.leftClimberPosition = leftClimberEncoder.getPosition();
+		inputs.rightClimberPosition = rightClimberEncoder.getPosition();
+		inputs.leftClimberSetpoint = leftClimberSetpoint;
+		inputs.rightClimberSetpoint = rightClimberSetpoint;
+		inputs.leftClimberSpeed = leftClimberEncoder.getVelocity() / 60;
+		inputs.rightClimberSpeed = rightClimberEncoder.getVelocity() / 60;
+	}
 
-    public boolean nearSetpoints() {
-        return 
-            Math.abs(leftClimberEncoder.getPosition() - leftClimberEncoder.getPosition()) < Constants.Climber.ERROR_OF_MARGIN && 
-            Math.abs(rightClimberEncoder.getPosition() - rightClimberEncoder.getPosition()) < Constants.Climber.ERROR_OF_MARGIN;
-    }
+	public void updateOutputs(ClimberIOOutputs outputs) {
+		outputs.leftClimberAppliedVoltage = leftAppliedVolts;
+		outputs.rightClimberAppliedVoltage = rightAppliedVolts;
+	}
 
-    public boolean climbersZeroed() {
-        return leftClimberZeroed && rightClimberZeroed;
-    }
+	public boolean nearSetpoints() {
+		return (
+			Math.abs(leftClimberEncoder.getPosition() - leftClimberEncoder.getPosition()) <
+				Constants.Climber.ERROR_OF_MARGIN &&
+			Math.abs(rightClimberEncoder.getPosition() - rightClimberEncoder.getPosition()) <
+			Constants.Climber.ERROR_OF_MARGIN
+		);
+	}
 
-    public void configurePID(double kP, double kI, double kD) {
-        climberController.setPID(kP, kI, kD);
-    }
+	public boolean climbersZeroed() {
+		return leftClimberZeroed && rightClimberZeroed;
+	}
 
-    public void setSetpoints(double leftSetpoint, double rightSetpoint) {
-        this.leftClimberSetpoint = leftSetpoint;
-        this.rightClimberSetpoint = rightSetpoint;
+	public void configurePID(double kP, double kI, double kD) {
+		climberController.setPID(kP, kI, kD);
+	}
 
-        this.leftAppliedVolts = climberController.calculate(leftClimberEncoder.getPosition(), leftSetpoint);
-        this.rightAppliedVolts = climberController.calculate(leftClimberEncoder.getPosition(), rightSetpoint);
+	public void setSetpoints(double leftSetpoint, double rightSetpoint) {
+		this.leftClimberSetpoint = leftSetpoint;
+		this.rightClimberSetpoint = rightSetpoint;
 
-        leftClimberMotor.set(leftAppliedVolts);
-        rightClimberMotor.set(rightAppliedVolts);
-    }
+		this.leftAppliedVolts = climberController.calculate(
+			leftClimberEncoder.getPosition(),
+			leftSetpoint
+		);
+		this.rightAppliedVolts = climberController.calculate(
+			leftClimberEncoder.getPosition(),
+			rightSetpoint
+		);
 
-    public void zeroClimbers() {
-        double leftZeroingSpeed = -0.25;
-        double rightZeroingSpeed = -0.25;
+		leftClimberMotor.set(leftAppliedVolts);
+		rightClimberMotor.set(rightAppliedVolts);
+	}
 
-        // Not voltage sensing
-        if (leftFilter.calculate(leftClimberMotor.getOutputCurrent()) > Constants.Climber.LEFT_CURRENT_LIMIT || leftClimberZeroed) {
-            leftZeroingSpeed = 0;
-            if (!leftClimberZeroed) leftClimberMotor.set(0);
-            leftClimberZeroed = true;
-        }
+	public void zeroClimbers() {
+		double leftZeroingSpeed = -0.25;
+		double rightZeroingSpeed = -0.25;
 
-        if (rightFilter.calculate(rightClimberMotor.getOutputCurrent()) > Constants.Climber.RIGHT_CURRENT_LIMIT || rightClimberZeroed) {
-            rightZeroingSpeed = 0;
-            if (!rightClimberZeroed) rightClimberMotor.set(0);
-            rightClimberZeroed = true;
-        }
+		// Not voltage sensing
+		if (
+			leftFilter.calculate(leftClimberMotor.getOutputCurrent()) >
+				Constants.Climber.LEFT_CURRENT_LIMIT ||
+			leftClimberZeroed
+		) {
+			leftZeroingSpeed = 0;
+			if (!leftClimberZeroed) leftClimberMotor.set(0);
+			leftClimberZeroed = true;
+		}
 
-        leftClimberMotor.set(leftZeroingSpeed);
-        rightClimberMotor.set(rightZeroingSpeed);
-    }
+		if (
+			rightFilter.calculate(rightClimberMotor.getOutputCurrent()) >
+				Constants.Climber.RIGHT_CURRENT_LIMIT ||
+			rightClimberZeroed
+		) {
+			rightZeroingSpeed = 0;
+			if (!rightClimberZeroed) rightClimberMotor.set(0);
+			rightClimberZeroed = true;
+		}
 
-    public void stop() {
-        leftClimberMotor.stopMotor();
-        rightClimberMotor.stopMotor();
-    }
+		leftClimberMotor.set(leftZeroingSpeed);
+		rightClimberMotor.set(rightZeroingSpeed);
+	}
+
+	public void stop() {
+		leftClimberMotor.stopMotor();
+		rightClimberMotor.stopMotor();
+	}
 }

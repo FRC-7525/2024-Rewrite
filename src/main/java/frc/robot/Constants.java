@@ -352,6 +352,7 @@ public final class Constants {
 	}
 
 	public static final class Climber {
+
 		public static final int LEFT_ID = 33;
 		public static final int RIGHT_ID = 34;
 
