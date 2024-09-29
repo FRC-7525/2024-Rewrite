@@ -181,7 +181,9 @@ public class Drive extends Subsystem<DriveStates> {
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
 				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				(isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()).times(-1)
+				(isFlipped
+						? drive.getRotation().plus(new Rotation2d(Math.PI))
+						: drive.getRotation()).times(-1)
 			)
 		);
 	}
