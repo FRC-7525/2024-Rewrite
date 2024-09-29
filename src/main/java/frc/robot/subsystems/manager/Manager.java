@@ -111,7 +111,7 @@ public class Manager extends Subsystem<ManagerStates> {
 			ampBarSubsystem.noteDetected()
 		);
 		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP, () ->
-			ampBarSubsystem.atSetPoint()
+			Constants.controller.getYButtonPressed()
 		);
 
 		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->

@@ -100,7 +100,7 @@ public class Drive extends Subsystem<DriveStates> {
 		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not
 		// good)
 		// Logger.recordOutput("driveState", getState());
-		double translationmult = .8 * (DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1);
+		double translationmult = (DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1);
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,

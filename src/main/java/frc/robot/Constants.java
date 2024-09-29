@@ -80,7 +80,7 @@ public final class Constants {
 		public static final PIDConstants SIM_OUT_PID = new PIDConstants(1, 0, 0);
 
 		public static final PIDConstants REAL_IN_PID = new PIDConstants(0.08, 0, 0.001);
-		public static final PIDConstants REAL_OUT_PID = new PIDConstants(0.08, 0, 0.002);
+		public static final PIDConstants REAL_OUT_PID = new PIDConstants(0.25, 0, 0.002);
 
 		// Sim Configs
 
