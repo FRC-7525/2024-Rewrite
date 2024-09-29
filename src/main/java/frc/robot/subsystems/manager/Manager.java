@@ -1,10 +1,15 @@
 package frc.robot.subsystems.manager;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.AprilTagVision.Vision;
 import frc.robot.subsystems.AutoAlign.AutoAlign;
 import frc.robot.subsystems.AutoAlign.AutoAlignIO;
 import frc.robot.subsystems.ampBar.*;
@@ -30,11 +35,13 @@ public class Manager extends Subsystem<ManagerStates> {
 	private Shooter shooterSubsystem;
 	private Drive driveSubsystem;
 	private AutoAlign autoAlignSubsystem;
+	private Vision vision;
 
 	private SendableChooser<Boolean> useBeamBreaks;
 	private SendableChooser<Boolean> useAutoAlign;
 	private SendableChooser<Boolean> driverShooterAfterSpinning;
 	private SendableChooser<Boolean> useClimbers;
+	private SendableChooser<Boolean> useVision;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
@@ -43,6 +50,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		useBeamBreaks = new SendableChooser<>();
 		useAutoAlign = new SendableChooser<>();
 		useClimbers = new SendableChooser<>();
+		useVision = new SendableChooser<>();
 		driverShooterAfterSpinning = new SendableChooser<>();
 
 		useBeamBreaks.setDefaultOption("On", true);
@@ -57,9 +65,13 @@ public class Manager extends Subsystem<ManagerStates> {
 		useClimbers.setDefaultOption("On", true);
 		useClimbers.addOption("Off", false);
 
+		useVision.setDefaultOption("On", true);
+		useVision.addOption("Off", false);
+
 		SmartDashboard.putData("Beam Breaks Toggle", useBeamBreaks);
 		SmartDashboard.putData("Auto Align Toggle", useAutoAlign);
 		SmartDashboard.putData("Climbers Toggle", useClimbers);
+		SmartDashboard.putData("AT Vision Toggle", useVision);
 		SmartDashboard.putData("Drive Shoot After Spinning Toggle", driverShooterAfterSpinning);
 
 		switch (Constants.currentMode) {
@@ -106,6 +118,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				break;
 		}
 		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
+		vision = new Vision(driveSubsystem);
 
 		NoteSimulator.setDrive(driveSubsystem);
 
@@ -217,15 +230,14 @@ public class Manager extends Subsystem<ManagerStates> {
 		shooterSubsystem.periodic();
 		driveSubsystem.periodic();
 
+		if (useVision.getSelected() == null ? true : useVision.getSelected()) vision.periodic();
+		if (useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()) autoAlignSubsystem.periodic();
 		if (useClimbers.getSelected() == null ? true : useClimbers.getSelected()) {
 			climberSubsystem.periodic();
 			climberSubsystem.setState(getState().getClimberState());
 		}
 
-		if (useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()) {
-			autoAlignSubsystem.periodic();
-		}
-
+		// AA
 		switch (autoAlignSubsystem.getCachedState()) {
 			case AMP:
 				setState(ManagerStates.STAGING_AMP);
