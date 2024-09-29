@@ -12,6 +12,7 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 
 	AutoAlignIO io;
 	private AutoAlignStates cachedState;
+
 	// private NoteVision noteVision;
 
 	public AutoAlign(AutoAlignIO io) {
@@ -83,9 +84,8 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 				setState(AutoAlignStates.OFF);
 			}
 		}
-		
-		if (getState() != AutoAlignStates.OFF)
-			cachedState = getState();
+
+		if (getState() != AutoAlignStates.OFF) cachedState = getState();
 
 		/*X button to abort*/
 		if (Constants.operatorController.getXButtonPressed()) {
@@ -104,6 +104,7 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		cachedState = AutoAlignStates.OFF;
 		return temp;
 	}
+
 	public boolean nearTargetPoint() {
 		return io.nearTargetPoint();
 	}
