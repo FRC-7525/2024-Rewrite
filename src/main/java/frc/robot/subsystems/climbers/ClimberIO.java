@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public interface ClimberIO {
 	@AutoLog
 	public static class ClimberIOInputs {
+
 		public double leftClimberSpeed = 0.0;
 		public double rightClimberSpeed = 0.0;
 

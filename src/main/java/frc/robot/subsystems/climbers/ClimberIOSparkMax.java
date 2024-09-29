@@ -119,7 +119,10 @@ public class ClimberIOSparkMax implements ClimberIO {
 		) {
 			if (!leftClimberZeroed) leftClimberMotor.getEncoder().setPosition(0);
 			leftClimberSetpoint = 10;
-			leftZeroingSpeed = climberController.calculate(leftClimberEncoder.getPosition(), leftClimberSetpoint);
+			leftZeroingSpeed = climberController.calculate(
+				leftClimberEncoder.getPosition(),
+				leftClimberSetpoint
+			);
 			leftClimberZeroed = true;
 		}
 
@@ -130,7 +133,10 @@ public class ClimberIOSparkMax implements ClimberIO {
 		) {
 			if (!rightClimberZeroed) rightClimberMotor.getEncoder().setPosition(0);
 			rightClimberSetpoint = 10;
-			rightZeroingSpeed = climberController.calculate(rightClimberEncoder.getPosition(), rightClimberSetpoint);
+			rightZeroingSpeed = climberController.calculate(
+				rightClimberEncoder.getPosition(),
+				rightClimberSetpoint
+			);
 			rightClimberZeroed = true;
 		}
 

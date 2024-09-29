@@ -1,5 +1,7 @@
 package frc.robot.subsystems.manager;
 
+import com.fasterxml.jackson.databind.deser.impl.BeanAsArrayBuilderDeserializer;
+import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,9 +27,6 @@ import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.util.NoteSimulator;
 import java.util.Optional;
-
-import com.fasterxml.jackson.databind.deser.impl.BeanAsArrayBuilderDeserializer;
-import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 
 public class Manager extends Subsystem<ManagerStates> {
 
@@ -147,10 +146,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.INTAKING,
 			ManagerStates.IDLE,
-			() ->
-				intakeSubsystem.noteDetected() &&
-				intakeSubsystem.nearSetPoint() &&
-				beamBreaks
+			() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetPoint() && beamBreaks
 		);
 
 		// Amping (Y)
@@ -224,10 +220,8 @@ public class Manager extends Subsystem<ManagerStates> {
 			ManagerStates.CLIMBED,
 			() -> Constants.controller.getPOV() == 180
 		);
-		addTrigger(
-			ManagerStates.CLIMBED,
-			ManagerStates.IDLE,
-			() -> Constants.controller.getXButtonPressed()
+		addTrigger(ManagerStates.CLIMBED, ManagerStates.IDLE, () ->
+			Constants.controller.getXButtonPressed()
 		);
 	}
 

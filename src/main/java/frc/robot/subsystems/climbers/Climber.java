@@ -1,10 +1,9 @@
 package frc.robot.subsystems.climbers;
 
-import org.littletonrobotics.junction.Logger;
-
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.climbers.ClimberIO.ClimberIOOutputs;
+import org.littletonrobotics.junction.Logger;
 
 public class Climber extends Subsystem<ClimberStates> {
 
