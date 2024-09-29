@@ -114,7 +114,7 @@ public class Drive extends Subsystem<DriveStates> {
 				this,
 				() -> -Constants.controller.getLeftY(),
 				() -> -Constants.controller.getLeftX(),
-				() -> -Constants.controller.getRightX(),
+				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier()
 			);
@@ -181,7 +181,7 @@ public class Drive extends Subsystem<DriveStates> {
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
 				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()
+				(isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()).times(-1)
 			)
 		);
 	}
