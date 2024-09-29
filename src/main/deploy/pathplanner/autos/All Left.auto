@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.9509836993996369,
+      "y": 6.65
+    },
+    "rotation": 49.381203990845954
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -102,6 +108,6 @@
       ]
     }
   },
-  "folder": "3 Notes",
+  "folder": null,
   "choreoAuto": false
 }

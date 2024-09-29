@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7,
-      "y": 4.4
+      "x": 0.826107756544037,
+      "y": 4.389196436550476
     },
     "rotation": -58.44990638358712
   },
@@ -64,6 +64,6 @@
       ]
     }
   },
-  "folder": "2 Notes",
+  "folder": null,
   "choreoAuto": false
 }

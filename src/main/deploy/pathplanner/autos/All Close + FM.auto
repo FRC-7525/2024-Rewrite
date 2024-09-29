@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.45,
+      "y": 5.5
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -178,6 +184,6 @@
       ]
     }
   },
-  "folder": "New Autos",
+  "folder": null,
   "choreoAuto": false
 }
