@@ -46,6 +46,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		super("Manager", ManagerStates.IDLE);
 		NoteSimulator.setDrive(driveSubsystem);
 
+		// Setup toggles for dangerous stuff
 		useBeamBreaks = new SendableChooser<>();
 		useAutoAlign = new SendableChooser<>();
 		useClimbers = new SendableChooser<>();
@@ -73,6 +74,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		SmartDashboard.putData("AT Vision Toggle", useVision);
 		SmartDashboard.putData("Drive Shoot After Spinning Toggle", driverShooterAfterSpinning);
 
+		// Subsystem configs
 		switch (Constants.currentMode) {
 			case REAL:
 				intakeSubsystem = new Intake(new IntakeIOSparkMax());
@@ -241,7 +243,8 @@ public class Manager extends Subsystem<ManagerStates> {
 		}
 
 		// AA
-		switch (autoAlignSubsystem.getCachedState()) {
+		if (autoAlignSubsystem.nearTargetPoint()) {
+			switch (autoAlignSubsystem.getCachedState()) {
 			case AMP:
 				setState(ManagerStates.STAGING_AMP);
 				break;
@@ -256,7 +259,8 @@ public class Manager extends Subsystem<ManagerStates> {
 			default:
 				break;
 		}
-
+		}
+		
 		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
 			setState(ManagerStates.IDLE);
