@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.manager.*;
@@ -77,6 +78,7 @@ public class Robot extends LoggedRobot {
 			case REAL:
 				// Running on a real robot, log to a USB stick ("/U/logs")
 				// Logger.addDataReceiver(new WPILOGWriter());
+				CameraServer.startAutomaticCapture();
 				Logger.addDataReceiver(new NT4Publisher());
 				break;
 			case SIM:
