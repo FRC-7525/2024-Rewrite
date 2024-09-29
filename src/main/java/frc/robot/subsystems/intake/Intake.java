@@ -78,7 +78,11 @@ public class Intake extends Subsystem<IntakeStates> {
 		return io.noteDetected();
 	}
 
-	public boolean nearSetpoints() {
-		return io.nearSetpoints();
+	public boolean nearSetPoint() {
+		return io.nearSetPoint();
+	}
+
+	public boolean nearSpeedPoint() {
+		return io.nearSpeedPoint();
 	}
 }

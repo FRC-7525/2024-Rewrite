@@ -60,8 +60,4 @@ public interface IntakeIO {
 	public default boolean noteDetected() {
 		return false;
 	}
-
-	public default boolean nearSetpoints() {
-		return false;
-	}
 }
