@@ -24,6 +24,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -188,7 +189,7 @@ public class Drive extends Subsystem<DriveStates> {
 		// Driver Dash Stuff
 		field.setRobotPose(getPose());
 		SmartDashboard.putData("Field", field);
-		Logger.recordOutput("Drive/speedmeter", calculateVelocity());
+		Logger.recordOutput("Drive/speedmeter", Units.metersToFeet(calculateVelocity()));
 
 		// Update odometry
 		super.periodic();
