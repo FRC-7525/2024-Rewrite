@@ -106,11 +106,15 @@ public class IntakeIOSim implements IntakeIO {
 		inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
 	}
 
-	public boolean noteDetected() {
-		return false;
+	public boolean nearSpeedPoint() {
+		return Math.abs(spinnerWheelSim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF - wheelSpeedpoint) <= Constants.Intake.WHEEL_ERROR_OF_MARGIN;
 	}
 
-	public boolean nearSetpoints() {
-		return true;
+	public boolean nearSetPoint() {
+		return Math.abs(pivotSimModel.getAngleRads() - pivotSetpoint) < Constants.Intake.PIVOT_ERROR_OF_MARGIN;
+  }
+  
+   public boolean noteDetected() {
+		return false;
 	}
 }

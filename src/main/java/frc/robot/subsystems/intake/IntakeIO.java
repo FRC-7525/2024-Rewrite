@@ -47,13 +47,17 @@ public interface IntakeIO {
 		return 0.0;
 	}
 
-	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIDConst) {}
-
-	public default boolean noteDetected() {
+	public default boolean nearSetPoint() {
 		return false;
 	}
 
-	public default boolean nearSetpoints() {
+	public default boolean nearSpeedPoint() {
+		return false;
+	}
+
+	public default void configurePID(PIDConstants outPIDConst, PIDConstants inPIDConst) {}
+
+	public default boolean noteDetected() {
 		return false;
 	}
 }

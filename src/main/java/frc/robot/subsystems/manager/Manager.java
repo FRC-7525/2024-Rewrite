@@ -1,5 +1,6 @@
 package frc.robot.subsystems.manager;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -243,5 +244,22 @@ public class Manager extends Subsystem<ManagerStates> {
 	protected void runState() {
 		NoteSimulator.update();
 		NoteSimulator.logNoteInfo();
+	}
+
+	// Near Setpoint functions for stuff
+	public boolean intakeNearSetpoints() {
+		return intakeSubsystem.nearSetpoints();
+	}
+
+	public boolean ampBarNearSetpoints() {
+		return ampBarSubsystem.nearSetPoints();
+	}
+
+	public boolean shooterNearSpeedPoint() {
+		return shooterSubsystem.nearSpeedPoint();
+	}
+
+	public boolean driveNearSetPose(Pose2d targetPose) {
+		return driveSubsystem.nearSetPose(targetPose);
 	}
 }

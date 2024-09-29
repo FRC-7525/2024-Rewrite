@@ -105,11 +105,13 @@ public final class Constants {
 		public static final double REVERSE = -3;
 		public static final double ON = 5;
 
+		// Erros of Margin
+		public static final double WHEEL_ERROR_OF_MARGIN = 1;
+		public static final double PIVOT_ERROR_OF_MARGIN = 10;
+
 		// Beam Break
 		public static final int BEAM_BREAK_PORT = 8;
 		public static final double DEBOUNCE_TIME = 0.3;
-
-		public static final double ERROR_OF_MARGIN = 10;
 	}
 
 	public static final class Shooter {
@@ -209,8 +211,8 @@ public final class Constants {
 		public static final double FAST_TM = 2.0;
 
 		// Auto Config
-		public static final PIDConstants TRANSLATION_PID = new PIDConstants(5.0, 0.0, 0.0);
-		public static final PIDConstants ROTATION_PID = new PIDConstants(5.0, 0.0, 0.0);
+		public static final PIDConstants TRANSLATION_PID = new PIDConstants(7.0, 0.0, 0.25);
+		public static final PIDConstants ROTATION_PID = new PIDConstants(4.0, 0.0, 0.4);
 		public static final double MAX_MODULE_SPEED = 6.0;
 
 		// Configs
