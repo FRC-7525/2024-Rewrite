@@ -132,4 +132,8 @@ public class AutoAlignIO {
 	public void configurerotationalPID(double kP, double kI, double kD) {
 		rotationalPIDController.setPID(kP, kI, kD);
 	}
+
+	public Pose2d getPose() {
+		return driveSubsystem.getPose();
+	}
 }
