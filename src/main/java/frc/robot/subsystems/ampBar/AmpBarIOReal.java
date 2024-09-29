@@ -118,12 +118,17 @@ public class AmpBarIOReal implements AmpBarIO {
 	}
 
 	@Override
-	public boolean atSetPoint() {
+	public boolean nearSetPoint() {
 		double motorPosition = getPivotPosition();
 		return Math.abs(motorPosition - pivotPositionSetpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
 	}
 
 	@Override
+	public boolean nearSpeedPoint() {
+		return Math.abs(getSpinnerSpeed() - spinnerSpeedpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
+  }
+  
+  @Override
 	public boolean noteDetected() {
 		return !beamBreakDebouncer.calculate(beamBreak.get());
 	}

@@ -351,6 +351,23 @@ public final class Constants {
 		public static final double OUT_OF_FIELD_MARGIN = .025;
 	}
 
+	public static final class Climber {
+		public static final int LEFT_ID = 33;
+		public static final int RIGHT_ID = 34;
+
+		// IN ROTATIONS (climber rotates a lot ig)
+		// TODO: TUNE
+		public static final double ERROR_OF_MARGIN = 1;
+
+		// TODO: Check if these are still right
+		public static final double LEFT_CURRENT_LIMIT = 10;
+		public static final double RIGHT_CURRENT_LIMIT = 10;
+
+		// TODO: TUNE
+		public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
+		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
+	}
+
 	public static final class AutoAlign {
 
 		public static final PIDConstants TRANSLATIONAL_PID = new PIDConstants(3, 0, 0);

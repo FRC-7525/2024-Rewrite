@@ -7,6 +7,10 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.AutoAlign.AutoAlign;
 import frc.robot.subsystems.AutoAlign.AutoAlignIO;
 import frc.robot.subsystems.ampBar.*;
+import frc.robot.subsystems.climbers.Climber;
+import frc.robot.subsystems.climbers.ClimberIO;
+import frc.robot.subsystems.climbers.ClimberIOSim;
+import frc.robot.subsystems.climbers.ClimberIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavx2;
@@ -18,7 +22,8 @@ import frc.robot.subsystems.shooter.*;
 import frc.robot.util.NoteSimulator;
 
 public class Manager extends Subsystem<ManagerStates> {
-
+  
+	private Climber climberSubsystem;
 	private Intake intakeSubsystem;
 	private AmpBar ampBarSubsystem;
 	private Shooter shooterSubsystem;
@@ -55,6 +60,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				intakeSubsystem = new Intake(new IntakeIOSparkMax());
 				ampBarSubsystem = new AmpBar(new AmpBarIOReal());
 				shooterSubsystem = new Shooter(new ShooterIOTalonFX());
+				climberSubsystem = new Climber(new ClimberIOSparkMax());
 				driveSubsystem = new Drive(
 					new GyroIONavx2(),
 					new ModuleIOHybrid(0),
@@ -67,6 +73,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				intakeSubsystem = new Intake(new IntakeIO() {});
 				ampBarSubsystem = new AmpBar(new AmpBarIO() {});
 				shooterSubsystem = new Shooter(new ShooterIO() {});
+				climberSubsystem = new Climber(new ClimberIO() {});
 				driveSubsystem = new Drive(
 					new GyroIO() {},
 					new ModuleIO() {},
@@ -79,6 +86,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				intakeSubsystem = new Intake(new IntakeIOSim());
 				ampBarSubsystem = new AmpBar(new AmpBarIOSim());
 				shooterSubsystem = new Shooter(new ShooterIOSim());
+				climberSubsystem = new Climber(new ClimberIOSim());
 				driveSubsystem = new Drive(
 					new GyroIO() {},
 					new ModuleIOSim(),
@@ -176,6 +184,17 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () ->
 			Constants.controller.getAButtonPressed()
 		);
+
+		// Climbing
+		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_FOR_CLIMB, () ->
+			Constants.controller.getPOV() == 0
+		);
+		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
+			ampBarSubsystem.nearSetPoints()
+		);
+		addTrigger(ManagerStates.CLIMBING, ManagerStates.IDLE, () ->
+			Constants.controller.getPOV() == 180
+		);
 	}
 
 	@Override
@@ -185,6 +204,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.setState(getState().getIntakeState());
 		ampBarSubsystem.setState(getState().getAmpBarState());
 		shooterSubsystem.setState(getState().getShooterState());
+		climberSubsystem.setState(getState().getClimberState());
 		shooterSubsystem.setManagerState(getState());
 
 		intakeSubsystem.periodic();
@@ -206,6 +226,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.stop();
 		ampBarSubsystem.stop();
 		shooterSubsystem.stop();
+		climberSubsystem.stop();
 		driveSubsystem.stop();
 	}
 
