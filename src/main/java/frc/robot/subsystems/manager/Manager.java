@@ -33,6 +33,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	private SendableChooser<Boolean> useBeamBreaks;
 	private SendableChooser<Boolean> useAutoAlign;
 	private SendableChooser<Boolean> driverShooterAfterSpinning;
+	private SendableChooser<Boolean> useClimbers;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
@@ -40,6 +41,7 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		useBeamBreaks = new SendableChooser<>();
 		useAutoAlign = new SendableChooser<>();
+		useClimbers = new SendableChooser<>();
 		driverShooterAfterSpinning = new SendableChooser<>();
 
 		useBeamBreaks.setDefaultOption("On", true);
@@ -51,8 +53,12 @@ public class Manager extends Subsystem<ManagerStates> {
 		driverShooterAfterSpinning.setDefaultOption("On", true);
 		driverShooterAfterSpinning.addOption("Off", false);
 
+		useClimbers.setDefaultOption("On", true);
+		useClimbers.addOption("Off", false);
+
 		SmartDashboard.putData("Beam Breaks Toggle", useBeamBreaks);
 		SmartDashboard.putData("Auto Align Toggle", useAutoAlign);
+		SmartDashboard.putData("Climbers Toggle", useClimbers);
 		SmartDashboard.putData("Drive Shoot After Spinning Toggle", driverShooterAfterSpinning);
 
 		switch (Constants.currentMode) {
@@ -102,17 +108,10 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		NoteSimulator.setDrive(driveSubsystem);
 
-		// State Transitions (Nothing Automatic YET)
-
-		/* Generally each action has a specific button, in intermediary states X will return to idle and you press
-       the specific button to go through the states. Right now you can go through states without them being finished
-       which should not be the case. Some state transitions that can be automated are also not automated. Most
-    of the functions required for the TODOs are already build into the IOs!*/
-
-		// TODO: Automatically return to idle after scoring amp (using a timer)
-		// TODO: Automatically current sense notes to return to idle after intaking
-		// TODO: Automatically go to the shooting state after spinning up if the shooting state is
-		// entered from main controller input
+		/* Generally each action has a specific button (Intaking, Shooting, etc.)
+		* In intermediary states X will return to idle
+        * Specific button will transition through the states
+        * Some transitions are automatic with timers or sensors */
 
 		// Intaking (B)
 		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () ->
@@ -185,11 +184,11 @@ public class Manager extends Subsystem<ManagerStates> {
 			Constants.controller.getAButtonPressed()
 		);
 
-		// Climbing
+		// Climbing (POV)
 		addTrigger(
 			ManagerStates.IDLE,
 			ManagerStates.STAGING_FOR_CLIMB,
-			() -> Constants.controller.getPOV() == 0
+			() -> Constants.controller.getPOV() == 0 && (useClimbers.getSelected() == null ? true : useClimbers.getSelected())
 		);
 		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
 			ampBarSubsystem.nearSetPoints()
@@ -208,13 +207,17 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.setState(getState().getIntakeState());
 		ampBarSubsystem.setState(getState().getAmpBarState());
 		shooterSubsystem.setState(getState().getShooterState());
-		climberSubsystem.setState(getState().getClimberState());
 		shooterSubsystem.setManagerState(getState());
 
 		intakeSubsystem.periodic();
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
 		driveSubsystem.periodic();
+
+		if (useClimbers.getSelected() == null ? true : useClimbers.getSelected()) {
+			climberSubsystem.periodic();
+			climberSubsystem.setState(getState().getClimberState());
+		}
 
 		if (useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()) {
 			autoAlignSubsystem.periodic();

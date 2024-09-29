@@ -20,7 +20,7 @@ public class ClimberIOSim implements ClimberIO {
 
 	public ClimberIOSim() {
 		// Lol I'm not gona tune the sim
-		climberSim = new DCMotorSim(DCMotor.getNEO(2), 0, 0);
+		climberSim = new DCMotorSim(DCMotor.getNEO(2), 1, 1);
 		controller = new PIDController(0, 0, 0);
 		climberSetpoint = 0;
 		appliedVolts = 0;
