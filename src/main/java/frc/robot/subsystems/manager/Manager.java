@@ -116,7 +116,10 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.INTAKING,
 			ManagerStates.IDLE,
-			() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetpoints() && useBeamBreaks.getSelected()
+			() ->
+				intakeSubsystem.noteDetected() &&
+				intakeSubsystem.nearSetpoints() &&
+				useBeamBreaks.getSelected()
 		);
 
 		// Amping (Y)
@@ -126,8 +129,13 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.STAGING_AMP, ManagerStates.FEED_AMP, () ->
 			ampBarSubsystem.atSetPoint()
 		);
-		addTrigger(ManagerStates.FEED_AMP, ManagerStates.AMP_HOLDING_NOTE, () ->
-			ampBarSubsystem.noteDetected() && (useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected()) || Constants.controller.getYButtonPressed()
+		addTrigger(
+			ManagerStates.FEED_AMP,
+			ManagerStates.AMP_HOLDING_NOTE,
+			() ->
+				(ampBarSubsystem.noteDetected() &&
+					(useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected())) ||
+				Constants.controller.getYButtonPressed()
 		);
 		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP, () ->
 			Constants.controller.getYButtonPressed()
@@ -149,8 +157,15 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.IDLE, ManagerStates.OPERATOR_SPINNING_UP, () ->
 			Constants.operatorController.getAButtonPressed()
 		);
-		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () ->
-			(driverShooterAfterSpinning.getSelected() == null ? true : driverShooterAfterSpinning.getSelected()) && shooterSubsystem.nearSpeedPoint() || Constants.controller.getAButtonPressed()
+		addTrigger(
+			ManagerStates.SPINNING_UP,
+			ManagerStates.SHOOTING,
+			() ->
+				((driverShooterAfterSpinning.getSelected() == null
+							? true
+							: driverShooterAfterSpinning.getSelected()) &&
+					shooterSubsystem.nearSpeedPoint()) ||
+				Constants.controller.getAButtonPressed()
 		);
 		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () ->
 			Constants.controller.getXButtonPressed()

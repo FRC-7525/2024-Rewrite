@@ -28,6 +28,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
@@ -37,7 +38,6 @@ import java.util.function.DoubleSupplier;
 import javax.swing.text.TabExpander;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class Drive extends Subsystem<DriveStates> {
 
