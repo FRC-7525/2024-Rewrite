@@ -144,7 +144,7 @@ public class Robot extends LoggedRobot {
 		autoChooser.addOption("5: Start Middle | CA, CM, FL, FMA", "Left 5 Note");
 		autoChooser.addOption("5: Start Middle | All Close, FM", "All Close + FM");
 		autoChooser.addOption("5: Start Middle | CS, MC, FM, FMA", "Center 5 Note");
-		autoChooser.addOption("5: Start Middle | All Close, FA", "OffbrandEventMarkers");
+		autoChooser.addOption("5: Start Middle | All Close, FA", "Optimized 5 Note Auto");
 
 		SmartDashboard.putData("Auto autoChooser", autoChooser);
 	}
