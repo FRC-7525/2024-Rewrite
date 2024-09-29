@@ -47,7 +47,6 @@ public class Climber extends Subsystem<ClimberStates> {
 	protected void runState() {
 		Logger.processInputs("Climber", inputs);
 		Logger.recordOutput("Climber/Zeroed", zeroed);
-		System.out.println(zeroed);
 
 		io.updateOutputs(outputs);
 		io.updateInputs(inputs);

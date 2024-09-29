@@ -89,18 +89,18 @@ public class Drive extends Subsystem<DriveStates> {
 
 		// Triggers
 		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SLOW_MODE, () ->
-			Constants.controller.getRightBumper()
+			Constants.controller.getLeftBumperPressed()
 		);
 		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SPEED_MAXXING, () ->
-			Constants.controller.getLeftBumper()
+			Constants.controller.getLeftBumperPressed()
 		);
 
 		// Back to Off
-		addTrigger(DriveStates.SPEED_MAXXING, DriveStates.SLOW_MODE, () ->
-			Constants.controller.getLeftBumperReleased()
+		addTrigger(DriveStates.SPEED_MAXXING, DriveStates.REGULAR_DRIVE, () ->
+			Constants.controller.getLeftBumperPressed()
 		);
 		addTrigger(DriveStates.SLOW_MODE, DriveStates.REGULAR_DRIVE, () ->
-			Constants.controller.getRightBumperReleased()
+			Constants.controller.getRightBumperPressed()
 		);
 	}
 
@@ -175,15 +175,14 @@ public class Drive extends Subsystem<DriveStates> {
 		drive.runVelocity(
 			ChassisSpeeds.fromFieldRelativeSpeeds(
 				linearVelocity.getX() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
+				drive.getMaxLinearSpeedMetersPerSec()
+				* translationMultiplier,
 				linearVelocity.getY() *
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				(isFlipped
-						? drive.getRotation().plus(new Rotation2d(Math.PI))
-						: drive.getRotation()).times(-1)
+				omega * drive.getMaxAngularSpeedRadPerSec() *
+				rotationMultiplier,
+				(isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()).times(-1)
 			)
 		);
 	}

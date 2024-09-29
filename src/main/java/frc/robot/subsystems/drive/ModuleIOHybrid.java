@@ -18,6 +18,7 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
 import frc.robot.Constants;
 import java.util.OptionalDouble;
 import java.util.Queue;
@@ -162,7 +163,12 @@ public class ModuleIOHybrid implements ModuleIO {
 			driveCurrent,
 			turnAbsolutePosition
 		);
-
+		// Drive Stuff (how was this not in here??)
+		inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble())/ Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;
+		inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
+		inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble())/Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;	
+	    inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};	
+			
 		// Turn Stuff
 		inputs.turnAbsolutePosition = Rotation2d.fromRotations(
 			turnAbsolutePosition.getValueAsDouble()

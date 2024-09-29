@@ -53,7 +53,7 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 			Constants.operatorController.getRightBumper()
 		);
 		addTrigger(AutoAlignStates.OFF, AutoAlignStates.AMP, () ->
-			Constants.operatorController.getAButton()
+			Constants.operatorController.getYButtonPressed()
 		);
 		// addTrigger(
 		// 	AutoAlignStates.OFF,
@@ -90,6 +90,7 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		/*X button to abort*/
 		if (Constants.operatorController.getXButtonPressed()) {
 			setState(AutoAlignStates.OFF);
+			io.returnDriveToNormal();
 		}
 
 		Logger.recordOutput("AutoAlign/Target Pose 2d", io.getTargetPose2d());

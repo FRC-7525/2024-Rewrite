@@ -12,7 +12,7 @@ public enum ManagerStates implements SubsystemStates {
 	INTAKING(
 		"Intaking",
 		IntakeStates.INTAKING,
-		AmpBarStates.OFF,
+		AmpBarStates.CLEAR_INTAKE_CAM,
 		ShooterStates.OFF,
 		ClimberStates.OFF
 	),
