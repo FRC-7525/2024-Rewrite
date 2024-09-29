@@ -56,7 +56,7 @@ public class Vision {
 
 		frontVisionTimer = new Timer();
 		sideVisionTimer = new Timer();
-
+    
 		sideCamera = new PhotonCamera("Side Camera");
 		frontCamera = new PhotonCamera("Front Camera");
 

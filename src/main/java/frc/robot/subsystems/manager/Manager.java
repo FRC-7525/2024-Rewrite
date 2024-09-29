@@ -64,8 +64,8 @@ public class Manager extends Subsystem<ManagerStates> {
 		useClimbers.setDefaultOption("On", true);
 		useClimbers.addOption("Off", false);
 
-		useVision.setDefaultOption("On", true);
 		useVision.addOption("Off", false);
+		useVision.addOption("On", true);
 
 		SmartDashboard.putData("Beam Breaks Toggle", useBeamBreaks);
 		SmartDashboard.putData("Auto Align Toggle", useAutoAlign);
@@ -86,6 +86,7 @@ public class Manager extends Subsystem<ManagerStates> {
 					new ModuleIOHybrid(2),
 					new ModuleIOHybrid(3)
 				);
+				useVision.setDefaultOption("On", true);
 				break;
 			case REPLAY:
 				intakeSubsystem = new Intake(new IntakeIO() {});
@@ -112,6 +113,7 @@ public class Manager extends Subsystem<ManagerStates> {
 					new ModuleIOSim(),
 					new ModuleIOSim()
 				);
+				useVision.setDefaultOption("Off", false);
 				break;
 			default:
 				break;
