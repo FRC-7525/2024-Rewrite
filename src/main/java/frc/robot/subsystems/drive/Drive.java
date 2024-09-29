@@ -24,8 +24,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
@@ -34,6 +37,7 @@ import java.util.function.DoubleSupplier;
 import javax.swing.text.TabExpander;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class Drive extends Subsystem<DriveStates> {
 
@@ -42,6 +46,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 	private final Module[] modules = new Module[Constants.Drive.NUM_MODULES]; // FL, FR, BL, BR
 	private PPDriveWrapper autoConfig;
+	private Field2d field = new Field2d();
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -164,6 +169,12 @@ public class Drive extends Subsystem<DriveStates> {
 
 	@Override
 	public void periodic() {
+		// Driver Dash Stuff
+		field.setRobotPose(getPose());
+		SmartDashboard.putData("Field", field);
+		Logger.recordOutput("Drive/speedmeter", calculateVelocity());
+
+		// Update odometry
 		super.periodic();
 		odometryLock.lock(); // Prevents odometry updates while reading data
 		gyroIO.updateInputs(gyroInputs);

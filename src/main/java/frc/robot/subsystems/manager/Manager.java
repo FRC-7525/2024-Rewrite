@@ -1,5 +1,7 @@
 package frc.robot.subsystems.manager;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AutoAlign.AutoAlign;
@@ -17,15 +19,36 @@ import frc.robot.util.NoteSimulator;
 
 public class Manager extends Subsystem<ManagerStates> {
 
-	Intake intakeSubsystem;
-	AmpBar ampBarSubsystem;
-	Shooter shooterSubsystem;
-	Drive driveSubsystem;
-	AutoAlign autoAlignSubsystem;
+	private Intake intakeSubsystem;
+	private AmpBar ampBarSubsystem;
+	private Shooter shooterSubsystem;
+	private Drive driveSubsystem;
+	private AutoAlign autoAlignSubsystem;
+
+	private SendableChooser<Boolean> useBeamBreaks;
+	private SendableChooser<Boolean> useAutoAlign;
+	private SendableChooser<Boolean> driverShooterAfterSpinning;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
 		NoteSimulator.setDrive(driveSubsystem);
+
+		useBeamBreaks = new SendableChooser<>();
+		useAutoAlign = new SendableChooser<>();
+		driverShooterAfterSpinning = new SendableChooser<>();
+
+		useBeamBreaks.setDefaultOption("On", true);
+		useBeamBreaks.addOption("Off", false);
+
+		useAutoAlign.setDefaultOption("On", true);
+		useAutoAlign.addOption("Off", false);
+
+		driverShooterAfterSpinning.setDefaultOption("On", true);
+		driverShooterAfterSpinning.addOption("Off", false);
+
+		SmartDashboard.putData("Beam Breaks Toggle", useBeamBreaks);
+		SmartDashboard.putData("Auto Align Toggle", useAutoAlign);
+		SmartDashboard.putData("Drive Shoot After Spinning Toggle", driverShooterAfterSpinning);
 
 		switch (Constants.currentMode) {
 			case REAL:
@@ -93,7 +116,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.INTAKING,
 			ManagerStates.IDLE,
-			() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetpoints()
+			() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetpoints() && useBeamBreaks.getSelected()
 		);
 
 		// Amping (Y)
@@ -104,15 +127,11 @@ public class Manager extends Subsystem<ManagerStates> {
 			ampBarSubsystem.atSetPoint()
 		);
 		addTrigger(ManagerStates.FEED_AMP, ManagerStates.AMP_HOLDING_NOTE, () ->
-			Constants.controller.getYButtonPressed()
-		);
-		addTrigger(ManagerStates.FEED_AMP, ManagerStates.AMP_HOLDING_NOTE, () ->
-			ampBarSubsystem.noteDetected()
+			ampBarSubsystem.noteDetected() && (useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected()) || Constants.controller.getYButtonPressed()
 		);
 		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP, () ->
 			Constants.controller.getYButtonPressed()
 		);
-
 		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
 			(getStateTime() > Constants.AmpBar.TIME_FOR_SCORING)
 		);
@@ -131,10 +150,7 @@ public class Manager extends Subsystem<ManagerStates> {
 			Constants.operatorController.getAButtonPressed()
 		);
 		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () ->
-			Constants.controller.getAButtonPressed()
-		);
-		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.SHOOTING, () ->
-			shooterSubsystem.nearSpeedPoint()
+			(driverShooterAfterSpinning.getSelected() == null ? true : driverShooterAfterSpinning.getSelected()) && shooterSubsystem.nearSpeedPoint() || Constants.controller.getAButtonPressed()
 		);
 		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () ->
 			Constants.controller.getXButtonPressed()
@@ -159,8 +175,11 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.periodic();
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
-		autoAlignSubsystem.periodic();
 		driveSubsystem.periodic();
+
+		if (useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()) {
+			autoAlignSubsystem.periodic();
+		}
 
 		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
