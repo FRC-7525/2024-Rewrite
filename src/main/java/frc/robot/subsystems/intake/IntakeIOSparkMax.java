@@ -99,11 +99,17 @@ public class IntakeIOSparkMax implements IntakeIO {
 	}
 
 	public boolean nearSetPoint() {
-		return Math.abs(pivotEncoder.getPosition() - pivotSetpoint) < Constants.Intake.PIVOT_ERROR_OF_MARGIN;
+		return (
+			Math.abs(pivotEncoder.getPosition() - pivotSetpoint) <
+			Constants.Intake.PIVOT_ERROR_OF_MARGIN
+		);
 	}
 
 	public boolean nearSpeedPoint() {
-		return Math.abs(intakeMotor.getVelocity().getValueAsDouble() - wheelSpeedpoint) < Constants.Intake.WHEEL_ERROR_OF_MARGIN;
+		return (
+			Math.abs(intakeMotor.getVelocity().getValueAsDouble() - wheelSpeedpoint) <
+			Constants.Intake.WHEEL_ERROR_OF_MARGIN
+		);
 	}
 
 	public void stop() {

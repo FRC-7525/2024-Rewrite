@@ -117,7 +117,7 @@ public class Drive extends Subsystem<DriveStates> {
 			);
 		}
 	}
-	
+
 	// L code??? (taken from AA) good enough
 	public boolean nearSetPose(Pose2d targetPose2d) {
 		Pose2d currentPose2d = getPose();
