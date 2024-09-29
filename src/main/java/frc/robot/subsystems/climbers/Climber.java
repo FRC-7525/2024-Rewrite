@@ -1,5 +1,7 @@
 package frc.robot.subsystems.climbers;
 
+import org.littletonrobotics.junction.Logger;
+
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.climbers.ClimberIO.ClimberIOOutputs;
@@ -44,8 +46,12 @@ public class Climber extends Subsystem<ClimberStates> {
 
 	@Override
 	protected void runState() {
-		io.updateInputs(inputs);
+		Logger.processInputs("Climber", inputs);
+		Logger.recordOutput("Climber/Zeroed", zeroed);
+		System.out.println(zeroed);
+
 		io.updateOutputs(outputs);
+		io.updateInputs(inputs);
 
 		if (zeroed) {
 			io.setSetpoints(getState().getLeftSetpoint(), getState().getRightSetpoint());

@@ -44,7 +44,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 		leftClimberEncoder = leftClimberMotor.getEncoder();
 		rightClimberEncoder = rightClimberMotor.getEncoder();
 
-		climberController.setPID(0, 0, 0);
+		climberController = new PIDController(0, 0, 0);
 
 		leftFilter = LinearFilter.movingAverage(5);
 		rightFilter = LinearFilter.movingAverage(5);
@@ -59,7 +59,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 		rightAppliedVolts = 0;
 	}
 
-	public void updateInput(ClimberIOInputs inputs) {
+	public void updateInputs(ClimberIOInputs inputs) {
 		inputs.leftClimberPosition = leftClimberEncoder.getPosition();
 		inputs.rightClimberPosition = rightClimberEncoder.getPosition();
 		inputs.leftClimberSetpoint = leftClimberSetpoint;
@@ -99,7 +99,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 			leftSetpoint
 		);
 		this.rightAppliedVolts = climberController.calculate(
-			leftClimberEncoder.getPosition(),
+			rightClimberEncoder.getPosition(),
 			rightSetpoint
 		);
 
@@ -117,8 +117,9 @@ public class ClimberIOSparkMax implements ClimberIO {
 				Constants.Climber.LEFT_CURRENT_LIMIT ||
 			leftClimberZeroed
 		) {
-			leftZeroingSpeed = 0;
-			if (!leftClimberZeroed) leftClimberMotor.set(0);
+			if (!leftClimberZeroed) leftClimberMotor.getEncoder().setPosition(0);
+			leftClimberSetpoint = 10;
+			leftZeroingSpeed = climberController.calculate(leftClimberEncoder.getPosition(), leftClimberSetpoint);
 			leftClimberZeroed = true;
 		}
 
@@ -127,8 +128,9 @@ public class ClimberIOSparkMax implements ClimberIO {
 				Constants.Climber.RIGHT_CURRENT_LIMIT ||
 			rightClimberZeroed
 		) {
-			rightZeroingSpeed = 0;
-			if (!rightClimberZeroed) rightClimberMotor.set(0);
+			if (!rightClimberZeroed) rightClimberMotor.getEncoder().setPosition(0);
+			rightClimberSetpoint = 10;
+			rightZeroingSpeed = climberController.calculate(rightClimberEncoder.getPosition(), rightClimberSetpoint);
 			rightClimberZeroed = true;
 		}
 

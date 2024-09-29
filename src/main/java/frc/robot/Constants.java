@@ -48,7 +48,7 @@ public final class Constants {
 	public static final double DIAM_TO_RADIUS_CF = 2.0;
 	public static final double AVG_TWO_ITEM_F = 2.0;
 
-	public static final Mode currentMode = Mode.SIM;
+	public static final Mode currentMode = Mode.REAL;
 
 	public static final double MAX_VOLTS = 12.0;
 	public static final double MIN_VOLTS = -12.0;
@@ -107,7 +107,7 @@ public final class Constants {
 
 		// In RPS (Spinner Setpoints)
 		public static final double REVERSE = -3;
-		public static final double ON = 5;
+		public static final double ON = 3;
 
 		// Erros of Margin
 		public static final double WHEEL_ERROR_OF_MARGIN = 1;
@@ -129,7 +129,7 @@ public final class Constants {
 		// Shooter Setpoints (RPS)
 		public static final double OFF = 0.0;
 		public static final double FEEDING_AMP = 20;
-		public static final double SHOOTING = 80.0;
+		public static final double SHOOTING = 15.0;
 
 		// Sim Configs
 		public static final int NUM_MOTORS = 2;
@@ -148,7 +148,7 @@ public final class Constants {
 			0.525
 		);
 
-		public static final double ERROR_OF_MARGIN = 0.2;
+		public static final double ERROR_OF_MARGIN = 3;
 
 		// PID
 		public static final PIDConstants SIM_PID = new PIDConstants(3, 0, 1.5);
@@ -367,11 +367,11 @@ public final class Constants {
 		public static final double ERROR_OF_MARGIN = 1;
 
 		// TODO: Check if these are still right
-		public static final double LEFT_CURRENT_LIMIT = 10;
-		public static final double RIGHT_CURRENT_LIMIT = 10;
+		public static final double LEFT_CURRENT_LIMIT = 13;
+		public static final double RIGHT_CURRENT_LIMIT = 13;
 
 		// TODO: TUNE
-		public static final PIDConstants REAL_PID = new PIDConstants(1, 0, 0);
+		public static final PIDConstants REAL_PID = new PIDConstants(0.05, 0, 0);
 		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
 	}
 

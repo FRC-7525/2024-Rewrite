@@ -1,5 +1,6 @@
 package frc.robot.subsystems.manager;
 
+import frc.robot.Constants.AmpBar;
 import frc.robot.subsystems.SubsystemStates;
 import frc.robot.subsystems.ampBar.AmpBarStates;
 import frc.robot.subsystems.climbers.ClimberStates;
@@ -39,16 +40,23 @@ public enum ManagerStates implements SubsystemStates {
 	STAGING_FOR_CLIMB(
 		"Staging for Climbing",
 		IntakeStates.OFF,
-		AmpBarStates.HOLDING_NOTE,
+		AmpBarStates.OUT_FOR_CLIMBER,
 		ShooterStates.OFF,
 		ClimberStates.OFF
 	),
 	CLIMBING(
 		"Climbing",
 		IntakeStates.OFF,
-		AmpBarStates.FEEDING,
+		AmpBarStates.OUT_FOR_CLIMBER,
 		ShooterStates.OFF,
 		ClimberStates.CLIMBING
+	),
+	CLIMBED(
+		"Climbed",
+		IntakeStates.OFF,
+		AmpBarStates.OUT_FOR_CLIMBER,
+		ShooterStates.OFF,
+		ClimberStates.OFF
 	),
 	SHOOTING(
 		"Shooting",

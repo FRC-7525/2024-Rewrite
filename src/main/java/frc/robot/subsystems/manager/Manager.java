@@ -26,6 +26,9 @@ import frc.robot.subsystems.shooter.*;
 import frc.robot.util.NoteSimulator;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.deser.impl.BeanAsArrayBuilderDeserializer;
+import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
+
 public class Manager extends Subsystem<ManagerStates> {
 
 	private Climber climberSubsystem;
@@ -41,6 +44,8 @@ public class Manager extends Subsystem<ManagerStates> {
 	private SendableChooser<Boolean> driverShooterAfterSpinning;
 	private SendableChooser<Boolean> useClimbers;
 	private SendableChooser<Boolean> useVision;
+
+	private Boolean beamBreaks;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
@@ -67,6 +72,8 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		useVision.addOption("Off", false);
 		useVision.addOption("On", true);
+
+		beamBreaks = true;
 
 		SmartDashboard.putData("Beam Breaks Toggle", useBeamBreaks);
 		SmartDashboard.putData("Auto Align Toggle", useAutoAlign);
@@ -142,8 +149,8 @@ public class Manager extends Subsystem<ManagerStates> {
 			ManagerStates.IDLE,
 			() ->
 				intakeSubsystem.noteDetected() &&
-				intakeSubsystem.nearSetpoints() &&
-				useBeamBreaks.getSelected()
+				intakeSubsystem.nearSetPoint() &&
+				beamBreaks
 		);
 
 		// Amping (Y)
@@ -214,13 +221,19 @@ public class Manager extends Subsystem<ManagerStates> {
 		);
 		addTrigger(
 			ManagerStates.CLIMBING,
-			ManagerStates.IDLE,
+			ManagerStates.CLIMBED,
 			() -> Constants.controller.getPOV() == 180
+		);
+		addTrigger(
+			ManagerStates.CLIMBED,
+			ManagerStates.IDLE,
+			() -> Constants.controller.getXButtonPressed()
 		);
 	}
 
 	@Override
 	public void periodic() {
+		beamBreaks = useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected();
 		super.periodic();
 
 		intakeSubsystem.setState(getState().getIntakeState());

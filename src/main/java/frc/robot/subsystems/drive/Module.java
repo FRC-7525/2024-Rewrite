@@ -25,7 +25,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Module {
 
-	private static final double WHEEL_RADIUS = Units.inchesToMeters(Constants.Drive.WHEEL_RADIUS);
+	private static final double WHEEL_RADIUS = (Constants.Drive.WHEEL_RADIUS);
 
 	private final ModuleIO io;
 	private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
