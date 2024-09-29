@@ -358,7 +358,11 @@ public class Drive extends Subsystem<DriveStates> {
 		poseEstimator.addVisionMeasurement(visionPose, timestamp);
 	}
 
-	public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> visionMeasurementStdDevs) {
+	public void addVisionMeasurement(
+		Pose2d visionPose,
+		double timestamp,
+		Matrix<N3, N1> visionMeasurementStdDevs
+	) {
 		poseEstimator.addVisionMeasurement(visionPose, timestamp, visionMeasurementStdDevs);
 	}
 

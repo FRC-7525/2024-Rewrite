@@ -1,7 +1,5 @@
 package frc.robot.subsystems.manager;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Timer;
@@ -26,6 +24,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.util.NoteSimulator;
+import java.util.Optional;
 
 public class Manager extends Subsystem<ManagerStates> {
 
@@ -231,7 +230,9 @@ public class Manager extends Subsystem<ManagerStates> {
 		driveSubsystem.periodic();
 
 		if (useVision.getSelected() == null ? true : useVision.getSelected()) vision.periodic();
-		if (useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()) autoAlignSubsystem.periodic();
+		if (
+			useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()
+		) autoAlignSubsystem.periodic();
 		if (useClimbers.getSelected() == null ? true : useClimbers.getSelected()) {
 			climberSubsystem.periodic();
 			climberSubsystem.setState(getState().getClimberState());
