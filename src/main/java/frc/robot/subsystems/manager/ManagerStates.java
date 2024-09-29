@@ -31,7 +31,7 @@ public enum ManagerStates implements SubsystemStates {
 		ShooterStates.OFF,
 		ClimberStates.OFF
 	),
-	CLIMBING("Climbing", IntakeStates.OFF, AmpBarStates.FEEDING, ShooterStates.OFF, ClimberStates.CLIMBING);
+	CLIMBING("Climbing", IntakeStates.OFF, AmpBarStates.FEEDING, ShooterStates.OFF, ClimberStates.CLIMBING),
 	SHOOTING("Shooting", IntakeStates.FEEDING, AmpBarStates.OFF, ShooterStates.SHOOTING, ClimberStates.OFF),
 	STAGING_AMP("Staging Amp", IntakeStates.OFF, AmpBarStates.FEEDING, ShooterStates.OFF, ClimberStates.OFF),
 	FEED_AMP("Feed Amp", IntakeStates.FEEDING, AmpBarStates.FEEDING, ShooterStates.PASSING_AMP, ClimberStates.OFF),

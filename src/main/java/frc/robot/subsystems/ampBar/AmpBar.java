@@ -78,6 +78,6 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 	}
 
 	public boolean atSetPoint() {
-		return io.atSetPoint();
+		return io.nearSetPoint();
 	}
 }

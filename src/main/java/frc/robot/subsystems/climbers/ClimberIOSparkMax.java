@@ -97,7 +97,7 @@ public class ClimberIOSparkMax implements ClimberIO {
         double leftZeroingSpeed = -0.25;
         double rightZeroingSpeed = -0.25;
 
-        // Not voltage sensing 😮‍💨
+        // Not voltage sensing
         if (leftFilter.calculate(leftClimberMotor.getOutputCurrent()) > Constants.Climber.LEFT_CURRENT_LIMIT || leftClimberZeroed) {
             leftZeroingSpeed = 0;
             if (!leftClimberZeroed) leftClimberMotor.set(0);
