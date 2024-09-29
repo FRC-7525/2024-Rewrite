@@ -32,17 +32,39 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 public class Vision {
 
-    Optional<EstimatedRobotPose> frontBotpose3d;
-    Optional<EstimatedRobotPose> sideBotpose3d;
+    private Optional<EstimatedRobotPose> frontBotpose3d;
+    private Optional<EstimatedRobotPose> sideBotpose3d;
 
-    public PhotonCamera frontCamera = new PhotonCamera("Front Camera");
-    public PhotonCamera sideCamera = new PhotonCamera("Side Camera");
+    public PhotonCamera frontCamera;
+    public PhotonCamera sideCamera; 
     private Drive driveSubsystem;
 
-    Transform3d frontrobotToCam = new Transform3d(
-            new Translation3d(Units.inchesToMeters(-14.25), 0, Units.inchesToMeters(6)),
-            new Rotation3d(0, Units.degreesToRadians(-67), Units.degreesToRadians(180)));
-    Transform3d siderobotToCam = new Transform3d(
+    private Transform3d frontRobotToCam;
+    private Transform3d sideRobotToCam;
+
+    private AprilTagFieldLayout layout;
+    private PhotonPoseEstimator frontEstimator;
+    private PhotonPoseEstimator sideEstimator;
+
+    private boolean seesFrontVision;
+    private boolean seesSideVision;
+
+    private Timer frontVisionTimer;
+    private Timer sideVisionTimer;
+
+    public Vision(Drive driveSubsystem) {
+        this.driveSubsystem = driveSubsystem;
+
+        seesFrontVision = false;
+        seesSideVision = false;
+
+        frontVisionTimer = new Timer();
+        sideVisionTimer = new Timer();
+
+        sideCamera = new PhotonCamera("Side Camera");
+        frontCamera = new PhotonCamera("Front Camera");
+
+        sideRobotToCam = new Transform3d(
             new Translation3d(
                     Units.inchesToMeters(-7.19),
                     Units.inchesToMeters(11),
@@ -51,31 +73,24 @@ public class Vision {
                     0,
                     Units.degreesToRadians(-20),
                     Units.degreesToRadians(90)));
-
-    AprilTagFieldLayout layout;
-    PhotonPoseEstimator frontEstimator;
-    PhotonPoseEstimator sideEstimator;
-
-    public Vision(Drive driveSubsystem) {
-        this.driveSubsystem = driveSubsystem;
+        frontRobotToCam = new Transform3d(
+            new Translation3d(Units.inchesToMeters(-14.25), 0, Units.inchesToMeters(6)),
+            new Rotation3d(0, Units.degreesToRadians(-67), Units.degreesToRadians(180)));
+        
+        // Cam layouts and stuff
         try {
             String deployDirectoryPath = Filesystem.getDeployDirectory().getAbsolutePath();
             layout = new AprilTagFieldLayout(deployDirectoryPath + "/CrescendoFieldLayout.json");
             frontEstimator = new PhotonPoseEstimator(layout,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCamera,
-                    frontrobotToCam);
+                    frontRobotToCam);
             sideEstimator = new PhotonPoseEstimator(layout,
                     PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, sideCamera,
-                    siderobotToCam);
+                    sideRobotToCam);
         } catch (IOException e) {
             System.out.println(e);
         }
     }
-
-    Boolean seesFrontVision = false;
-    Boolean seesSideVision = false;
-    Timer frontVisionTimer = new Timer();
-    Timer sideVisionTimer = new Timer();
 
     public void periodic() {
         frontBotpose3d = frontEstimator.update();
@@ -98,22 +113,23 @@ public class Vision {
             SmartDashboard.putNumberArray("Side Pose", sidePose);
         }
 
-        Optional<Pose2d> frontPoseOption = getFrontPose2d();
-		Optional<Pose2d> sidePoseOption = getSidePose2d();
-
-		boolean hasFrontPose = frontPoseOption.isPresent();
-		boolean hasSidePose = sidePoseOption.isPresent();
-		if (hasFrontPose) {
+        // Add Vision Measurments
+		if (getFrontPose2d().isPresent()) {
 			var frontPipeline = frontCamera.getLatestResult();
 			driveSubsystem.addVisionMeasurement(
 					getFrontPose2d().get(),
-					Timer.getFPGATimestamp());
+					Timer.getFPGATimestamp(),
+                    getEstimationStdDevs(getFrontPose2d().get(), frontPipeline)
+            );
 		}
-		if (hasSidePose) {
+
+		if (getSidePose2d().isPresent()) {
 			var sidePipeline = sideCamera.getLatestResult();
 			driveSubsystem.addVisionMeasurement(
 					getSidePose2d().get(),
-					Timer.getFPGATimestamp());
+					Timer.getFPGATimestamp(),
+                    getEstimationStdDevs(getSidePose2d().get(), sidePipeline)
+            );
 		}
     }
 
