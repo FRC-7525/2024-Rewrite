@@ -106,7 +106,7 @@ public class Drive extends Subsystem<DriveStates> {
 				this,
 				() -> Constants.controller.getLeftY() * translationmult,
 				() -> Constants.controller.getLeftX() * translationmult,
-				() -> -Constants.controller.getRightX() * 0.5,
+				() -> -Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier()
 			);
