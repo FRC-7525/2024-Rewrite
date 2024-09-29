@@ -36,13 +36,15 @@ public final class Constants {
 
 	public static final double SIM_UPDATE_TIME = 0.05;
 
+	public static final double SLOW_UPDATE_FREQ = 50;
+
 	// Conversion Factors
 	public static final double RADIAN_CF = (Math.PI * 2);
 	public static final double RPM_TO_RPS_CF = 60;
 	public static final double DIAM_TO_RADIUS_CF = 2.0;
 	public static final double AVG_TWO_ITEM_F = 2.0;
 
-	public static final Mode currentMode = Mode.REAL;
+	public static final Mode currentMode = Mode.SIM;
 
 	public static final double MAX_VOLTS = 12.0;
 	public static final double MIN_VOLTS = -12.0;
@@ -96,17 +98,23 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// In DEGREES (Pivot setpoints)
-		public static final double DOWN = -231;
+		public static final double DOWN = -237;
 		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
 		public static final double REVERSE = -3;
-		public static final double ON = 3;
+		public static final double ON = 5;
+
+		// Beam Break
+		public static final int BEAM_BREAK_PORT = 8;
+		public static final double DEBOUNCE_TIME = 0.3;
+
+		public static final double ERROR_OF_MARGIN = 10;
 	}
 
 	public static final class Shooter {
 
-		public static final double ERROR_OF_MARGIN = 2.0;
+		public static final double ERROR_OF_MARGIN = 1.0;
 
 		// CAN IDs
 		public static final int LEFT_SHOOTER_ID = 15;
@@ -114,8 +122,8 @@ public final class Constants {
 
 		// Shooter Setpoints (RPS)
 		public static final double OFF = 0.0;
-		public static final double FEEDING_AMP = 25.0;
-		public static final double SHOOTING = 50.0;
+		public static final double FEEDING_AMP = 20;
+		public static final double SHOOTING = 80.0;
 
 		// Sim Configs
 		public static final int NUM_MOTORS = 2;
@@ -134,7 +142,7 @@ public final class Constants {
 			0.525
 		);
 
-		public static final double ERROR_OF_MARGIN = 0.1;
+		public static final double ERROR_OF_MARGIN = 0.2;
 
 		// PID
 		public static final PIDConstants SIM_PID = new PIDConstants(3, 0, 1.5);
@@ -163,14 +171,21 @@ public final class Constants {
 		// Pivot and Spinner Setpoints
 
 		// In RPS (Spinner Setpoints)
-		public static final double SHOOTING = -0.5;
+		public static final double SHOOTING = -10;
 		public static final double FEEDING = -1;
 		public static final double OFF = 0.0;
 
 		// IN DEGREES (Pivot Setpoints)
-		public static final double OUT = -84;
-		public static final double FEEDING_POSITION = -82;
+		public static final double OUT = -87;
+		public static final double FEEDING_POSITION = -79;
 		public static final double IN = Units.degreesToRadians(0.0);
+
+		// Beam Break
+		public static final int BEAM_BREAK_PORT = 9;
+		public static final double DEBOUNCE_TIME = 0.3;
+
+		//State Transitions
+		public static final double TIME_FOR_SCORING = 3;
 	}
 
 	public static final class Drive {
@@ -404,5 +419,10 @@ public final class Constants {
 
 		public static final double TRANSLATION_ERROR_MARGIN = 0.4;
 		public static final double ROTATION_ERROR_MARGIN = 0.4;
+	}
+
+	public static final class NoteVision {
+
+		public static final double CAMERA_HEIGHT = 22; // need to confirm
 	}
 }

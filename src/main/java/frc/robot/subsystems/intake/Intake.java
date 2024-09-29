@@ -67,5 +67,14 @@ public class Intake extends Subsystem<IntakeStates> {
 		Logger.processInputs("Intake", inputs);
 		io.updateInputs(inputs);
 		io.updateOutputs(outputs);
+		Logger.recordOutput("Intake BB", io.noteDetected());
+	}
+
+	public boolean noteDetected() {
+		return io.noteDetected();
+	}
+
+	public boolean nearSetpoints() {
+		return io.nearSetpoints();
 	}
 }

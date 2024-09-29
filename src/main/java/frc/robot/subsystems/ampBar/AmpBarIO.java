@@ -54,4 +54,8 @@ public interface AmpBarIO {
 	public default boolean nearSetPoint() {
 		return false;
 	}
+
+	public default boolean noteDetected() {
+		return false;
+	}
 }
