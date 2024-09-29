@@ -5,7 +5,7 @@ import frc.robot.subsystems.SubsystemStates;
 
 public enum ShooterStates implements SubsystemStates {
 	OFF(Constants.Shooter.OFF, "Shooter Off"),
-	SHOOTING(Constants.Shooter.SHOOTING, "Shooting Full"),
+	SHOOTING(Constants.Shooter.SHOOTING, "Shooting"),
 	PASSING_AMP(Constants.Shooter.FEEDING_AMP, "Passing To Amp");
 
 	private double speedPoint;

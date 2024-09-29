@@ -217,23 +217,6 @@ public class Manager extends Subsystem<ManagerStates> {
 		shooterSubsystem.periodic();
 		driveSubsystem.periodic();
 
-		if (autoAlignSubsystem.nearTargetPoint()) {
-			switch (autoAlignSubsystem.getCachedState()) {
-				case AMP:
-					setState(ManagerStates.SCORE_AMP);
-					break;
-				case AMP_SPEAKER:
-					setState(ManagerStates.SHOOTING);
-					break;
-				case SOURCE_SPEAKER:
-					setState(ManagerStates.SHOOTING);
-					break;
-				case OFF:
-					break;
-				default:
-					break;
-				
-			}
 		if (useClimbers.getSelected() == null ? true : useClimbers.getSelected()) {
 			climberSubsystem.periodic();
 			climberSubsystem.setState(getState().getClimberState());
@@ -241,6 +224,22 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		if (useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()) {
 			autoAlignSubsystem.periodic();
+		}
+
+		switch (autoAlignSubsystem.getCachedState()) {
+			case AMP:
+				setState(ManagerStates.STAGING_AMP);
+				break;
+			case AMP_SPEAKER:
+				setState(ManagerStates.SPINNING_UP);
+				break;
+			case SOURCE_SPEAKER:
+				setState(ManagerStates.SPINNING_UP);
+				break;
+			case OFF:
+				break;
+			default:
+				break;
 		}
 
 		// Cancel all actions regardless of whats happening
