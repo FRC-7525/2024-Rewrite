@@ -164,11 +164,13 @@ public class ModuleIOHybrid implements ModuleIO {
 			turnAbsolutePosition
 		);
 		// Drive Stuff (how was this not in here??)
-		inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble())/ Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;
+		inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble()) /
+		Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;
 		inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
-		inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble())/Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;	
-	    inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};	
-			
+		inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble()) /
+		Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;
+		inputs.driveCurrentAmps = new double[] { driveCurrent.getValueAsDouble() };
+
 		// Turn Stuff
 		inputs.turnAbsolutePosition = Rotation2d.fromRotations(
 			turnAbsolutePosition.getValueAsDouble()

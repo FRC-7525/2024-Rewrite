@@ -282,7 +282,7 @@ public final class Constants {
 
 				// These are for l2 Mk4i mods, should be L3 plus
 				public static final double DRIVE_GEAR_RATIO = 5.357;
-					// (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+				// (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
 				public static final double TURN_GEAR_RATIO = 21.4286;
 
 				public static final double DRIVE_CURRENT_LIMIT = 40.0;

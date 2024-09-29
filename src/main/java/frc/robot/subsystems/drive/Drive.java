@@ -175,14 +175,15 @@ public class Drive extends Subsystem<DriveStates> {
 		drive.runVelocity(
 			ChassisSpeeds.fromFieldRelativeSpeeds(
 				linearVelocity.getX() *
-				drive.getMaxLinearSpeedMetersPerSec()
-				* translationMultiplier,
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
 				linearVelocity.getY() *
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() *
-				rotationMultiplier,
-				(isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()).times(-1)
+				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
+				(isFlipped
+						? drive.getRotation().plus(new Rotation2d(Math.PI))
+						: drive.getRotation()).times(-1)
 			)
 		);
 	}
