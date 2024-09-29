@@ -245,22 +245,22 @@ public class Manager extends Subsystem<ManagerStates> {
 		// AA
 		if (autoAlignSubsystem.nearTargetPoint()) {
 			switch (autoAlignSubsystem.getCachedState()) {
-			case AMP:
-				setState(ManagerStates.STAGING_AMP);
-				break;
-			case AMP_SPEAKER:
-				setState(ManagerStates.SPINNING_UP);
-				break;
-			case SOURCE_SPEAKER:
-				setState(ManagerStates.SPINNING_UP);
-				break;
-			case OFF:
-				break;
-			default:
-				break;
+				case AMP:
+					setState(ManagerStates.STAGING_AMP);
+					break;
+				case AMP_SPEAKER:
+					setState(ManagerStates.SPINNING_UP);
+					break;
+				case SOURCE_SPEAKER:
+					setState(ManagerStates.SPINNING_UP);
+					break;
+				case OFF:
+					break;
+				default:
+					break;
+			}
 		}
-		}
-		
+
 		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
 			setState(ManagerStates.IDLE);
