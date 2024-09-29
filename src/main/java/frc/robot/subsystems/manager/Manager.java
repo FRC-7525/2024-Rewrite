@@ -109,9 +109,9 @@ public class Manager extends Subsystem<ManagerStates> {
 		NoteSimulator.setDrive(driveSubsystem);
 
 		/* Generally each action has a specific button (Intaking, Shooting, etc.)
-		* In intermediary states X will return to idle
-        * Specific button will transition through the states
-        * Some transitions are automatic with timers or sensors */
+		 * In intermediary states X will return to idle
+		 * Specific button will transition through the states
+		 * Some transitions are automatic with timers or sensors */
 
 		// Intaking (B)
 		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () ->
@@ -188,7 +188,9 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.IDLE,
 			ManagerStates.STAGING_FOR_CLIMB,
-			() -> Constants.controller.getPOV() == 0 && (useClimbers.getSelected() == null ? true : useClimbers.getSelected())
+			() ->
+				Constants.controller.getPOV() == 0 &&
+				(useClimbers.getSelected() == null ? true : useClimbers.getSelected())
 		);
 		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
 			ampBarSubsystem.nearSetPoints()
