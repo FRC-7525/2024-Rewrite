@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.Logger;
 public class AutoAlign extends Subsystem<AutoAlignStates> {
 
 	AutoAlignIO io;
+
 	// private NoteVision noteVision;
 
 	public AutoAlign(AutoAlignIO io) {
@@ -70,8 +71,8 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 			io.setTargetPose(
 				// (getState() == AutoAlignStates.NOTE ? noteVision.getNotePose(io.getPose()) // Get the pose from NoteVision:
 				(DriverStation.getAlliance().get() == Alliance.Red)
-						? getState().getTargetPose2dRed()
-						: getState().getTargetPose2dBlue()
+					? getState().getTargetPose2dRed()
+					: getState().getTargetPose2dBlue()
 			);
 			io.driveToTargetPose();
 
