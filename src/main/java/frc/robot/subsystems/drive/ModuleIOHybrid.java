@@ -163,27 +163,25 @@ public class ModuleIOHybrid implements ModuleIO {
 			driveCurrent,
 			turnAbsolutePosition
 		);
-		// Drive Stuff (how was this not in here??)
-		inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble()) /
-		Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;
-		inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
-		inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble()) /
-		Constants.Drive.Module.Hybrid.DRIVE_GEAR_RATIO;
-		inputs.driveCurrentAmps = new double[] { driveCurrent.getValueAsDouble() };
 
-		// Turn Stuff
+		// Regular Stuff
+		inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble()) ;
+		inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
+		inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 		inputs.turnAbsolutePosition = Rotation2d.fromRotations(
-			turnAbsolutePosition.getValueAsDouble()
-		).minus(absoluteEncoderOffset);
+					turnAbsolutePosition.getValueAsDouble()
+				).minus(absoluteEncoderOffset);
+				
 		inputs.turnPosition = Rotation2d.fromRotations(
 			turnRelativeEncoder.getPosition() / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO
 		);
 		inputs.turnVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(
 			turnRelativeEncoder.getVelocity()
-		) /
-		Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
+		) / Constants.Drive.Module.Hybrid.TURN_GEAR_RATIO;
+
 		inputs.turnCurrentAmps = new double[] { turnSparkMax.getOutputCurrent() };
 		inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
+		inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
 
 		// Other stuff
 		inputs.odometryTimestamps = timestampQueue
