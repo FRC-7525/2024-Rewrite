@@ -281,8 +281,8 @@ public final class Constants {
 			public static final class Hybrid {
 
 				// TODO: Uh do these work?
-				public static final double DRIVE_GEAR_RATIO = (50/14) * (16/28) * (45/15);
-				public static final double TURN_GEAR_RATIO = (150.0/7.0);
+				public static final double DRIVE_GEAR_RATIO = (50 / 14) * (16 / 28) * (45 / 15);
+				public static final double TURN_GEAR_RATIO = (150.0 / 7.0);
 
 				public static final double DRIVE_CURRENT_LIMIT = 40.0;
 				public static final int TURN_CURRENT_LIMIT = 30;
