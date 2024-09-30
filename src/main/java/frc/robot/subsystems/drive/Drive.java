@@ -263,7 +263,7 @@ public class Drive extends Subsystem<DriveStates> {
 		// Calculate module setpoints
 		ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(
 			speeds,
-			Constants.Drive.DISCRETIZE_TIME_SECONDS
+			0.02
 		);
 		SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(
