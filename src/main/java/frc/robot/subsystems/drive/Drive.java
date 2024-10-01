@@ -50,32 +50,33 @@ public class Drive extends Subsystem<DriveStates> {
 	private PPDriveWrapper autoConfig;
 	private Field2d field = new Field2d();
 
-	private	double lastHeadingRadians;
+	private double lastHeadingRadians;
 	private PIDController headingCorrectionController;
 	private boolean headingCorrectionEnabled;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
 	private SwerveModulePosition[] lastModulePositions = // For delta tracking
-			new SwerveModulePosition[] {
-					new SwerveModulePosition(),
-					new SwerveModulePosition(),
-					new SwerveModulePosition(),
-					new SwerveModulePosition(),
-			};
+		new SwerveModulePosition[] {
+			new SwerveModulePosition(),
+			new SwerveModulePosition(),
+			new SwerveModulePosition(),
+			new SwerveModulePosition(),
+		};
 	private SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
-			kinematics,
-			rawGyroRotation,
-			lastModulePositions,
-			new Pose2d());
+		kinematics,
+		rawGyroRotation,
+		lastModulePositions,
+		new Pose2d()
+	);
 
 	public Drive(
-			GyroIO gyroIO,
-			ModuleIO flModuleIO,
-			ModuleIO frModuleIO,
-			ModuleIO blModuleIO,
-			ModuleIO brModuleIO) {
-
+		GyroIO gyroIO,
+		ModuleIO flModuleIO,
+		ModuleIO frModuleIO,
+		ModuleIO blModuleIO,
+		ModuleIO brModuleIO
+	) {
 		super("Drive", DriveStates.REGULAR_DRIVE);
 		autoConfig = new PPDriveWrapper(this);
 
@@ -83,7 +84,7 @@ public class Drive extends Subsystem<DriveStates> {
 		headingCorrectionEnabled = true;
 		// TODO: Tune
 		headingCorrectionController = new PIDController(1.5, 0, 0.15);
-		
+
 		this.gyroIO = gyroIO;
 		modules[0] = new Module(flModuleIO, 0);
 		modules[1] = new Module(frModuleIO, 1);
@@ -94,15 +95,18 @@ public class Drive extends Subsystem<DriveStates> {
 		HybridOdometryThread.getInstance().start();
 
 		// Triggers
-		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SLOW_MODE, () -> Constants.controller.getLeftBumperPressed());
+		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SLOW_MODE, () ->
+			Constants.controller.getLeftBumperPressed()
+		);
 		// addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SPEED_MAXXING,
 		// 		() -> Constants.controller.getLeftBumperPressed());
 
 		// Back to Off
 		// addTrigger(DriveStates.SPEED_MAXXING, DriveStates.REGULAR_DRIVE,
 		// 		() -> Constants.controller.getLeftBumperPressed());
-		addTrigger(DriveStates.SLOW_MODE, DriveStates.REGULAR_DRIVE,
-				() -> Constants.controller.getRightBumperPressed());
+		addTrigger(DriveStates.SLOW_MODE, DriveStates.REGULAR_DRIVE, () ->
+			Constants.controller.getRightBumperPressed()
+		);
 	}
 
 	@Override
@@ -114,13 +118,14 @@ public class Drive extends Subsystem<DriveStates> {
 		// TODO: TURN ON HEADING CORRECTION LATER
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
-					this,
-					() -> -Constants.controller.getLeftY(),
-					() -> -Constants.controller.getLeftX(),
-					() -> Constants.controller.getRightX(),
-					getState().getRotationModifier(),
-					getState().getTranslationModifier(),
-					false);
+				this,
+				() -> -Constants.controller.getLeftY(),
+				() -> -Constants.controller.getLeftX(),
+				() -> Constants.controller.getRightX(),
+				getState().getRotationModifier(),
+				getState().getTranslationModifier(),
+				false
+			);
 		}
 	}
 
@@ -128,11 +133,16 @@ public class Drive extends Subsystem<DriveStates> {
 	public boolean nearSetPose(Pose2d targetPose2d) {
 		Pose2d currentPose2d = getPose();
 
-		return (Math.abs(currentPose2d.getX() - targetPose2d.getX()) < Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
-				Math.abs(currentPose2d.getY() - targetPose2d.getY()) < Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
-				Math.abs(
-						currentPose2d.getRotation().getDegrees()
-								- targetPose2d.getRotation().getDegrees()) < Constants.AutoAlign.ROTATION_ERROR_MARGIN);
+		return (
+			Math.abs(currentPose2d.getX() - targetPose2d.getX()) <
+				Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+			Math.abs(currentPose2d.getY() - targetPose2d.getY()) <
+			Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+			Math.abs(
+				currentPose2d.getRotation().getDegrees() - targetPose2d.getRotation().getDegrees()
+			) <
+			Constants.AutoAlign.ROTATION_ERROR_MARGIN
+		);
 	}
 
 	public void drive(
@@ -158,16 +168,21 @@ public class Drive extends Subsystem<DriveStates> {
 			Constants.Drive.CONTROLLER_DEADBAND
 		);
 
-		if (headingCorrection)
-		{
-			if (Math.abs(omega) != 0.0
-				&& (Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
-					|| Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND))
-			{
-				omega = headingCorrectionController.calculate(poseEstimator.getEstimatedPosition().getRotation().getRadians(), lastHeadingRadians);
-			} else
-			{
-				lastHeadingRadians = poseEstimator.getEstimatedPosition().getRotation().getRadians();
+		if (headingCorrection) {
+			if (
+				Math.abs(omega) != 0.0 &&
+				(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND ||
+					Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND)
+			) {
+				omega = headingCorrectionController.calculate(
+					poseEstimator.getEstimatedPosition().getRotation().getRadians(),
+					lastHeadingRadians
+				);
+			} else {
+				lastHeadingRadians = poseEstimator
+					.getEstimatedPosition()
+					.getRotation()
+					.getRadians();
 			}
 		}
 
@@ -237,14 +252,17 @@ public class Drive extends Subsystem<DriveStates> {
 		int sampleCount = sampleTimestamps.length;
 		for (int i = 0; i < sampleCount; i++) {
 			// Read wheel positions and deltas from each module
-			SwerveModulePosition[] modulePositions = new SwerveModulePosition[Constants.Drive.NUM_MODULES];
-			SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[Constants.Drive.NUM_MODULES];
+			SwerveModulePosition[] modulePositions =
+				new SwerveModulePosition[Constants.Drive.NUM_MODULES];
+			SwerveModulePosition[] moduleDeltas =
+				new SwerveModulePosition[Constants.Drive.NUM_MODULES];
 			for (int moduleIndex = 0; moduleIndex < Constants.Drive.NUM_MODULES; moduleIndex++) {
 				modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
 				moduleDeltas[moduleIndex] = new SwerveModulePosition(
-						modulePositions[moduleIndex].distanceMeters -
-								lastModulePositions[moduleIndex].distanceMeters,
-						modulePositions[moduleIndex].angle);
+					modulePositions[moduleIndex].distanceMeters -
+					lastModulePositions[moduleIndex].distanceMeters,
+					modulePositions[moduleIndex].angle
+				);
 				lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
 			}
 
@@ -273,11 +291,13 @@ public class Drive extends Subsystem<DriveStates> {
 		ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
 		SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(
-				setpointStates,
-				Constants.Drive.MAX_LINEAR_SPEED);
+			setpointStates,
+			Constants.Drive.MAX_LINEAR_SPEED
+		);
 
 		// Send setpoints to modules
-		SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[Constants.Drive.NUM_MODULES];
+		SwerveModuleState[] optimizedSetpointStates =
+			new SwerveModuleState[Constants.Drive.NUM_MODULES];
 		for (int i = 0; i < Constants.Drive.NUM_MODULES; i++) {
 			// The module returns the optimized state, useful for logging
 			optimizedSetpointStates[i] = modules[i].runSetpoint(setpointStates[i]);
@@ -346,8 +366,9 @@ public class Drive extends Subsystem<DriveStates> {
 
 	public double calculateVelocity() {
 		double robotSpeed = Math.sqrt(
-				Math.pow(getChassisSpeed().vxMetersPerSecond, 2) +
-						Math.pow(getChassisSpeed().vyMetersPerSecond, 2));
+			Math.pow(getChassisSpeed().vxMetersPerSecond, 2) +
+			Math.pow(getChassisSpeed().vyMetersPerSecond, 2)
+		);
 		return robotSpeed;
 	}
 
@@ -372,9 +393,10 @@ public class Drive extends Subsystem<DriveStates> {
 	}
 
 	public void addVisionMeasurement(
-			Pose2d visionPose,
-			double timestamp,
-			Matrix<N3, N1> visionMeasurementStdDevs) {
+		Pose2d visionPose,
+		double timestamp,
+		Matrix<N3, N1> visionMeasurementStdDevs
+	) {
 		poseEstimator.addVisionMeasurement(visionPose, timestamp, visionMeasurementStdDevs);
 	}
 
@@ -391,18 +413,22 @@ public class Drive extends Subsystem<DriveStates> {
 	/** Returns an array of module translations. */
 	public static Translation2d[] getModuleTranslations() {
 		return new Translation2d[] {
-				new Translation2d(
-						Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
-						Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
-				new Translation2d(
-						Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
-						-Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
-				new Translation2d(
-						-Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
-						Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
-				new Translation2d(
-						-Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
-						-Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF),
+			new Translation2d(
+				Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+				Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF
+			),
+			new Translation2d(
+				Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+				-Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF
+			),
+			new Translation2d(
+				-Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+				Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF
+			),
+			new Translation2d(
+				-Constants.Drive.TRACK_WIDTH_X / Constants.DIAM_TO_RADIUS_CF,
+				-Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF
+			),
 		};
 	}
 
