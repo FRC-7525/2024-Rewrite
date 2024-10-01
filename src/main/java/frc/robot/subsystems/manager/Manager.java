@@ -1,10 +1,6 @@
 package frc.robot.subsystems.manager;
 
-import com.fasterxml.jackson.databind.deser.impl.BeanAsArrayBuilderDeserializer;
-import com.fasterxml.jackson.databind.util.ArrayBuilders.BooleanBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -26,7 +22,6 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.util.NoteSimulator;
-import java.util.Optional;
 
 public class Manager extends Subsystem<ManagerStates> {
 
@@ -44,8 +39,6 @@ public class Manager extends Subsystem<ManagerStates> {
 	private SendableChooser<Boolean> useClimbers;
 	private SendableChooser<Boolean> useVision;
 	private SendableChooser<Boolean> useHeadingCorrection;
-
-	private Boolean beamBreaks;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
@@ -76,8 +69,6 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		useHeadingCorrection.setDefaultOption("On", true);
 		useHeadingCorrection.addOption("Off", false);
-
-		beamBreaks = true;
 
 		SmartDashboard.putData("Beam Breaks Toggle", useBeamBreaks);
 		SmartDashboard.putData("Auto Align Toggle", useAutoAlign);
@@ -145,13 +136,10 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () ->
 			Constants.controller.getBButtonPressed()
 		);
-		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () ->
-			Constants.controller.getBButtonPressed()
-		);
 		addTrigger(
 			ManagerStates.INTAKING,
 			ManagerStates.IDLE,
-			() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetPoint() && beamBreaks
+			() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetPoint() && (useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected()) || Constants.controller.getBButtonPressed()
 		);
 
 		// Amping (Y)
@@ -232,7 +220,6 @@ public class Manager extends Subsystem<ManagerStates> {
 
 	@Override
 	public void periodic() {
-		beamBreaks = useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected();
 		super.periodic();
 
 		intakeSubsystem.setState(getState().getIntakeState());
