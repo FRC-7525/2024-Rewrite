@@ -260,7 +260,9 @@ public class Manager extends Subsystem<ManagerStates> {
 			}
 		}
 
-		driveSubsystem.toggleHeadingCorrection(useHeadingCorrection.getSelected() == null ? true : useHeadingCorrection.getSelected());
+		driveSubsystem.toggleHeadingCorrection(
+			useHeadingCorrection.getSelected() == null ? true : useHeadingCorrection.getSelected()
+		);
 
 		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
