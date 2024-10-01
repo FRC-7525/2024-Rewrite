@@ -49,55 +49,46 @@ public class Module {
 		// Switch constants based on mode (the physics simulator is treated as a
 		// separate robot with different tuning)
 		switch (Constants.currentMode) {
-			// TODO: Leaving this as a warning incase I did something bad, before "REAL" didnt assign
+			// TODO: Leaving this as a warning incase I did something bad, before "REAL"
+			// didnt assign
 			// any PID/FF values for controllers idk why
 			case REAL:
-				driveFeedforward = new SimpleMotorFeedforward(
-					Constants.Drive.Module.REAL_FF.kS,
-					Constants.Drive.Module.REAL_FF.kV
-				);
+				// TODO: TEST THIS
+				driveFeedforward = createDriveFeedforward(12, Units.feetToMeters(19.6), 1.19);
 				driveFeedback = new PIDController(
-					Constants.Drive.Module.REAL_DRIVE_PID.kP,
-					Constants.Drive.Module.REAL_DRIVE_PID.kI,
-					Constants.Drive.Module.REAL_DRIVE_PID.kD
-				);
+						Constants.Drive.Module.REAL_DRIVE_PID.kP,
+						Constants.Drive.Module.REAL_DRIVE_PID.kI,
+						Constants.Drive.Module.REAL_DRIVE_PID.kD);
 				turnFeedback = new PIDController(
-					Constants.Drive.Module.REAL_TURN_PID.kP,
-					Constants.Drive.Module.REAL_TURN_PID.kI,
-					Constants.Drive.Module.REAL_TURN_PID.kD
-				);
+						Constants.Drive.Module.REAL_TURN_PID.kP,
+						Constants.Drive.Module.REAL_TURN_PID.kI,
+						Constants.Drive.Module.REAL_TURN_PID.kD);
 				break;
 			case REPLAY:
 				driveFeedforward = new SimpleMotorFeedforward(
-					Constants.Drive.Module.REPLAY_FF.kS,
-					Constants.Drive.Module.REPLAY_FF.kV
-				);
+						Constants.Drive.Module.REPLAY_FF.kS,
+						Constants.Drive.Module.REPLAY_FF.kV);
 				driveFeedback = new PIDController(
-					Constants.Drive.Module.REPLAY_DRIVE_PID.kP,
-					Constants.Drive.Module.REPLAY_DRIVE_PID.kI,
-					Constants.Drive.Module.REPLAY_DRIVE_PID.kD
-				);
+						Constants.Drive.Module.REPLAY_DRIVE_PID.kP,
+						Constants.Drive.Module.REPLAY_DRIVE_PID.kI,
+						Constants.Drive.Module.REPLAY_DRIVE_PID.kD);
 				turnFeedback = new PIDController(
-					Constants.Drive.Module.REPLAY_TURN_PID.kP,
-					Constants.Drive.Module.REPLAY_TURN_PID.kI,
-					Constants.Drive.Module.REPLAY_TURN_PID.kD
-				);
+						Constants.Drive.Module.REPLAY_TURN_PID.kP,
+						Constants.Drive.Module.REPLAY_TURN_PID.kI,
+						Constants.Drive.Module.REPLAY_TURN_PID.kD);
 				break;
 			case SIM:
 				driveFeedforward = new SimpleMotorFeedforward(
-					Constants.Drive.Module.SIM_FF.kS,
-					Constants.Drive.Module.SIM_FF.kV
-				);
+						Constants.Drive.Module.SIM_FF.kS,
+						Constants.Drive.Module.SIM_FF.kV);
 				driveFeedback = new PIDController(
-					Constants.Drive.Module.SIM_DRIVE_PID.kP,
-					Constants.Drive.Module.SIM_DRIVE_PID.kI,
-					Constants.Drive.Module.SIM_DRIVE_PID.kD
-				);
+						Constants.Drive.Module.SIM_DRIVE_PID.kP,
+						Constants.Drive.Module.SIM_DRIVE_PID.kI,
+						Constants.Drive.Module.SIM_DRIVE_PID.kD);
 				turnFeedback = new PIDController(
-					Constants.Drive.Module.SIM_TURN_PID.kP,
-					Constants.Drive.Module.SIM_TURN_PID.kI,
-					Constants.Drive.Module.SIM_TURN_PID.kD
-				);
+						Constants.Drive.Module.SIM_TURN_PID.kP,
+						Constants.Drive.Module.SIM_TURN_PID.kI,
+						Constants.Drive.Module.SIM_TURN_PID.kD);
 				break;
 			default:
 				driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
@@ -110,8 +101,27 @@ public class Module {
 		setBrakeMode(true);
 	}
 
+	// REAL LIFE ONLY!!!!!!!!
+
+	public static SimpleMotorFeedforward createDriveFeedforward(double optimalVoltage, double maxSpeed,
+			double wheelGripCoefficientOfFriction) {
+		double kv = optimalVoltage / maxSpeed;
+		/// ^ Volt-seconds per meter (max voltage divided by max speed)
+		double ka = optimalVoltage
+				/ calculateMaxAcceleration(wheelGripCoefficientOfFriction);
+		/// ^ Volt-seconds^2 per meter (max voltage divided by max accel)
+		return new SimpleMotorFeedforward(0, kv, ka);
+	}
+
+	// 9.81 is "gravity"
+	public static double calculateMaxAcceleration(double cof) {
+		return cof * 9.81;
+	}
+
+
 	/**
-	 * Update inputs without running the rest of the periodic logic. This is useful since these
+	 * Update inputs without running the rest of the periodic logic. This is useful
+	 * since these
 	 * updates need to be properly thread-locked.
 	 */
 	public void updateInputs() {
@@ -125,19 +135,16 @@ public class Module {
 	public void periodic() {
 		Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
 		Logger.recordOutput(
-			"Drive/Module" + Integer.toString(index) + "/" + "AbsoluteEncoderPositionAsDouble",
-			inputs.turnAbsolutePosition.getDegrees()
-		);
+				"Drive/Module" + Integer.toString(index) + "/" + "AbsoluteEncoderPositionAsDouble",
+				inputs.turnAbsolutePosition.getDegrees());
 
 		updateOutputs();
 		Logger.recordOutput(
-			"DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts",
-			outputs.driveAppliedVolts
-		);
+				"DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts",
+				outputs.driveAppliedVolts);
 		Logger.recordOutput(
-			"DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts",
-			outputs.turnAppliedVolts
-		);
+				"DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts",
+				outputs.turnAppliedVolts);
 
 		// On first cycle, reset relative turn encoder
 		// Wait until absolute angle is nonzero in case it wasn't initialized yet
@@ -148,8 +155,7 @@ public class Module {
 		// Run closed loop turn control
 		if (angleSetpoint != null) {
 			io.setTurnVoltage(
-				turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians())
-			);
+					turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
 
 			// Run closed loop drive control
 			// Only allowed if closed loop turn control is running
@@ -159,15 +165,13 @@ public class Module {
 				// When the error is 90°, the velocity setpoint should be 0. As the wheel turns
 				// towards the setpoint, its velocity should increase. This is achieved by
 				// taking the component of the velocity in the direction of the setpoint.
-				double adjustSpeedSetpoint =
-					speedSetpoint * Math.cos(turnFeedback.getPositionError());
+				double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
 
 				// Run drive controller
 				double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
 				io.setDriveVoltage(
-					driveFeedforward.calculate(velocityRadPerSec) +
-					driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec)
-				);
+						driveFeedforward.calculate(velocityRadPerSec) +
+								driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
 			}
 		}
 
@@ -176,15 +180,16 @@ public class Module {
 		odometryPositions = new SwerveModulePosition[sampleCount];
 		for (int i = 0; i < sampleCount; i++) {
 			double positionMeters = inputs.odometryDrivePositionsRad[i] * WHEEL_RADIUS;
-			Rotation2d angle =
-				inputs.odometryTurnPositions[i].plus(
-						turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d()
-					);
+			Rotation2d angle = inputs.odometryTurnPositions[i].plus(
+					turnRelativeOffset != null ? turnRelativeOffset : new Rotation2d());
 			odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
 		}
 	}
 
-	/** Runs the module with the specified setpoint state. Returns the optimized state. */
+	/**
+	 * Runs the module with the specified setpoint state. Returns the optimized
+	 * state.
+	 */
 	public SwerveModuleState runSetpoint(SwerveModuleState state) {
 		// Optimize state based on current angle
 		// Controllers run in "periodic" when the setpoint is not null
@@ -197,7 +202,9 @@ public class Module {
 		return optimizedState;
 	}
 
-	/** Runs the module with the specified voltage while controlling to zero degrees. */
+	/**
+	 * Runs the module with the specified voltage while controlling to zero degrees.
+	 */
 	public void runCharacterization(double volts) {
 		// Closed loop turn control
 		angleSetpoint = new Rotation2d();
