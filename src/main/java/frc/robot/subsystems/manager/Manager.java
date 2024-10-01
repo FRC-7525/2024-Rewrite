@@ -94,33 +94,26 @@ public class Manager extends Subsystem<ManagerStates> {
 				shooterSubsystem = new Shooter(new ShooterIOTalonFX());
 				climberSubsystem = new Climber(new ClimberIOSparkMax());
 				driveSubsystem = new Drive(
-						new GyroIONavx2(),
-						new ModuleIOHybrid(0),
-						new ModuleIOHybrid(1),
-						new ModuleIOHybrid(2),
-						new ModuleIOHybrid(3));
+					new GyroIONavx2(),
+					new ModuleIOHybrid(0),
+					new ModuleIOHybrid(1),
+					new ModuleIOHybrid(2),
+					new ModuleIOHybrid(3)
+				);
 				useVision.setDefaultOption("On", true);
 				break;
 			case REPLAY:
-				intakeSubsystem = new Intake(new IntakeIO() {
-				});
-				ampBarSubsystem = new AmpBar(new AmpBarIO() {
-				});
-				shooterSubsystem = new Shooter(new ShooterIO() {
-				});
-				climberSubsystem = new Climber(new ClimberIO() {
-				});
+				intakeSubsystem = new Intake(new IntakeIO() {});
+				ampBarSubsystem = new AmpBar(new AmpBarIO() {});
+				shooterSubsystem = new Shooter(new ShooterIO() {});
+				climberSubsystem = new Climber(new ClimberIO() {});
 				driveSubsystem = new Drive(
-						new GyroIO() {
-						},
-						new ModuleIO() {
-						},
-						new ModuleIO() {
-						},
-						new ModuleIO() {
-						},
-						new ModuleIO() {
-						});
+					new GyroIO() {},
+					new ModuleIO() {},
+					new ModuleIO() {},
+					new ModuleIO() {},
+					new ModuleIO() {}
+				);
 				break;
 			case SIM:
 				intakeSubsystem = new Intake(new IntakeIOSim());
@@ -128,12 +121,12 @@ public class Manager extends Subsystem<ManagerStates> {
 				shooterSubsystem = new Shooter(new ShooterIOSim());
 				climberSubsystem = new Climber(new ClimberIOSim());
 				driveSubsystem = new Drive(
-						new GyroIO() {
-						},
-						new ModuleIOSim(),
-						new ModuleIOSim(),
-						new ModuleIOSim(),
-						new ModuleIOSim());
+					new GyroIO() {},
+					new ModuleIOSim(),
+					new ModuleIOSim(),
+					new ModuleIOSim(),
+					new ModuleIOSim()
+				);
 				useVision.setDefaultOption("Off", false);
 				break;
 			default:
@@ -152,53 +145,85 @@ public class Manager extends Subsystem<ManagerStates> {
 		 */
 
 		// Intaking (B)
-		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () -> Constants.controller.getBButtonPressed());
+		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () ->
+			Constants.controller.getBButtonPressed()
+		);
 		addTrigger(
-				ManagerStates.INTAKING,
-				ManagerStates.IDLE,
-				() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetPoint() && useBeamBreaksVal
-						|| Constants.controller.getBButtonPressed());
+			ManagerStates.INTAKING,
+			ManagerStates.IDLE,
+			() ->
+				(intakeSubsystem.noteDetected() &&
+					intakeSubsystem.nearSetPoint() &&
+					useBeamBreaksVal) ||
+				Constants.controller.getBButtonPressed()
+		);
 
 		// Amping (Y)
-		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_AMP, () -> Constants.controller.getYButtonPressed());
-		addTrigger(ManagerStates.STAGING_AMP, ManagerStates.FEED_AMP, () -> ampBarSubsystem.atSetPoint());
+		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_AMP, () ->
+			Constants.controller.getYButtonPressed()
+		);
+		addTrigger(ManagerStates.STAGING_AMP, ManagerStates.FEED_AMP, () ->
+			ampBarSubsystem.atSetPoint()
+		);
 		addTrigger(
-				ManagerStates.FEED_AMP,
-				ManagerStates.AMP_HOLDING_NOTE,
-				() -> ampBarSubsystem.noteDetected() && useBeamBreaksVal ||
-						Constants.controller.getYButtonPressed());
-		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP,
-				() -> Constants.controller.getYButtonPressed());
-		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE,
-				() -> (getStateTime() > Constants.AmpBar.TIME_FOR_SCORING));
-		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> Constants.controller.getYButtonPressed());
-		addTrigger(ManagerStates.FEED_AMP, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
+			ManagerStates.FEED_AMP,
+			ManagerStates.AMP_HOLDING_NOTE,
+			() ->
+				(ampBarSubsystem.noteDetected() && useBeamBreaksVal) ||
+				Constants.controller.getYButtonPressed()
+		);
+		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP, () ->
+			Constants.controller.getYButtonPressed()
+		);
+		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
+			(getStateTime() > Constants.AmpBar.TIME_FOR_SCORING)
+		);
+		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
+			Constants.controller.getYButtonPressed()
+		);
+		addTrigger(ManagerStates.FEED_AMP, ManagerStates.IDLE, () ->
+			Constants.controller.getXButtonPressed()
+		);
 
 		// Shooting (A)
-		addTrigger(ManagerStates.IDLE, ManagerStates.SPINNING_UP, () -> Constants.controller.getAButtonPressed());
-		addTrigger(ManagerStates.IDLE, ManagerStates.OPERATOR_SPINNING_UP,
-				() -> Constants.operatorController.getAButtonPressed());
+		addTrigger(ManagerStates.IDLE, ManagerStates.SPINNING_UP, () ->
+			Constants.controller.getAButtonPressed()
+		);
+		addTrigger(ManagerStates.IDLE, ManagerStates.OPERATOR_SPINNING_UP, () ->
+			Constants.operatorController.getAButtonPressed()
+		);
 		addTrigger(
-				ManagerStates.SPINNING_UP,
-				ManagerStates.SHOOTING,
-				() -> driverShooterAfterSpinningVal ||
-						Constants.controller.getAButtonPressed());
-		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
-		addTrigger(ManagerStates.OPERATOR_SPINNING_UP, ManagerStates.SHOOTING,
-				() -> Constants.controller.getAButtonPressed());
-		addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () -> Constants.controller.getAButtonPressed());
+			ManagerStates.SPINNING_UP,
+			ManagerStates.SHOOTING,
+			() -> driverShooterAfterSpinningVal || Constants.controller.getAButtonPressed()
+		);
+		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () ->
+			Constants.controller.getXButtonPressed()
+		);
+		addTrigger(ManagerStates.OPERATOR_SPINNING_UP, ManagerStates.SHOOTING, () ->
+			Constants.controller.getAButtonPressed()
+		);
+		addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () ->
+			Constants.controller.getAButtonPressed()
+		);
 
 		// Climbing (POV)
 		addTrigger(
-				ManagerStates.IDLE,
-				ManagerStates.STAGING_FOR_CLIMB,
-				() -> Constants.controller.getPOV() == 0 && useClimbersVal);
-		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () -> ampBarSubsystem.nearSetPoints());
+			ManagerStates.IDLE,
+			ManagerStates.STAGING_FOR_CLIMB,
+			() -> Constants.controller.getPOV() == 0 && useClimbersVal
+		);
+		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
+			ampBarSubsystem.nearSetPoints()
+		);
 		addTrigger(
-				ManagerStates.CLIMBING,
-				ManagerStates.CLIMBED,
-				() -> Constants.controller.getPOV() == 180);
-		addTrigger(ManagerStates.CLIMBED, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
+			ManagerStates.CLIMBING,
+			ManagerStates.CLIMBED,
+			() -> Constants.controller.getPOV() == 180
+		);
+		addTrigger(ManagerStates.CLIMBED, ManagerStates.IDLE, () ->
+			Constants.controller.getXButtonPressed()
+		);
 	}
 
 	@Override
@@ -219,14 +244,20 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		// Set Sendable Stuff:
 		if (loopCounter % SENDABLE_CHECK_INTERVAL == 0) {
-			useBeamBreaksVal = useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected();
-			useAutoAlignVal = useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected();
-			driverShooterAfterSpinningVal = driverShooterAfterSpinning.getSelected() == null ? true
-					: driverShooterAfterSpinning.getSelected();
+			useBeamBreaksVal = useBeamBreaks.getSelected() == null
+				? true
+				: useBeamBreaks.getSelected();
+			useAutoAlignVal = useAutoAlign.getSelected() == null
+				? true
+				: useAutoAlign.getSelected();
+			driverShooterAfterSpinningVal = driverShooterAfterSpinning.getSelected() == null
+				? true
+				: driverShooterAfterSpinning.getSelected();
 			useClimbersVal = useClimbers.getSelected() == null ? true : useClimbers.getSelected();
 			useVisionVal = useVision.getSelected() == null ? true : useVision.getSelected();
-			useHeadingCorrectionVal = useHeadingCorrection.getSelected() == null ? true
-					: useHeadingCorrection.getSelected();
+			useHeadingCorrectionVal = useHeadingCorrection.getSelected() == null
+				? true
+				: useHeadingCorrection.getSelected();
 		}
 
 		// AA
