@@ -7,7 +7,7 @@ public enum AmpBarStates implements SubsystemStates {
 	OFF(Constants.AmpBar.IN, Constants.AmpBar.OFF, "Amp Bar Off"),
 	SHOOTING(Constants.AmpBar.OUT, Constants.AmpBar.SHOOTING, "Shooting Amp"),
 	FEEDING(Constants.AmpBar.FEEDING_POSITION, Constants.AmpBar.FEEDING, "Getting Fed"),
-	HOLDING_NOTE(Constants.AmpBar.OUT, Constants.AmpBar.OFF, "Holding a Note");
+	HOLDING_NOTE(Constants.AmpBar.OUT, Constants.AmpBar.HOLDING_NOTE, "Holding a Note");
 
 	private double pivotPositionSetpoint;
 	private double spinnerMotorSpeedpoint;

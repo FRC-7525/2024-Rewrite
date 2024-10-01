@@ -165,7 +165,8 @@ public final class Constants {
 		// In RPS (Spinner Setpoints)
 		public static final double SHOOTING = -0.5;
 		public static final double FEEDING = -1;
-		public static final double OFF = 0.0;
+		public static final double HOLDING_NOTE = 0.0;
+		public static final double OFF = -21;
 
 		// IN DEGREES (Pivot Setpoints)
 		public static final double OUT = -84;
