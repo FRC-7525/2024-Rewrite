@@ -43,6 +43,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	private SendableChooser<Boolean> driverShooterAfterSpinning;
 	private SendableChooser<Boolean> useClimbers;
 	private SendableChooser<Boolean> useVision;
+	private SendableChooser<Boolean> useHeadingCorrection;
 
 	private Boolean beamBreaks;
 
@@ -55,6 +56,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		useAutoAlign = new SendableChooser<>();
 		useClimbers = new SendableChooser<>();
 		useVision = new SendableChooser<>();
+		useHeadingCorrection = new SendableChooser<>();
 		driverShooterAfterSpinning = new SendableChooser<>();
 
 		useBeamBreaks.setDefaultOption("On", true);
@@ -71,6 +73,9 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		useVision.addOption("Off", false);
 		useVision.addOption("On", true);
+
+		useHeadingCorrection.setDefaultOption("On", true);
+		useHeadingCorrection.addOption("Off", false);
 
 		beamBreaks = true;
 
@@ -267,6 +272,8 @@ public class Manager extends Subsystem<ManagerStates> {
 					break;
 			}
 		}
+
+		driveSubsystem.toggleHeadingCorrection(useHeadingCorrection.getSelected() == null ? true : useHeadingCorrection.getSelected());
 
 		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
