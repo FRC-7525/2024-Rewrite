@@ -127,7 +127,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				break;
 		}
 		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
-		vision = new Vision(driveSubsystem);
+		// vision = new Vision(driveSubsystem);
 
 		NoteSimulator.setDrive(driveSubsystem);
 
@@ -240,7 +240,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		shooterSubsystem.periodic();
 		driveSubsystem.periodic();
 
-		if (useVision.getSelected() == null ? true : useVision.getSelected()) vision.periodic();
+		// if (useVision.getSelected() == null ? true : useVision.getSelected()) vision.periodic();
 		if (
 			useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()
 		) autoAlignSubsystem.periodic();

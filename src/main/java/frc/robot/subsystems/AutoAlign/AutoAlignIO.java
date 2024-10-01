@@ -27,7 +27,7 @@ public class AutoAlignIO {
 		rotationalPIDController = new PIDController(0, 0, 0);
 
 		targetPose2d = new Pose2d();
-		noteVision = new NoteVision();
+		// noteVision = new NoteVision();
 	}
 
 	/* Returns if the robot is near the target pose */
