@@ -111,6 +111,7 @@ public class Drive extends Subsystem<DriveStates> {
 		// auto (and thats not
 		// good)
 		// Logger.recordOutput("driveState", getState());
+		// TODO: TURN ON HEADING CORRECTION LATER
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 					this,
@@ -119,7 +120,7 @@ public class Drive extends Subsystem<DriveStates> {
 					() -> Constants.controller.getRightX(),
 					getState().getRotationModifier(),
 					getState().getTranslationModifier(),
-					headingCorrectionEnabled);
+					false);
 		}
 	}
 
