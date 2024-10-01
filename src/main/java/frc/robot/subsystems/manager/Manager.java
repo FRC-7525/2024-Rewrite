@@ -40,6 +40,16 @@ public class Manager extends Subsystem<ManagerStates> {
 	private SendableChooser<Boolean> useVision;
 	private SendableChooser<Boolean> useHeadingCorrection;
 
+	private Boolean useBeamBreaksVal;
+	private Boolean useAutoAlignVal;
+	private Boolean driverShooterAfterSpinningVal;
+	private Boolean useClimbersVal;
+	private Boolean useVisionVal;
+	private Boolean useHeadingCorrectionVal;
+
+	private final int SENDABLE_CHECK_INTERVAL = 50;
+	private int loopCounter;
+
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
 		NoteSimulator.setDrive(driveSubsystem);
@@ -84,26 +94,33 @@ public class Manager extends Subsystem<ManagerStates> {
 				shooterSubsystem = new Shooter(new ShooterIOTalonFX());
 				climberSubsystem = new Climber(new ClimberIOSparkMax());
 				driveSubsystem = new Drive(
-					new GyroIONavx2(),
-					new ModuleIOHybrid(0),
-					new ModuleIOHybrid(1),
-					new ModuleIOHybrid(2),
-					new ModuleIOHybrid(3)
-				);
+						new GyroIONavx2(),
+						new ModuleIOHybrid(0),
+						new ModuleIOHybrid(1),
+						new ModuleIOHybrid(2),
+						new ModuleIOHybrid(3));
 				useVision.setDefaultOption("On", true);
 				break;
 			case REPLAY:
-				intakeSubsystem = new Intake(new IntakeIO() {});
-				ampBarSubsystem = new AmpBar(new AmpBarIO() {});
-				shooterSubsystem = new Shooter(new ShooterIO() {});
-				climberSubsystem = new Climber(new ClimberIO() {});
+				intakeSubsystem = new Intake(new IntakeIO() {
+				});
+				ampBarSubsystem = new AmpBar(new AmpBarIO() {
+				});
+				shooterSubsystem = new Shooter(new ShooterIO() {
+				});
+				climberSubsystem = new Climber(new ClimberIO() {
+				});
 				driveSubsystem = new Drive(
-					new GyroIO() {},
-					new ModuleIO() {},
-					new ModuleIO() {},
-					new ModuleIO() {},
-					new ModuleIO() {}
-				);
+						new GyroIO() {
+						},
+						new ModuleIO() {
+						},
+						new ModuleIO() {
+						},
+						new ModuleIO() {
+						},
+						new ModuleIO() {
+						});
 				break;
 			case SIM:
 				intakeSubsystem = new Intake(new IntakeIOSim());
@@ -111,12 +128,12 @@ public class Manager extends Subsystem<ManagerStates> {
 				shooterSubsystem = new Shooter(new ShooterIOSim());
 				climberSubsystem = new Climber(new ClimberIOSim());
 				driveSubsystem = new Drive(
-					new GyroIO() {},
-					new ModuleIOSim(),
-					new ModuleIOSim(),
-					new ModuleIOSim(),
-					new ModuleIOSim()
-				);
+						new GyroIO() {
+						},
+						new ModuleIOSim(),
+						new ModuleIOSim(),
+						new ModuleIOSim(),
+						new ModuleIOSim());
 				useVision.setDefaultOption("Off", false);
 				break;
 			default:
@@ -127,100 +144,68 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		NoteSimulator.setDrive(driveSubsystem);
 
-		/* Generally each action has a specific button (Intaking, Shooting, etc.)
+		/*
+		 * Generally each action has a specific button (Intaking, Shooting, etc.)
 		 * In intermediary states X will return to idle
 		 * Specific button will transition through the states
-		 * Some transitions are automatic with timers or sensors */
+		 * Some transitions are automatic with timers or sensors
+		 */
 
 		// Intaking (B)
-		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () ->
-			Constants.controller.getBButtonPressed()
-		);
+		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () -> Constants.controller.getBButtonPressed());
 		addTrigger(
-			ManagerStates.INTAKING,
-			ManagerStates.IDLE,
-			() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetPoint() && (useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected()) || Constants.controller.getBButtonPressed()
-		);
+				ManagerStates.INTAKING,
+				ManagerStates.IDLE,
+				() -> intakeSubsystem.noteDetected() && intakeSubsystem.nearSetPoint() && useBeamBreaksVal
+						|| Constants.controller.getBButtonPressed());
 
 		// Amping (Y)
-		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_AMP, () ->
-			Constants.controller.getYButtonPressed()
-		);
-		addTrigger(ManagerStates.STAGING_AMP, ManagerStates.FEED_AMP, () ->
-			ampBarSubsystem.atSetPoint()
-		);
+		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_AMP, () -> Constants.controller.getYButtonPressed());
+		addTrigger(ManagerStates.STAGING_AMP, ManagerStates.FEED_AMP, () -> ampBarSubsystem.atSetPoint());
 		addTrigger(
-			ManagerStates.FEED_AMP,
-			ManagerStates.AMP_HOLDING_NOTE,
-			() ->
-				(ampBarSubsystem.noteDetected() &&
-					(useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected())) ||
-				Constants.controller.getYButtonPressed()
-		);
-		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP, () ->
-			Constants.controller.getYButtonPressed()
-		);
-		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
-			(getStateTime() > Constants.AmpBar.TIME_FOR_SCORING)
-		);
-		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () ->
-			Constants.controller.getYButtonPressed()
-		);
-		addTrigger(ManagerStates.FEED_AMP, ManagerStates.IDLE, () ->
-			Constants.controller.getXButtonPressed()
-		);
+				ManagerStates.FEED_AMP,
+				ManagerStates.AMP_HOLDING_NOTE,
+				() -> ampBarSubsystem.noteDetected() && useBeamBreaksVal ||
+						Constants.controller.getYButtonPressed());
+		addTrigger(ManagerStates.AMP_HOLDING_NOTE, ManagerStates.SCORE_AMP,
+				() -> Constants.controller.getYButtonPressed());
+		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE,
+				() -> (getStateTime() > Constants.AmpBar.TIME_FOR_SCORING));
+		addTrigger(ManagerStates.SCORE_AMP, ManagerStates.IDLE, () -> Constants.controller.getYButtonPressed());
+		addTrigger(ManagerStates.FEED_AMP, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
 
 		// Shooting (A)
-		addTrigger(ManagerStates.IDLE, ManagerStates.SPINNING_UP, () ->
-			Constants.controller.getAButtonPressed()
-		);
-		addTrigger(ManagerStates.IDLE, ManagerStates.OPERATOR_SPINNING_UP, () ->
-			Constants.operatorController.getAButtonPressed()
-		);
+		addTrigger(ManagerStates.IDLE, ManagerStates.SPINNING_UP, () -> Constants.controller.getAButtonPressed());
+		addTrigger(ManagerStates.IDLE, ManagerStates.OPERATOR_SPINNING_UP,
+				() -> Constants.operatorController.getAButtonPressed());
 		addTrigger(
-			ManagerStates.SPINNING_UP,
-			ManagerStates.SHOOTING,
-			() ->
-				((driverShooterAfterSpinning.getSelected() == null
-							? true
-							: driverShooterAfterSpinning.getSelected()) &&
-					shooterSubsystem.nearSpeedPoint()) ||
-				Constants.controller.getAButtonPressed()
-		);
-		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () ->
-			Constants.controller.getXButtonPressed()
-		);
-		addTrigger(ManagerStates.OPERATOR_SPINNING_UP, ManagerStates.SHOOTING, () ->
-			Constants.controller.getAButtonPressed()
-		);
-		addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () ->
-			Constants.controller.getAButtonPressed()
-		);
+				ManagerStates.SPINNING_UP,
+				ManagerStates.SHOOTING,
+				() -> driverShooterAfterSpinningVal ||
+						Constants.controller.getAButtonPressed());
+		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
+		addTrigger(ManagerStates.OPERATOR_SPINNING_UP, ManagerStates.SHOOTING,
+				() -> Constants.controller.getAButtonPressed());
+		addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () -> Constants.controller.getAButtonPressed());
 
 		// Climbing (POV)
 		addTrigger(
-			ManagerStates.IDLE,
-			ManagerStates.STAGING_FOR_CLIMB,
-			() ->
-				Constants.controller.getPOV() == 0 &&
-				(useClimbers.getSelected() == null ? true : useClimbers.getSelected())
-		);
-		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
-			ampBarSubsystem.nearSetPoints()
-		);
+				ManagerStates.IDLE,
+				ManagerStates.STAGING_FOR_CLIMB,
+				() -> Constants.controller.getPOV() == 0 && useClimbersVal);
+		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () -> ampBarSubsystem.nearSetPoints());
 		addTrigger(
-			ManagerStates.CLIMBING,
-			ManagerStates.CLIMBED,
-			() -> Constants.controller.getPOV() == 180
-		);
-		addTrigger(ManagerStates.CLIMBED, ManagerStates.IDLE, () ->
-			Constants.controller.getXButtonPressed()
-		);
+				ManagerStates.CLIMBING,
+				ManagerStates.CLIMBED,
+				() -> Constants.controller.getPOV() == 180);
+		addTrigger(ManagerStates.CLIMBED, ManagerStates.IDLE, () -> Constants.controller.getXButtonPressed());
 	}
 
 	@Override
 	public void periodic() {
 		super.periodic();
+
+		loopCounter += 1;
 
 		intakeSubsystem.setState(getState().getIntakeState());
 		ampBarSubsystem.setState(getState().getAmpBarState());
@@ -232,37 +217,48 @@ public class Manager extends Subsystem<ManagerStates> {
 		shooterSubsystem.periodic();
 		driveSubsystem.periodic();
 
-		// if (useVision.getSelected() == null ? true : useVision.getSelected()) vision.periodic();
-		if (
-			useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected()
-		) autoAlignSubsystem.periodic();
-		if (useClimbers.getSelected() == null ? true : useClimbers.getSelected()) {
+		// Set Sendable Stuff:
+		if (loopCounter % SENDABLE_CHECK_INTERVAL == 0) {
+			useBeamBreaksVal = useBeamBreaks.getSelected() == null ? true : useBeamBreaks.getSelected();
+			useAutoAlignVal = useAutoAlign.getSelected() == null ? true : useAutoAlign.getSelected();
+			driverShooterAfterSpinningVal = driverShooterAfterSpinning.getSelected() == null ? true
+					: driverShooterAfterSpinning.getSelected();
+			useClimbersVal = useClimbers.getSelected() == null ? true : useClimbers.getSelected();
+			useVisionVal = useVision.getSelected() == null ? true : useVision.getSelected();
+			useHeadingCorrectionVal = useHeadingCorrection.getSelected() == null ? true
+					: useHeadingCorrection.getSelected();
+		}
+
+		// AA
+		if (useAutoAlignVal) {
+			autoAlignSubsystem.periodic();
+			if (autoAlignSubsystem.nearTargetPoint()) {
+				switch (autoAlignSubsystem.getCachedState()) {
+					case AMP:
+						setState(ManagerStates.STAGING_AMP);
+						break;
+					case AMP_SPEAKER:
+						setState(ManagerStates.SPINNING_UP);
+						break;
+					case SOURCE_SPEAKER:
+						setState(ManagerStates.SPINNING_UP);
+						break;
+					case OFF:
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
+		if (useClimbersVal) {
 			climberSubsystem.periodic();
 			climberSubsystem.setState(getState().getClimberState());
 		}
 
-		// AA
-		if (autoAlignSubsystem.nearTargetPoint()) {
-			switch (autoAlignSubsystem.getCachedState()) {
-				case AMP:
-					setState(ManagerStates.STAGING_AMP);
-					break;
-				case AMP_SPEAKER:
-					setState(ManagerStates.SPINNING_UP);
-					break;
-				case SOURCE_SPEAKER:
-					setState(ManagerStates.SPINNING_UP);
-					break;
-				case OFF:
-					break;
-				default:
-					break;
-			}
-		}
+		// if (useVisionVal) vision.periodic();
 
-		driveSubsystem.toggleHeadingCorrection(
-			useHeadingCorrection.getSelected() == null ? true : useHeadingCorrection.getSelected()
-		);
+		driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
 
 		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
