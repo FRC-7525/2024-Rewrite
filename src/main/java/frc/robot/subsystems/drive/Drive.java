@@ -83,7 +83,7 @@ public class Drive extends Subsystem<DriveStates> {
 		lastHeadingRadians = poseEstimator.getEstimatedPosition().getRotation().getRadians();
 		headingCorrectionEnabled = true;
 		// TODO: Tune
-		headingCorrectionController = new PIDController(1.5, 0, 0.15);
+		headingCorrectionController = new PIDController(0.6, 0, 0.3);
 
 		this.gyroIO = gyroIO;
 		modules[0] = new Module(flModuleIO, 0);

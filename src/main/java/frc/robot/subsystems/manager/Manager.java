@@ -62,6 +62,15 @@ public class Manager extends Subsystem<ManagerStates> {
 		useHeadingCorrection = new SendableChooser<>();
 		driverShooterAfterSpinning = new SendableChooser<>();
 
+		loopCounter = 50;
+
+		useBeamBreaksVal = false;
+	 	useAutoAlignVal = false;
+		driverShooterAfterSpinningVal = false;
+		useClimbersVal = false;
+		useVisionVal = false;
+		useHeadingCorrectionVal = false;		
+
 		useBeamBreaks.setDefaultOption("On", true);
 		useBeamBreaks.addOption("Off", false);
 
@@ -133,7 +142,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				break;
 		}
 		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
-		// vision = new Vision(driveSubsystem);
+		vision = new Vision(driveSubsystem);
 
 		NoteSimulator.setDrive(driveSubsystem);
 
@@ -287,7 +296,7 @@ public class Manager extends Subsystem<ManagerStates> {
 			climberSubsystem.setState(getState().getClimberState());
 		}
 
-		// if (useVisionVal) vision.periodic();
+		if (useVisionVal) vision.periodic();
 
 		driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
 

@@ -256,7 +256,7 @@ public final class Constants {
 			// Hope this works??? This should be tuned using SYSID or Power, I, and Damping method
 			public static final FFConstants REAL_FF = new FFConstants(0, 0);
 			// TODO: Test 0.0020645, 0.0, 0.0 (YAGSL configs)
-			public static final PIDConstants REAL_DRIVE_PID = new PIDConstants(0.15, 0.0, 0.0);
+			public static final PIDConstants REAL_DRIVE_PID = new PIDConstants(0.0020645, 0.0, 0.0);
 			public static final PIDConstants REAL_TURN_PID = new PIDConstants(7.0, 0.0, 0.0);
 
 			public static final int NUM_TURN_MOTORS = 1;
