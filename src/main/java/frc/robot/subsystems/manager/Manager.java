@@ -301,7 +301,7 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
 
-	 	// Cancel all actions regardless of whats happening
+		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
 			setState(ManagerStates.IDLE);
 		}
