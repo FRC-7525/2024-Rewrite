@@ -51,6 +51,7 @@ public class GyroIONavx2 implements GyroIO {
 	}
 
 	public void zeroGryo() {
-		navx.reset();
+		// navx.reset();
+		navx.zeroYaw();
 	}
 }
