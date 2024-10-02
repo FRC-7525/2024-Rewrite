@@ -65,11 +65,11 @@ public class Manager extends Subsystem<ManagerStates> {
 		loopCounter = 50;
 
 		useBeamBreaksVal = false;
-	 	useAutoAlignVal = false;
+		useAutoAlignVal = false;
 		driverShooterAfterSpinningVal = false;
 		useClimbersVal = false;
 		useVisionVal = false;
-		useHeadingCorrectionVal = false;		
+		useHeadingCorrectionVal = false;
 
 		useBeamBreaks.setDefaultOption("On", true);
 		useBeamBreaks.addOption("Off", false);
