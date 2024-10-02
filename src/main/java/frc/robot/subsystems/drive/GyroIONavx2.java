@@ -49,4 +49,8 @@ public class GyroIONavx2 implements GyroIO {
 			yawPositionQueue.clear();
 		}
 	}
+
+	public void zeroGryo() {
+		navx.reset();
+	}
 }

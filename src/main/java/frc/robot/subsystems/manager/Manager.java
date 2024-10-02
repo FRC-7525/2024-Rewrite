@@ -93,6 +93,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		SmartDashboard.putData("Auto Align Toggle", useAutoAlign);
 		SmartDashboard.putData("Climbers Toggle", useClimbers);
 		SmartDashboard.putData("AT Vision Toggle", useVision);
+		SmartDashboard.putData("Heading Correction", useHeadingCorrection);
 		SmartDashboard.putData("Drive Shoot After Spinning Toggle", driverShooterAfterSpinning);
 
 		// Subsystem configs
@@ -300,7 +301,7 @@ public class Manager extends Subsystem<ManagerStates> {
 
 		driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
 
-		// Cancel all actions regardless of whats happening
+	 	// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
 			setState(ManagerStates.IDLE);
 		}

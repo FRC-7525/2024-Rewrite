@@ -48,7 +48,7 @@ public final class Constants {
 	public static final double DIAM_TO_RADIUS_CF = 2.0;
 	public static final double AVG_TWO_ITEM_F = 2.0;
 
-	public static final Mode currentMode = Mode.REAL;
+	public static final Mode currentMode = Mode.SIM;
 
 	public static final double MAX_VOLTS = 12.0;
 	public static final double MIN_VOLTS = -12.0;
@@ -84,7 +84,7 @@ public final class Constants {
 		public static final PIDConstants SIM_OUT_PID = new PIDConstants(1, 0, 0);
 
 		public static final PIDConstants REAL_IN_PID = new PIDConstants(0.08, 0, 0.001);
-		public static final PIDConstants REAL_OUT_PID = new PIDConstants(0.25, 0, 0.002);
+		public static final PIDConstants REAL_OUT_PID = new PIDConstants(0.25, 0, 0.004);
 
 		// Sim Configs
 
@@ -102,7 +102,7 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// In DEGREES (Pivot setpoints)
-		public static final double DOWN = -237;
+		public static final double DOWN = -227;
 		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
@@ -152,11 +152,11 @@ public final class Constants {
 
 		// PID
 		public static final PIDConstants SIM_PID = new PIDConstants(3, 0, 1.5);
-		public static final PIDConstants REAL_PID = new PIDConstants(0.1, 0, 0);
+		public static final PIDConstants REAL_PID = new PIDConstants(0.08, 0, 0);
 
 		// Motor CAN IDs
 		public static final int LEFT_PIVOT_ID = 30;
-		public static final int RIGHT_PIVOT_ID = 31;
+		public static final int RIGHT_PIVOT_ID = 35;
 		public static final int SPINNER_ID = 38;
 
 		// Sim Configs
@@ -182,7 +182,7 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// IN DEGREES (Pivot Setpoints)
-		public static final double OUT = -87;
+		public static final double OUT = -79;
 		public static final double FEEDING_POSITION = -79;
 		public static final double IN = Units.degreesToRadians(0.0);
 
@@ -191,7 +191,7 @@ public final class Constants {
 		public static final double DEBOUNCE_TIME = 0.3;
 
 		//State Transitions
-		public static final double TIME_FOR_SCORING = 3;
+		public static final double TIME_FOR_SCORING = 1;
 	}
 
 	public static final class Drive {
@@ -205,7 +205,7 @@ public final class Constants {
     tm = translation multipliers
     aa = auto align
     */
-		public static final double REGULAR_RM = 1.0;
+		public static final double REGULAR_RM = 0.4;
 		public static final double REGULAR_TM = 1.0;
 		public static final double SLOW_RM = 0.5;
 		public static final double SLOW_TM = 0.2;

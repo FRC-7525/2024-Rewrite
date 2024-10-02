@@ -83,7 +83,7 @@ public class Drive extends Subsystem<DriveStates> {
 		lastHeadingRadians = poseEstimator.getEstimatedPosition().getRotation().getRadians();
 		headingCorrectionEnabled = true;
 		// TODO: Tune
-		headingCorrectionController = new PIDController(0.6, 0, 0.3);
+		headingCorrectionController = new PIDController(0.01, 0, 0);
 
 		this.gyroIO = gyroIO;
 		modules[0] = new Module(flModuleIO, 0);
@@ -124,8 +124,12 @@ public class Drive extends Subsystem<DriveStates> {
 				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
-				false
+				headingCorrectionEnabled
 			);
+		}
+
+		if (Constants.controller.getStartButtonPressed()) {
+			zeroGryo();
 		}
 	}
 
@@ -143,6 +147,12 @@ public class Drive extends Subsystem<DriveStates> {
 			) <
 			Constants.AutoAlign.ROTATION_ERROR_MARGIN
 		);
+	}
+
+	public void zeroGryo() {
+		// poseEstimator.resetPosition(new Rotation2d(0), getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+		// poseEstimator.resetPosition(getRotation(), getModulePositions(), getPose());
+		gyroIO.zeroGyro();
 	}
 
 	public void drive(
@@ -169,15 +179,21 @@ public class Drive extends Subsystem<DriveStates> {
 		);
 
 		if (headingCorrection) {
+			// System.out.println(headingCorrection);
+			System.out.println("Omgea = 0?" + (omega == 0));
+			System.out.println(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND);
+			System.out.println(Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND);
 			if (
-				Math.abs(omega) != 0.0 &&
+				Math.abs(omega) == 0.0 &&
 				(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND ||
 					Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND)
 			) {
 				omega = headingCorrectionController.calculate(
 					poseEstimator.getEstimatedPosition().getRotation().getRadians(),
 					lastHeadingRadians
-				);
+				) * Constants.Drive.MAX_ANGULAR_SPEED;
+
+				// System.out.println("something is happening");
 			} else {
 				lastHeadingRadians = poseEstimator
 					.getEstimatedPosition()
