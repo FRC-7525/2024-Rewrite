@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.AprilTagVision.Vision;
+// import frc.robot.subsystems.AprilTagVision.Vision;
 import frc.robot.subsystems.AutoAlign.AutoAlign;
 import frc.robot.subsystems.AutoAlign.AutoAlignIO;
 import frc.robot.subsystems.ampBar.*;
@@ -31,7 +31,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	private Shooter shooterSubsystem;
 	private Drive driveSubsystem;
 	private AutoAlign autoAlignSubsystem;
-	private Vision vision;
+	// private Vision vision;
 
 	private SendableChooser<Boolean> useBeamBreaks;
 	private SendableChooser<Boolean> useAutoAlign;
@@ -143,7 +143,7 @@ public class Manager extends Subsystem<ManagerStates> {
 				break;
 		}
 		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
-		vision = new Vision(driveSubsystem);
+		// vision = new Vision(driveSubsystem);
 
 		NoteSimulator.setDrive(driveSubsystem);
 

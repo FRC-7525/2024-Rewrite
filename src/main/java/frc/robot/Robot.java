@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -117,6 +118,8 @@ public class Robot extends LoggedRobot {
 
 		autoChooser = new SendableChooser<String>();
 
+		autoChooser.setDefaultOption("5: Start Middle | All Close, FA", "Optimized 5 Note Auto");
+
 		// Misc Autos
 		autoChooser.addOption("0: Start Anywhere (NO VISION) | Cross Line", "Drive Forwards");
 		autoChooser.addOption("0: Start Anywhere | Do Nothing", "Do Nothing");
@@ -183,7 +186,10 @@ public class Robot extends LoggedRobot {
 
 	/** This function is called periodically during autonomous. */
 	@Override
-	public void autonomousPeriodic() {}
+	public void autonomousPeriodic() {
+		Shuffleboard.update();
+		SmartDashboard.updateValues();
+	}
 
 	/** This function is called once when teleop is enabled. */
 	@Override
