@@ -180,6 +180,13 @@ public class Drive extends Subsystem<DriveStates> {
 
 		if (headingCorrection) {
 			// System.out.println(headingCorrection);
+			System.out.println("Omgea = 0?" + (omega == 0));
+			System.out.println(
+				Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
+			);
+			System.out.println(
+				Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
+			);
 			if (
 				Math.abs(omega) == 0.0 &&
 				(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND ||

@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
-// import frc.robot.subsystems.noteVision.NoteVision;
+import frc.robot.subsystems.noteVision.NoteVision;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAlign extends Subsystem<AutoAlignStates> {
