@@ -205,17 +205,17 @@ public class Module {
 		}
 	}
 
-	
-
-	 // TODO: TEST
-	public static void antiJitter(SwerveModuleState moduleState, SwerveModuleState lastModuleState, double maxSpeed)
-	{
-		if (Math.abs(moduleState.speedMetersPerSecond) <= (maxSpeed * 0.01))
-		{
+	// TODO: TEST
+	public static void antiJitter(
+		SwerveModuleState moduleState,
+		SwerveModuleState lastModuleState,
+		double maxSpeed
+	) {
+		if (Math.abs(moduleState.speedMetersPerSecond) <= (maxSpeed * 0.01)) {
 			moduleState.angle = lastModuleState.angle;
 		}
 	}
-	
+
 	/**
 	 * Runs the module with the specified setpoint state. Returns the optimized
 	 * state.
