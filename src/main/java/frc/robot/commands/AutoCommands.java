@@ -27,7 +27,9 @@ public class AutoCommands {
 	}
 
 	public Command startSpinningUp() {
-		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.OPERATOR_SPINNING_UP));
+		return new InstantCommand(() ->
+			robot.managerSubsystem.setState(ManagerStates.OPERATOR_SPINNING_UP)
+		);
 	}
 
 	public Command spinAndIntake() {

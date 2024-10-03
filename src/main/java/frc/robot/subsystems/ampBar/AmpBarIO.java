@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 public interface AmpBarIO {
 	@AutoLog
 	public static class AmpBarIOInputs {
+
 		// Pivot
 		public double pivotPosition;
 		public double pivotSetpoint;

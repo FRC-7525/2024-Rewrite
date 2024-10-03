@@ -27,7 +27,7 @@ public interface ShooterIO {
 
 	public default void updateOutputs(ShooterIOOutputs outputs) {}
 
-	public default void setSpeed(double  rps) {}
+	public default void setSpeed(double rps) {}
 
 	public default void stop() {}
 
