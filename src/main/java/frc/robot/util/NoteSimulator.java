@@ -116,6 +116,9 @@ public class NoteSimulator {
 			"Note Sim/SimNoteTrajectory",
 			NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0])
 		);
-		Logger.recordOutput("Note Sim/SimNotePose3d", getFieldPose(Constants.NoteSim.SHOOTER_POSE3D));
+		Logger.recordOutput(
+			"Note Sim/SimNotePose3d",
+			getFieldPose(Constants.NoteSim.SHOOTER_POSE3D)
+		);
 	}
 }
