@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -96,12 +97,16 @@ public class ModuleIOHybrid implements ModuleIO {
 			Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
 		driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		driveTalon.getConfigurator().apply(driveConfig);
+		// TODO: This work or nah?
+		driveTalon.getConfigurator().apply(driveConfig.ClosedLoopRamps.withVoltageClosedLoopRampPeriod(0.15));
 		setDriveBrakeMode(true);
 
 		cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
 		timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 
+		turnSparkMax.setClosedLoopRampRate(1);
+		
 		drivePosition = driveTalon.getPosition();
 		drivePositionQueue = HybridOdometryThread.getInstance()
 			.registerSignal(driveTalon, driveTalon.getPosition());
@@ -129,6 +134,8 @@ public class ModuleIOHybrid implements ModuleIO {
 		turnSparkMax.setInverted(isTurnMotorInverted);
 		turnSparkMax.setSmartCurrentLimit(Constants.Drive.Module.Hybrid.TURN_CURRENT_LIMIT);
 		turnSparkMax.enableVoltageCompensation(Constants.MAX_VOLTS);
+		// TODO: FIX
+		turnSparkMax.setOpenLoopRampRate(0.05);
 
 		turnRelativeEncoder.setPosition(0.0);
 		turnRelativeEncoder.setMeasurementPeriod(
