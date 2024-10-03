@@ -121,6 +121,9 @@ public class ModuleIOHybrid implements ModuleIO {
 		);
 		driveTalon.optimizeBusUtilization();
 
+
+		// turnSparkMax.setInverted(true);
+
 		// Rev configs
 		turnSparkMax.restoreFactoryDefaults();
 		turnSparkMax.setCANTimeout(Constants.Drive.Module.Hybrid.SPARK_TIMEOUT_MS);
