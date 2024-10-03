@@ -20,10 +20,10 @@ public interface AmpBarIO {
 
 	public static class AmpBarIOOutputs {
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Amp Bar/SpinnerAppliedVolts")
 		public double spinnerAppliedVoltage = 0.0;
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Amp Bar/PivotAppliedVolts")
 		public double pivotAppliedVoltage = 0.0;
 	}
 

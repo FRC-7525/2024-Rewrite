@@ -52,7 +52,7 @@ public class Manager extends Subsystem<ManagerStates> {
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
-		NoteSimulator.setDrive(driveSubsystem);
+		// NoteSimulator.setDrive(driveSubsystem);
 
 		// Setup toggles for dangerous stuff
 		useBeamBreaks = new SendableChooser<>();
@@ -145,7 +145,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
 		vision = new Vision(driveSubsystem);
 
-		NoteSimulator.setDrive(driveSubsystem);
+		// NoteSimulator.setDrive(driveSubsystem);
 
 		/*
 		 * Generally each action has a specific button (Intaking, Shooting, etc.)
@@ -317,8 +317,8 @@ public class Manager extends Subsystem<ManagerStates> {
 
 	@Override
 	protected void runState() {
-		NoteSimulator.update();
-		NoteSimulator.logNoteInfo();
+		// NoteSimulator.update();
+		// NoteSimulator.logNoteInfo();
 	}
 
 	// Near Setpoint functions for stuff

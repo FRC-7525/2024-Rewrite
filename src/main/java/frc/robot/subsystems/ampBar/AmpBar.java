@@ -70,7 +70,7 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 		Logger.processInputs("Amp Bar", inputs);
 		io.updateInput(inputs);
 		io.updateOutputs(outputs);
-		Logger.recordOutput("Amp Bar BB", io.noteDetected());
+		Logger.recordOutput("Amp Bar/Amp Bar BB", io.noteDetected());
 	}
 
 	public boolean noteDetected() {
