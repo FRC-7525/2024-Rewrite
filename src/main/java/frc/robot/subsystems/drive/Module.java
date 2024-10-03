@@ -40,6 +40,8 @@ public class Module {
 	private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
 	private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
+	private SwerveModuleState lastModuleState;
+
 	public Module(ModuleIO io, int index) {
 		this.io = io;
 		this.index = index;
@@ -203,6 +205,17 @@ public class Module {
 		}
 	}
 
+	
+
+	 // TODO: TEST
+	public static void antiJitter(SwerveModuleState moduleState, SwerveModuleState lastModuleState, double maxSpeed)
+	{
+		if (Math.abs(moduleState.speedMetersPerSecond) <= (maxSpeed * 0.01))
+		{
+			moduleState.angle = lastModuleState.angle;
+		}
+	}
+	
 	/**
 	 * Runs the module with the specified setpoint state. Returns the optimized
 	 * state.
@@ -210,12 +223,20 @@ public class Module {
 	public SwerveModuleState runSetpoint(SwerveModuleState state) {
 		// Optimize state based on current angle
 		// Controllers run in "periodic" when the setpoint is not null
+
+		// Set last moule state at start
+		if (lastModuleState == null) {
+			lastModuleState = state;
+		}
+
 		var optimizedState = SwerveModuleState.optimize(state, getAngle());
+		antiJitter(state, lastModuleState, Constants.Drive.MAX_LINEAR_SPEED);
 
 		// Update setpoints, controllers run in "periodic"
 		angleSetpoint = optimizedState.angle;
 		speedSetpoint = optimizedState.speedMetersPerSecond;
 
+		lastModuleState = state;
 		return optimizedState;
 	}
 
