@@ -8,41 +8,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelfCheckingCANCoder implements SelfChecking {
-  private final String label;
-  private final StatusSignal<Boolean> hardwareFaultSignal;
-  private final StatusSignal<Boolean> bootEnabledSignal;
-  private final StatusSignal<Boolean> badMagnetSignal;
-  private final StatusSignal<Boolean> undervoltageSignal;
 
-  public SelfCheckingCANCoder(String label, CANcoder canCoder) {
-    this.label = label;
+	private final String label;
+	private final StatusSignal<Boolean> hardwareFaultSignal;
+	private final StatusSignal<Boolean> bootEnabledSignal;
+	private final StatusSignal<Boolean> badMagnetSignal;
+	private final StatusSignal<Boolean> undervoltageSignal;
 
-    this.hardwareFaultSignal = canCoder.getFault_Hardware();
-    this.bootEnabledSignal = canCoder.getFault_BootDuringEnable();
-    this.badMagnetSignal = canCoder.getFault_BadMagnet();
-    this.undervoltageSignal = canCoder.getFault_Undervoltage();
-  }
+	public SelfCheckingCANCoder(String label, CANcoder canCoder) {
+		this.label = label;
 
-  @Override
-  public List<SubsystemFault> checkForFaults() {
-    List<SubsystemFault> faults = new ArrayList<>();
+		this.hardwareFaultSignal = canCoder.getFault_Hardware();
+		this.bootEnabledSignal = canCoder.getFault_BootDuringEnable();
+		this.badMagnetSignal = canCoder.getFault_BadMagnet();
+		this.undervoltageSignal = canCoder.getFault_Undervoltage();
+	}
 
-    if (hardwareFaultSignal.getValue()) {
-      faults.add(new SubsystemFault(String.format("[%s]: Hardware fault detected", label)));
-    }
-    if (bootEnabledSignal.getValue()) {
-      faults.add(new SubsystemFault(String.format("[%s]: Device booted while enabled", label)));
-    }
-    if (badMagnetSignal.getValue()) {
-      faults.add(new SubsystemFault(String.format("[%s]: Magnet too weak", label)));
-    }
-    if (undervoltageSignal.getValue()) {
-      faults.add(new SubsystemFault(String.format("[%s]: Under voltage", label)));
-    }
+	@Override
+	public List<SubsystemFault> checkForFaults() {
+		List<SubsystemFault> faults = new ArrayList<>();
 
-    StatusSignal.refreshAll(
-        hardwareFaultSignal, bootEnabledSignal, badMagnetSignal, undervoltageSignal);
+		if (hardwareFaultSignal.getValue()) {
+			faults.add(new SubsystemFault(String.format("[%s]: Hardware fault detected", label)));
+		}
+		if (bootEnabledSignal.getValue()) {
+			faults.add(
+				new SubsystemFault(String.format("[%s]: Device booted while enabled", label))
+			);
+		}
+		if (badMagnetSignal.getValue()) {
+			faults.add(new SubsystemFault(String.format("[%s]: Magnet too weak", label)));
+		}
+		if (undervoltageSignal.getValue()) {
+			faults.add(new SubsystemFault(String.format("[%s]: Under voltage", label)));
+		}
 
-    return faults;
-  }
+		StatusSignal.refreshAll(
+			hardwareFaultSignal,
+			bootEnabledSignal,
+			badMagnetSignal,
+			undervoltageSignal
+		);
+
+		return faults;
+	}
 }

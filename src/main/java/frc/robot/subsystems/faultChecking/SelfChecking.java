@@ -5,5 +5,5 @@ package frc.robot.subsystems.faultChecking;
 import java.util.List;
 
 public interface SelfChecking {
-  List<SubsystemFault> checkForFaults();
+	List<SubsystemFault> checkForFaults();
 }

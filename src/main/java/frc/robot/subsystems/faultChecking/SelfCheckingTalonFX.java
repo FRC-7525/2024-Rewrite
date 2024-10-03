@@ -8,53 +8,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelfCheckingTalonFX implements SelfChecking {
-  private final String label;
-  private final StatusSignal<Integer> firmwareVersionSignal;
-  private final StatusSignal<Boolean> hardwareFaultSignal;
-  private final StatusSignal<Boolean> bootEnabledSignal;
-  private final StatusSignal<Boolean> deviceTempSignal;
-  private final StatusSignal<Boolean> procTempSignal;
 
-  public SelfCheckingTalonFX(String label, TalonFX talon) {
-    this.label = label;
+	private final String label;
+	private final StatusSignal<Integer> firmwareVersionSignal;
+	private final StatusSignal<Boolean> hardwareFaultSignal;
+	private final StatusSignal<Boolean> bootEnabledSignal;
+	private final StatusSignal<Boolean> deviceTempSignal;
+	private final StatusSignal<Boolean> procTempSignal;
 
-    firmwareVersionSignal = talon.getVersion();
-    hardwareFaultSignal = talon.getFault_Hardware();
-    bootEnabledSignal = talon.getFault_BootDuringEnable();
-    deviceTempSignal = talon.getFault_DeviceTemp();
-    procTempSignal = talon.getFault_ProcTemp();
-  }
+	public SelfCheckingTalonFX(String label, TalonFX talon) {
+		this.label = label;
 
-  @Override
-  public List<SubsystemFault> checkForFaults() {
-    List<SubsystemFault> faults = new ArrayList<>();
+		firmwareVersionSignal = talon.getVersion();
+		hardwareFaultSignal = talon.getFault_Hardware();
+		bootEnabledSignal = talon.getFault_BootDuringEnable();
+		deviceTempSignal = talon.getFault_DeviceTemp();
+		procTempSignal = talon.getFault_ProcTemp();
+	}
 
-    //    if (firmwareVersionSignal.getStatus() != StatusCode.OK) {
-    //      faults.add(new SubsystemFault(String.format("[%s]: No communication with device",
-    // label)));
-    //    }
-    if (hardwareFaultSignal.getValue()) {
-      faults.add(new SubsystemFault(String.format("[%s]: Hardware fault detected", label)));
-    }
-    if (bootEnabledSignal.getValue()) {
-      faults.add(new SubsystemFault(String.format("[%s]: Device booted while enabled", label)));
-    }
-    if (deviceTempSignal.getValue()) {
-      faults.add(
-          new SubsystemFault(String.format("[%s]: Device temperature too high", label), true));
-    }
-    if (procTempSignal.getValue()) {
-      faults.add(
-          new SubsystemFault(String.format("[%s]: Processor temperature too high", label), true));
-    }
+	@Override
+	public List<SubsystemFault> checkForFaults() {
+		List<SubsystemFault> faults = new ArrayList<>();
 
-    StatusSignal.refreshAll(
-        firmwareVersionSignal,
-        hardwareFaultSignal,
-        bootEnabledSignal,
-        deviceTempSignal,
-        procTempSignal);
+		//    if (firmwareVersionSignal.getStatus() != StatusCode.OK) {
+		//      faults.add(new SubsystemFault(String.format("[%s]: No communication with device",
+		// label)));
+		//    }
+		if (hardwareFaultSignal.getValue()) {
+			faults.add(new SubsystemFault(String.format("[%s]: Hardware fault detected", label)));
+		}
+		if (bootEnabledSignal.getValue()) {
+			faults.add(
+				new SubsystemFault(String.format("[%s]: Device booted while enabled", label))
+			);
+		}
+		if (deviceTempSignal.getValue()) {
+			faults.add(
+				new SubsystemFault(String.format("[%s]: Device temperature too high", label), true)
+			);
+		}
+		if (procTempSignal.getValue()) {
+			faults.add(
+				new SubsystemFault(
+					String.format("[%s]: Processor temperature too high", label),
+					true
+				)
+			);
+		}
 
-    return faults;
-  }
+		StatusSignal.refreshAll(
+			firmwareVersionSignal,
+			hardwareFaultSignal,
+			bootEnabledSignal,
+			deviceTempSignal,
+			procTempSignal
+		);
+
+		return faults;
+	}
 }
