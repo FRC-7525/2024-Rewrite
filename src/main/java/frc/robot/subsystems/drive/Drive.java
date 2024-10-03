@@ -130,7 +130,6 @@ public class Drive extends Subsystem<DriveStates> {
 
 		if (Constants.controller.getStartButtonPressed()) {
 			zeroGryo();
-			System.out.println("aaa");
 		}
 	}
 

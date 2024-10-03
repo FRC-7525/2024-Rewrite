@@ -205,7 +205,7 @@ public final class Constants {
     tm = translation multipliers
     aa = auto align
     */
-		public static final double REGULAR_RM = 0.2;
+		public static final double REGULAR_RM = 0.4;
 		public static final double REGULAR_TM = 1.0;
 		public static final double SLOW_RM = 0.1;
 		public static final double SLOW_TM = 0.2;

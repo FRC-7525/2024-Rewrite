@@ -49,8 +49,6 @@ public class AmpBarIOSim implements AmpBarIO {
 
 	@Override
 	public void updateInput(AmpBarIOInputs inputs) {
-		inputs.ampBarState = stateString;
-
 		inputs.pivotPosition = getPivotPosition();
 		inputs.pivotSetpoint = pivotSetpoint;
 

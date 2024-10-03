@@ -251,6 +251,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
 		driveSubsystem.periodic();
+		climberSubsystem.periodic();
 
 		// Set Sendable Stuff:
 		if (loopCounter % SENDABLE_CHECK_INTERVAL == 0) {
@@ -319,6 +320,11 @@ public class Manager extends Subsystem<ManagerStates> {
 	protected void runState() {
 		// NoteSimulator.update();
 		// NoteSimulator.logNoteInfo();
+	}
+
+	// Auto Stuff
+	public void setState(ManagerStates state) {
+		setState(state);
 	}
 
 	// Near Setpoint functions for stuff

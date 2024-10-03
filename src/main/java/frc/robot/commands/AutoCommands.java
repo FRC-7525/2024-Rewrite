@@ -18,16 +18,16 @@ public class AutoCommands {
 		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.INTAKING));
 	}
 
-	public Command shooting() {
-		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SHOOTING));
-	}
+	// public Command shooting() {
+	// 	return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SHOOTING));
+	// }
 
 	public Command returnToIdle() {
 		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.IDLE));
 	}
 
 	public Command startSpinningUp() {
-		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SPINNING_UP));
+		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.OPERATOR_SPINNING_UP));
 	}
 
 	public Command spinAndIntake() {

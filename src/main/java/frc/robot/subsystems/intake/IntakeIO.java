@@ -24,10 +24,10 @@ public interface IntakeIO {
 
 	public static class IntakeIOOutputs {
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Intake/PivotAppliedVolts")
 		public double pivotAppliedVoltage;
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Intake/WheelAppliedVolts")
 		public double wheelAppliedVoltage;
 	}
 

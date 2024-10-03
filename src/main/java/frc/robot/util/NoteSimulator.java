@@ -112,10 +112,10 @@ public class NoteSimulator {
 	}
 
 	public static void logNoteInfo() {
-		Logger.recordOutput(
-			"Note Sim/SimNoteTrajectory",
-			NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0])
-		);
+		// Logger.recordOutput(
+		// 	"Note Sim/SimNoteTrajectory",
+		// 	NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0])
+		// );
 		Logger.recordOutput("Note Sim/SimNotePose3d", getFieldPose(Constants.NoteSim.SHOOTER_POSE3D));
 	}
 }

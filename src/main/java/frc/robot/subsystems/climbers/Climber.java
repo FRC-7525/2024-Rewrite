@@ -44,7 +44,7 @@ public class Climber extends Subsystem<ClimberStates> {
 	}
 
 	@Override
-	protected void runState() {
+	public void runState() {
 		Logger.processInputs("Climber", inputs);
 		Logger.recordOutput("Climber/Zeroed", zeroed);
 

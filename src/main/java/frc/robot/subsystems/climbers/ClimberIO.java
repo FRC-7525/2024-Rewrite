@@ -19,10 +19,10 @@ public interface ClimberIO {
 
 	public static class ClimberIOOutputs {
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Climber/LeftAppliedVolts")
 		public double leftClimberAppliedVoltage = 0.0;
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Climber/RightAppliedVolts")
 		public double rightClimberAppliedVoltage = 0.0;
 	}
 

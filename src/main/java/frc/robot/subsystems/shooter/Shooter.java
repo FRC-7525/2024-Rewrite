@@ -37,9 +37,9 @@ public class Shooter extends Subsystem<ShooterStates> {
 		io.setSpeed(getState().getMotorSpeedpoint());
 
 		if (managerState == ManagerStates.SHOOTING) {
-			NoteSimulator.launch(
-				io.getAverageSpeed() * Constants.Shooter.CIRCUMFRENCE_OF_SHOOTER_SPINNER
-			);
+			// NoteSimulator.launch(
+			// 	io.getAverageSpeed() * Constants.Shooter.CIRCUMFRENCE_OF_SHOOTER_SPINNER
+			// );
 		}
 	}
 

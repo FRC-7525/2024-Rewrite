@@ -44,7 +44,7 @@ public class Intake extends Subsystem<IntakeStates> {
 			getState().getUsingPID()
 		);
 		if (getState() == IntakeStates.INTAKING) {
-			NoteSimulator.attachToShooter();
+			// NoteSimulator.attachToShooter();
 		}
 	}
 

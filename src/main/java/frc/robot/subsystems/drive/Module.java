@@ -150,11 +150,11 @@ public class Module {
 
 		updateOutputs();
 		Logger.recordOutput(
-			"DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts",
+			"Drive/Module" + Integer.toString(index) + "/DriveAppliedVolts",
 			outputs.driveAppliedVolts
 		);
 		Logger.recordOutput(
-			"DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts",
+			"Drive/Module" + Integer.toString(index) + "/TurnAppliedVolts",
 			outputs.turnAppliedVolts
 		);
 
