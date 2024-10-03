@@ -14,6 +14,8 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,8 +26,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import java.util.concurrent.locks.Lock;
@@ -41,6 +48,11 @@ public class Drive extends Subsystem<DriveStates> {
 	private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 	private final Module[] modules = new Module[Constants.Drive.NUM_MODULES]; // FL, FR, BL, BR
 	private PPDriveWrapper autoConfig;
+	private Field2d field = new Field2d();
+
+	private double lastHeadingRadians;
+	private PIDController headingCorrectionController;
+	private boolean headingCorrectionEnabled;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -68,6 +80,11 @@ public class Drive extends Subsystem<DriveStates> {
 		super("Drive", DriveStates.REGULAR_DRIVE);
 		autoConfig = new PPDriveWrapper(this);
 
+		lastHeadingRadians = poseEstimator.getEstimatedPosition().getRotation().getRadians();
+		headingCorrectionEnabled = true;
+		// TODO: Tune
+		headingCorrectionController = new PIDController(0.01, 0, 0);
+
 		this.gyroIO = gyroIO;
 		modules[0] = new Module(flModuleIO, 0);
 		modules[1] = new Module(frModuleIO, 1);
@@ -75,44 +92,66 @@ public class Drive extends Subsystem<DriveStates> {
 		modules[3] = new Module(brModuleIO, 3);
 
 		// Start threads (no-op for each if no signals have been created)
-		PhoenixOdometryThread.getInstance().start();
-		SparkMaxOdometryThread.getInstance().start();
+		HybridOdometryThread.getInstance().start();
 
 		// Triggers
 		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SLOW_MODE, () ->
-			Constants.controller.getRightBumper()
+			Constants.controller.getLeftBumperPressed()
 		);
-		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SPEED_MAXXING, () ->
-			Constants.controller.getLeftBumper()
-		);
+		// addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SPEED_MAXXING,
+		// 		() -> Constants.controller.getLeftBumperPressed());
 
 		// Back to Off
-		addTrigger(DriveStates.SPEED_MAXXING, DriveStates.SLOW_MODE, () ->
-			Constants.controller.getLeftBumperReleased()
-		);
+		// addTrigger(DriveStates.SPEED_MAXXING, DriveStates.REGULAR_DRIVE,
+		// 		() -> Constants.controller.getLeftBumperPressed());
 		addTrigger(DriveStates.SLOW_MODE, DriveStates.REGULAR_DRIVE, () ->
-			Constants.controller.getRightBumperReleased()
+			Constants.controller.getRightBumperPressed()
 		);
 	}
 
 	@Override
 	public void runState() {
-		// Can't run in auto otherwise it will constantly tell drive not to drive in auto (and thats not
+		// Can't run in auto otherwise it will constantly tell drive not to drive in
+		// auto (and thats not
 		// good)
-
-		if (!DriverStation.isAutonomous()) AutoAlign.periodic();
+		// Logger.recordOutput("driveState", getState());
+		// TODO: TURN ON HEADING CORRECTION LATER
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
-				() -> Constants.controller.getLeftY(),
-				() -> Constants.controller.getLeftX(),
-				() -> -Constants.controller.getRightX(),
+				() -> -Constants.controller.getLeftY(),
+				() -> -Constants.controller.getLeftX(),
+				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
-				getState().getTranslationModifier()
+				getState().getTranslationModifier(),
+				headingCorrectionEnabled
 			);
-		} else if (DriverStation.isTeleop() && getState() == DriveStates.AUTO_ALIGN) {
-			AutoAlign.calculateChassisSpeed();
 		}
+
+		if (Constants.controller.getStartButtonPressed()) {
+			zeroGryo();
+			System.out.println("aaa");
+		}
+	}
+
+	// L code??? (taken from AA) good enough
+	public boolean nearSetPose(Pose2d targetPose2d) {
+		Pose2d currentPose2d = getPose();
+
+		return (
+			Math.abs(currentPose2d.getX() - targetPose2d.getX()) <
+				Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+			Math.abs(currentPose2d.getY() - targetPose2d.getY()) <
+			Constants.AutoAlign.TRANSLATION_ERROR_MARGIN &&
+			Math.abs(
+				currentPose2d.getRotation().getDegrees() - targetPose2d.getRotation().getDegrees()
+			) <
+			Constants.AutoAlign.ROTATION_ERROR_MARGIN
+		);
+	}
+
+	public void zeroGryo() {
+		gyroIO.zero();
 	}
 
 	public void drive(
@@ -121,7 +160,8 @@ public class Drive extends Subsystem<DriveStates> {
 		DoubleSupplier ySupplier,
 		DoubleSupplier omegaSupplier,
 		double rotationMultiplier,
-		double translationMultiplier
+		double translationMultiplier,
+		boolean headingCorrection
 	) {
 		// Apply deadband
 		double linearMagnitude = MathUtil.applyDeadband(
@@ -136,6 +176,34 @@ public class Drive extends Subsystem<DriveStates> {
 			omegaSupplier.getAsDouble(),
 			Constants.Drive.CONTROLLER_DEADBAND
 		);
+
+		if (headingCorrection) {
+			// System.out.println(headingCorrection);
+			// System.out.println("Omgea = 0?" + (omega == 0));
+			// System.out.println(
+			// 	Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
+			// );
+			// System.out.println(
+			// 	Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
+			// );
+			if (
+				Math.abs(omega) == 0.0 &&
+				(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND ||
+					Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND)
+			) {
+				omega = headingCorrectionController.calculate(
+					poseEstimator.getEstimatedPosition().getRotation().getRadians(),
+					lastHeadingRadians
+				) *
+				Constants.Drive.MAX_ANGULAR_SPEED;
+				// System.out.println("something is happening");
+			} else {
+				lastHeadingRadians = poseEstimator
+					.getEstimatedPosition()
+					.getRotation()
+					.getRadians();
+			}
+		}
 
 		// Square values
 		linearMagnitude = linearMagnitude * linearMagnitude;
@@ -159,13 +227,21 @@ public class Drive extends Subsystem<DriveStates> {
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
 				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()
+				(isFlipped
+						? drive.getRotation().plus(new Rotation2d(Math.PI))
+						: drive.getRotation()).times(-1)
 			)
 		);
 	}
 
 	@Override
 	public void periodic() {
+		// Driver Dash Stuff
+		field.setRobotPose(getPose());
+		SmartDashboard.putData("Field", field);
+		Logger.recordOutput("Drive/speedmeter", Units.metersToFeet(calculateVelocity()));
+
+		// Update odometry
 		super.periodic();
 		odometryLock.lock(); // Prevents odometry updates while reading data
 		gyroIO.updateInputs(gyroInputs);
@@ -231,10 +307,7 @@ public class Drive extends Subsystem<DriveStates> {
 	 */
 	public void runVelocity(ChassisSpeeds speeds) {
 		// Calculate module setpoints
-		ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(
-			speeds,
-			Constants.Drive.DISCRETIZE_TIME_SECONDS
-		);
+		ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
 		SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(
 			setpointStates,
@@ -260,8 +333,10 @@ public class Drive extends Subsystem<DriveStates> {
 	}
 
 	/**
-	 * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
-	 * return to their normal orientations the next time a nonzero velocity is requested.
+	 * Stops the drive and turns the modules to an X arrangement to resist movement.
+	 * The modules will
+	 * return to their normal orientations the next time a nonzero velocity is
+	 * requested.
 	 */
 	public void stopWithX() {
 		Rotation2d[] headings = new Rotation2d[Constants.Drive.NUM_MODULES];
@@ -272,7 +347,10 @@ public class Drive extends Subsystem<DriveStates> {
 		stop();
 	}
 
-	/** Returns the module states (turn angles and drive velocities) for all of the modules. */
+	/**
+	 * Returns the module states (turn angles and drive velocities) for all of the
+	 * modules.
+	 */
 	@AutoLogOutput(key = "SwerveStates/Measured")
 	private SwerveModuleState[] getModuleStates() {
 		SwerveModuleState[] states = new SwerveModuleState[Constants.Drive.NUM_MODULES];
@@ -282,7 +360,10 @@ public class Drive extends Subsystem<DriveStates> {
 		return states;
 	}
 
-	/** Returns the module positions (turn angles and drive positions) for all of the modules. */
+	/**
+	 * Returns the module positions (turn angles and drive positions) for all of the
+	 * modules.
+	 */
 	private SwerveModulePosition[] getModulePositions() {
 		SwerveModulePosition[] states = new SwerveModulePosition[Constants.Drive.NUM_MODULES];
 		for (int i = 0; i < Constants.Drive.NUM_MODULES; i++) {
@@ -324,10 +405,18 @@ public class Drive extends Subsystem<DriveStates> {
 	 * Adds a vision measurement to the pose estimator.
 	 *
 	 * @param visionPose The pose of the robot as measured by the vision camera.
-	 * @param timestamp The timestamp of the vision measurement in seconds.
+	 * @param timestamp  The timestamp of the vision measurement in seconds.
 	 */
 	public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
 		poseEstimator.addVisionMeasurement(visionPose, timestamp);
+	}
+
+	public void addVisionMeasurement(
+		Pose2d visionPose,
+		double timestamp,
+		Matrix<N3, N1> visionMeasurementStdDevs
+	) {
+		poseEstimator.addVisionMeasurement(visionPose, timestamp, visionMeasurementStdDevs);
 	}
 
 	/** Returns the maximum linear speed in meters per sec. */
@@ -360,5 +449,10 @@ public class Drive extends Subsystem<DriveStates> {
 				-Constants.Drive.TRACK_WIDTH_Y / Constants.DIAM_TO_RADIUS_CF
 			),
 		};
+	}
+
+	// Util
+	public void toggleHeadingCorrection(boolean headingCorrectionEnabled) {
+		this.headingCorrectionEnabled = headingCorrectionEnabled;
 	}
 }

@@ -1,6 +1,9 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
@@ -8,41 +11,71 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 	private TalonFX leftMotor;
 	private TalonFX rightMotor;
-	private PIDController feedbackController;
+	private BangBangController feedbackController;
 	private double speedPoint;
 	private double leftAppliedVolts;
 	private double rightAppliedVolts;
+	private StatusSignal<Double> leftVelocity;
+	private StatusSignal<Double> rightVelocity;
+	private StatusSignal<Double> leftAmps;
+	private StatusSignal<Double> rightAmps;
+
+	PIDController shooterPIDController;
 
 	public ShooterIOTalonFX() {
-		feedbackController = new PIDController(0, 0, 0);
+		// feedbackController = new PIDController(1, 0, 0);
+		feedbackController = new BangBangController();
 		leftMotor = new TalonFX(Constants.Shooter.LEFT_SHOOTER_ID);
+		leftVelocity = leftMotor.getVelocity();
+		leftAmps = leftMotor.getSupplyCurrent();
+
 		rightMotor = new TalonFX(Constants.Shooter.RIGHT_SHOOTER_ID);
+		rightVelocity = rightMotor.getVelocity();
+		rightAmps = rightMotor.getSupplyCurrent();
+
 		speedPoint = 0.0;
-		leftMotor.setInverted(false);
-		rightMotor.setInverted(true);
+		leftMotor.setInverted(true);
+		rightMotor.setInverted(false);
+		BaseStatusSignal.setUpdateFrequencyForAll(
+			Constants.SLOW_UPDATE_FREQ,
+			rightVelocity,
+			leftVelocity,
+			rightAmps,
+			leftAmps
+		);
 	}
 
 	public void updateInputs(ShooterIOInputs inputs) {
-		inputs.leftShooterAppliedVolts = leftAppliedVolts;
-		inputs.rightShooterAppliedVolts = rightAppliedVolts;
-		inputs.leftShooterSpeed = leftMotor.getVelocity().getValueAsDouble();
-		inputs.rightShooterSpeed = rightMotor.getVelocity().getValueAsDouble();
+		BaseStatusSignal.refreshAll(rightVelocity, rightAmps, leftVelocity, leftAmps);
+		inputs.leftShooterSpeed = leftVelocity.getValueAsDouble();
+		inputs.rightShooterSpeed = rightVelocity.getValueAsDouble();
 		inputs.shooterSpeedPoint = speedPoint;
+		inputs.rightShooterAmp = rightAmps.getValueAsDouble();
+		inputs.leftShooterAmp = leftAmps.getValueAsDouble();
+	}
+
+	public void updateOutputs(ShooterIOOutputs outputs) {
+		outputs.leftShooterAppliedVolts = leftAppliedVolts;
+		outputs.rightShooterAppliedVolts = rightAppliedVolts;
 	}
 
 	public void setSpeed(double rps) {
 		speedPoint = rps;
-		leftAppliedVolts = feedbackController.calculate(
-			leftMotor.getRotorVelocity().getValueAsDouble(),
-			rps
-		);
-		rightAppliedVolts = feedbackController.calculate(
-			rightMotor.getRotorVelocity().getValueAsDouble(),
-			rps
-		);
+		if (rps == 0) {
+			leftMotor.set(0);
+			rightMotor.set(0);
+			return;
+		}
 
-		leftMotor.setVoltage(leftAppliedVolts);
-		rightMotor.setVoltage(rightAppliedVolts);
+		leftAppliedVolts = feedbackController.calculate(leftVelocity.getValueAsDouble(), rps);
+
+		// leftAppliedVolts = shooterPIDController.calculate(leftVelocity.getValueAsDouble(), rps);
+		// rightAppliedVolts = shooterPIDController.calculate(rightVelocity.getValueAsDouble(), rps);
+
+		rightAppliedVolts = feedbackController.calculate(rightVelocity.getValueAsDouble(), rps);
+
+		leftMotor.setVoltage(leftAppliedVolts * 12);
+		rightMotor.setVoltage(rightAppliedVolts * 12);
 	}
 
 	public void stop() {
@@ -52,15 +85,11 @@ public class ShooterIOTalonFX implements ShooterIO {
 		rightMotor.stopMotor();
 	}
 
-	public void configurePID(double kP, double kI, double kD) {
-		feedbackController.setPID(kP, kI, kD);
-	}
-
 	public boolean nearSpeedPoint() {
 		return (
-			Math.abs(speedPoint - leftMotor.getVelocity().getValueAsDouble()) <
+			Math.abs(speedPoint - leftVelocity.getValueAsDouble()) <
 				Constants.Shooter.ERROR_OF_MARGIN &&
-			Math.abs(speedPoint - rightMotor.getVelocity().getValueAsDouble()) <
+			Math.abs(speedPoint - rightVelocity.getValueAsDouble()) <
 			Constants.Shooter.ERROR_OF_MARGIN
 		);
 	}
@@ -68,9 +97,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	@Override
 	public double getAverageSpeed() {
 		return (
-			(leftMotor.getVelocity().getValueAsDouble() +
-				rightMotor.getVelocity().getValueAsDouble()) /
-			Constants.AVG_TWO_ITEM_F
+			(rightVelocity.getValueAsDouble() / Constants.AVG_TWO_ITEM_F) //+ rightMotor.getVelocity().getValueAsDouble())
 		);
 	}
 }

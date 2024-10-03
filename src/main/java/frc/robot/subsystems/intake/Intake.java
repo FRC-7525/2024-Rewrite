@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOOutputs;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,11 +13,13 @@ public class Intake extends Subsystem<IntakeStates> {
 
 	IntakeIO io;
 	IntakeIOInputsAutoLogged inputs;
+	IntakeIOOutputs outputs;
 
 	public Intake(IntakeIO io) {
 		super("Intake", IntakeStates.OFF);
 		this.io = io;
 		inputs = new IntakeIOInputsAutoLogged();
+		outputs = new IntakeIOOutputs();
 
 		// Configure PIDs here
 		switch (Constants.currentMode) {
@@ -49,6 +52,10 @@ public class Intake extends Subsystem<IntakeStates> {
 		io.stop();
 	}
 
+	public boolean nearSetpoints() {
+		return io.nearSetPoint() && io.nearSpeedPoint();
+	}
+
 	@Override
 	public void periodic() {
 		super.periodic();
@@ -63,5 +70,19 @@ public class Intake extends Subsystem<IntakeStates> {
 
 		Logger.processInputs("Intake", inputs);
 		io.updateInputs(inputs);
+		io.updateOutputs(outputs);
+		Logger.recordOutput("Intake BB", io.noteDetected());
+	}
+
+	public boolean noteDetected() {
+		return io.noteDetected();
+	}
+
+	public boolean nearSetPoint() {
+		return io.nearSetPoint();
+	}
+
+	public boolean nearSpeedPoint() {
+		return io.nearSpeedPoint();
 	}
 }

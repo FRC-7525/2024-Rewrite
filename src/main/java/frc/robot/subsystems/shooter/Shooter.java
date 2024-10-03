@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.manager.ManagerStates;
+import frc.robot.subsystems.shooter.ShooterIO.ShooterIOOutputs;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,29 +12,20 @@ public class Shooter extends Subsystem<ShooterStates> {
 	private ShooterIO io;
 	private ManagerStates managerState;
 	ShooterIOInputsAutoLogged inputs;
+	private ShooterIOOutputs outputs;
 
 	public Shooter(ShooterIO io) {
 		super("Shooter", ShooterStates.OFF);
 		this.io = io;
 		inputs = new ShooterIOInputsAutoLogged();
+		outputs = new ShooterIOOutputs();
 
 		switch (Constants.currentMode) {
 			case REAL:
-				io.configurePID(
-					Constants.Shooter.REAL_PID.kP,
-					Constants.Shooter.REAL_PID.kI,
-					Constants.Shooter.REAL_PID.kD
-				);
 				break;
 			case REPLAY:
-				io.configurePID(0.0, 0.0, 0.0);
 				break;
 			case SIM:
-				io.configurePID(
-					Constants.Shooter.SIM_PID.kP,
-					Constants.Shooter.SIM_PID.kI,
-					Constants.Shooter.SIM_PID.kD
-				);
 				break;
 			default:
 				break;
@@ -63,6 +55,7 @@ public class Shooter extends Subsystem<ShooterStates> {
 	public void periodic() {
 		super.periodic();
 		io.updateInputs(inputs);
+		io.updateOutputs(outputs);
 		Logger.processInputs("Shooter", inputs);
 	}
 

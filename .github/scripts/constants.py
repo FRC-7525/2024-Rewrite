@@ -4,7 +4,7 @@ import sys
 
 # List of files to excuse (constants and things we didnt make and stuff we wont use)
 # TODO: Put un-used Module IO abstraction constants in constants (Not super needed but important)
-excused_files = ["Constants.java", "BuildConstants.java", "LocalADStarAK.java", "ModuleIOSparkMax.java", "ModuleIOTalonFX.java", "PhoenixOdometryThread.java", "SparkMaxOdometryThread.java"]
+excused_files = ["Constants.java", "BuildConstants.java", "HybridOdometryThread.java", "ModuleIOHybrid.java", "LocalADStarAK.java", "ModuleIOSparkMax.java", "ModuleIOTalonFX.java", "PhoenixOdometryThread.java", "SparkMaxOdometryThread.java"]
 
 # Not really dirs becasue the full ones didnt work
 excused_dirs = [

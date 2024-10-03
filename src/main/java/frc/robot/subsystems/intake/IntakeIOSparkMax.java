@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
 public class IntakeIOSparkMax implements IntakeIO {
@@ -30,6 +32,9 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	boolean usingInPID;
 
+	private DigitalInput beamBreak;
+	Debouncer beamBreakDebouncer;
+
 	public IntakeIOSparkMax() {
 		intakeMotor = new TalonFX(Constants.Intake.SPINNER_ID);
 		pivotMotor = new CANSparkMax(Constants.Intake.PIVOT_ID, MotorType.kBrushless);
@@ -38,8 +43,16 @@ public class IntakeIOSparkMax implements IntakeIO {
 		outPivotController = new PIDController(0, 0, 0);
 		inPIDController = new PIDController(0, 0, 0);
 
+		pivotEncoder.setPosition(0);
+
 		pivotEncoder.setPositionConversionFactor(Constants.RADIAN_CF);
 		pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
+
+		beamBreak = new DigitalInput(Constants.Intake.BEAM_BREAK_PORT);
+		beamBreakDebouncer = new Debouncer(
+			Constants.Intake.DEBOUNCE_TIME,
+			Debouncer.DebounceType.kBoth
+		);
 	}
 
 	public void setSetpoints(
@@ -67,19 +80,36 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	public void updateInputs(IntakeIOInputs inputs) {
 		inputs.wheelSpeed = intakeMotor.getVelocity().getValueAsDouble();
-		inputs.wheelAppliedVoltage = wheelAppliedVoltage;
 		inputs.wheelSpeedpoint = wheelSpeedpoint;
 
 		inputs.pivotPosition = pivotEncoder.getPosition();
-		inputs.pivotAppliedVoltage = pivotAppliedVoltage;
 		inputs.pivotSetpoint = pivotSetpoint;
 		inputs.pivotSetpointError = Math.abs(pivotEncoder.getPosition() - pivotSetpoint);
 
 		inputs.usingInPID = usingInPID;
 	}
 
+	public void updateOutputs(IntakeIOOutputs outputs) {
+		outputs.pivotAppliedVoltage = pivotAppliedVoltage;
+		outputs.wheelAppliedVoltage = wheelAppliedVoltage;
+	}
+
 	public double getPosition() {
 		return pivotEncoder.getPosition();
+	}
+
+	public boolean nearSetPoint() {
+		return (
+			Math.abs(pivotEncoder.getPosition() - pivotSetpoint) <
+			Constants.Intake.PIVOT_ERROR_OF_MARGIN
+		);
+	}
+
+	public boolean nearSpeedPoint() {
+		return (
+			Math.abs(intakeMotor.getVelocity().getValueAsDouble() - wheelSpeedpoint) <
+			Constants.Intake.WHEEL_ERROR_OF_MARGIN
+		);
 	}
 
 	public void stop() {
@@ -92,5 +122,10 @@ public class IntakeIOSparkMax implements IntakeIO {
 	public void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {
 		outPivotController.setPID(outPIDConst.kP, outPIDConst.kI, outPIDConst.kD);
 		inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
+	}
+
+	@Override
+	public boolean noteDetected() {
+		return !beamBreakDebouncer.calculate(beamBreak.get());
 	}
 }

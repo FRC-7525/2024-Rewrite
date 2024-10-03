@@ -53,14 +53,18 @@ public class AmpBarIOSim implements AmpBarIO {
 
 		inputs.pivotPosition = getPivotPosition();
 		inputs.pivotSetpoint = pivotSetpoint;
-		inputs.pivotAppliedVoltage = pivotAppliedVoltage;
 
 		inputs.spinnerSpeed = getSpinnerSpeed();
 		inputs.spinnerSetpoint = spinnerSpeedpoint;
-		inputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
 
 		pivotSim.update(Constants.SIM_UPDATE_TIME);
 		spinnerSim.update(Constants.SIM_UPDATE_TIME);
+	}
+
+	@Override
+	public void updateOutputs(AmpBarIOOutputs outputs) {
+		outputs.spinnerAppliedVoltage = spinnerAppliedVoltage;
+		outputs.pivotAppliedVoltage = pivotAppliedVoltage;
 	}
 
 	@Override
@@ -101,8 +105,18 @@ public class AmpBarIOSim implements AmpBarIO {
 	}
 
 	@Override
-	public boolean atSetPoint() {
+	public boolean nearSetPoint() {
 		double motorPosition = getPivotPosition();
 		return Math.abs(motorPosition - pivotSetpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
+	}
+
+	@Override
+	public boolean nearSpeedPoint() {
+		return Math.abs(getSpinnerSpeed() - spinnerSpeedpoint) <= Constants.AmpBar.ERROR_OF_MARGIN;
+	}
+
+	@Override
+	public boolean noteDetected() {
+		return false;
 	}
 }

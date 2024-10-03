@@ -15,34 +15,24 @@ public class AutoCommands {
 	}
 
 	public Command intaking() {
-		return Commands.sequence(
-			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.INTAKING))
-		);
+		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.INTAKING));
 	}
 
 	public Command shooting() {
-		return Commands.sequence(
-			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SHOOTING))
-		);
+		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SHOOTING));
 	}
 
 	public Command returnToIdle() {
-		return Commands.sequence(
-			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.IDLE))
-		);
+		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.IDLE));
 	}
 
 	public Command startSpinningUp() {
-		return Commands.sequence(
-			new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SPINNING_UP))
-		);
+		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SPINNING_UP));
 	}
 
 	public Command spinAndIntake() {
-		return Commands.sequence(
-			new InstantCommand(() ->
-				robot.managerSubsystem.setState(ManagerStates.SPINNING_AND_INTAKING)
-			)
+		return new InstantCommand(() ->
+			robot.managerSubsystem.setState(ManagerStates.SPINNING_AND_INTAKING)
 		);
 	}
 }

@@ -73,11 +73,9 @@ public class IntakeIOSim implements IntakeIO {
 
 	public void updateInputs(IntakeIOInputs inputs) {
 		inputs.wheelSpeed = spinnerWheelSim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
-		inputs.wheelAppliedVoltage = wheelAppliedVoltage;
 		inputs.wheelSpeedpoint = wheelSpeedpoint;
 
 		inputs.pivotPosition = pivotSimModel.getAngleRads();
-		inputs.pivotAppliedVoltage = pivotAppliedVoltage;
 		inputs.pivotSetpoint = pivotSetpoint;
 		inputs.pivotSetpointError = Math.abs(pivotSimModel.getAngleRads() - pivotSetpoint);
 
@@ -85,6 +83,11 @@ public class IntakeIOSim implements IntakeIO {
 
 		pivotSimModel.update(Constants.SIM_UPDATE_TIME);
 		spinnerWheelSim.update(Constants.SIM_UPDATE_TIME);
+	}
+
+	public void updateOutputs(IntakeIOOutputs outputs) {
+		outputs.wheelAppliedVoltage = wheelAppliedVoltage;
+		outputs.pivotAppliedVoltage = pivotAppliedVoltage;
 	}
 
 	public double getPosition() {
@@ -101,5 +104,25 @@ public class IntakeIOSim implements IntakeIO {
 	public void configurePID(PIDConstants outPIDConst, PIDConstants inPIPidConst) {
 		outPivotController.setPID(outPIDConst.kP, outPIDConst.kI, outPIDConst.kD);
 		inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
+	}
+
+	public boolean nearSpeedPoint() {
+		return (
+			Math.abs(
+				spinnerWheelSim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF - wheelSpeedpoint
+			) <=
+			Constants.Intake.WHEEL_ERROR_OF_MARGIN
+		);
+	}
+
+	public boolean nearSetPoint() {
+		return (
+			Math.abs(pivotSimModel.getAngleRads() - pivotSetpoint) <
+			Constants.Intake.PIVOT_ERROR_OF_MARGIN
+		);
+	}
+
+	public boolean noteDetected() {
+		return false;
 	}
 }

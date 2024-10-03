@@ -20,14 +20,16 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.subsystems.drive.ModuleIO.ModuleIOOutputs;
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
 
-	private static final double WHEEL_RADIUS = Units.inchesToMeters(Constants.Drive.WHEEL_RADIUS);
+	private static final double WHEEL_RADIUS = Constants.Drive.WHEEL_RADIUS;
 
 	private final ModuleIO io;
 	private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
+	private final ModuleIOOutputs outputs;
 	private final int index;
 
 	private final SimpleMotorFeedforward driveFeedforward;
@@ -42,11 +44,28 @@ public class Module {
 		this.io = io;
 		this.index = index;
 
+		outputs = new ModuleIOOutputs();
+
 		// Switch constants based on mode (the physics simulator is treated as a
 		// separate robot with different tuning)
 		switch (Constants.currentMode) {
-			// TODO: Configure PID in rela mabye? idk why its off
+			// TODO: Leaving this as a warning incase I did something bad, before "REAL"
+			// didnt assign
+			// any PID/FF values for controllers idk why
 			case REAL:
+				// TODO: TEST THIS
+				driveFeedforward = createDriveFeedforward(12, Units.feetToMeters(19.6), 1.19);
+				driveFeedback = new PIDController(
+					Constants.Drive.Module.REAL_DRIVE_PID.kP,
+					Constants.Drive.Module.REAL_DRIVE_PID.kI,
+					Constants.Drive.Module.REAL_DRIVE_PID.kD
+				);
+				turnFeedback = new PIDController(
+					Constants.Drive.Module.REAL_TURN_PID.kP,
+					Constants.Drive.Module.REAL_TURN_PID.kI,
+					Constants.Drive.Module.REAL_TURN_PID.kD
+				);
+				break;
 			case REPLAY:
 				driveFeedforward = new SimpleMotorFeedforward(
 					Constants.Drive.Module.REPLAY_FF.kS,
@@ -90,16 +109,54 @@ public class Module {
 		setBrakeMode(true);
 	}
 
+	// REAL LIFE ONLY!!!!!!!!
+
+	public static SimpleMotorFeedforward createDriveFeedforward(
+		double optimalVoltage,
+		double maxSpeed,
+		double wheelGripCoefficientOfFriction
+	) {
+		double kv = optimalVoltage / maxSpeed;
+		/// ^ Volt-seconds per meter (max voltage divided by max speed)
+		double ka = optimalVoltage / calculateMaxAcceleration(wheelGripCoefficientOfFriction);
+		/// ^ Volt-seconds^2 per meter (max voltage divided by max accel)
+		return new SimpleMotorFeedforward(0, kv, ka);
+	}
+
+	// 9.81 is "gravity"
+	public static double calculateMaxAcceleration(double cof) {
+		return cof * 9.81;
+	}
+
 	/**
-	 * Update inputs without running the rest of the periodic logic. This is useful since these
+	 * Update inputs without running the rest of the periodic logic. This is useful
+	 * since these
 	 * updates need to be properly thread-locked.
 	 */
 	public void updateInputs() {
 		io.updateInputs(inputs);
 	}
 
+	public void updateOutputs() {
+		io.updateOutputs(outputs);
+	}
+
 	public void periodic() {
 		Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
+		Logger.recordOutput(
+			"Drive/Module" + Integer.toString(index) + "/" + "AbsoluteEncoderPositionAsDouble",
+			inputs.turnAbsolutePosition.getDegrees()
+		);
+
+		updateOutputs();
+		Logger.recordOutput(
+			"DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts",
+			outputs.driveAppliedVolts
+		);
+		Logger.recordOutput(
+			"DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts",
+			outputs.turnAppliedVolts
+		);
 
 		// On first cycle, reset relative turn encoder
 		// Wait until absolute angle is nonzero in case it wasn't initialized yet
@@ -146,7 +203,10 @@ public class Module {
 		}
 	}
 
-	/** Runs the module with the specified setpoint state. Returns the optimized state. */
+	/**
+	 * Runs the module with the specified setpoint state. Returns the optimized
+	 * state.
+	 */
 	public SwerveModuleState runSetpoint(SwerveModuleState state) {
 		// Optimize state based on current angle
 		// Controllers run in "periodic" when the setpoint is not null
@@ -159,7 +219,9 @@ public class Module {
 		return optimizedState;
 	}
 
-	/** Runs the module with the specified voltage while controlling to zero degrees. */
+	/**
+	 * Runs the module with the specified voltage while controlling to zero degrees.
+	 */
 	public void runCharacterization(double volts) {
 		// Closed loop turn control
 		angleSetpoint = new Rotation2d();
