@@ -98,7 +98,9 @@ public class ModuleIOHybrid implements ModuleIO {
 		driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		driveTalon.getConfigurator().apply(driveConfig);
 		// TODO: This work or nah?
-		driveTalon.getConfigurator().apply(driveConfig.ClosedLoopRamps.withVoltageClosedLoopRampPeriod(0.15));
+		driveTalon
+			.getConfigurator()
+			.apply(driveConfig.ClosedLoopRamps.withVoltageClosedLoopRampPeriod(0.15));
 		setDriveBrakeMode(true);
 
 		cancoder.getConfigurator().apply(new CANcoderConfiguration());
@@ -106,7 +108,7 @@ public class ModuleIOHybrid implements ModuleIO {
 		timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 
 		turnSparkMax.setClosedLoopRampRate(1);
-		
+
 		drivePosition = driveTalon.getPosition();
 		drivePositionQueue = HybridOdometryThread.getInstance()
 			.registerSignal(driveTalon, driveTalon.getPosition());
