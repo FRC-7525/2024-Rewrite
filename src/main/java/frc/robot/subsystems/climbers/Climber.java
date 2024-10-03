@@ -7,11 +7,11 @@ import org.littletonrobotics.junction.Logger;
 
 public class Climber extends Subsystem<ClimberStates> {
 
-	ClimberIO io;
-	ClimberIOInputsAutoLogged inputs;
-	ClimberIOOutputs outputs;
+	private ClimberIO io;
+	private ClimberIOInputsAutoLogged inputs;
+	private ClimberIOOutputs outputs;
 
-	boolean zeroed;
+	private boolean zeroed;
 
 	public Climber(ClimberIO io) {
 		super("Climber", ClimberStates.OFF);

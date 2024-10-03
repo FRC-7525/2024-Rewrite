@@ -2,7 +2,6 @@ package frc.robot.subsystems.intake;
 
 import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose3d;
-import java.security.PublicKey;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.AutoLogOutput;
 

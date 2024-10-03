@@ -1,6 +1,5 @@
 package frc.robot.subsystems.manager;
 
-import frc.robot.Constants.AmpBar;
 import frc.robot.subsystems.SubsystemStates;
 import frc.robot.subsystems.ampBar.AmpBarStates;
 import frc.robot.subsystems.climbers.ClimberStates;

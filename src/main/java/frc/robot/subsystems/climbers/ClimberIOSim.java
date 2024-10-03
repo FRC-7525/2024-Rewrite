@@ -1,12 +1,9 @@
 package frc.robot.subsystems.climbers;
 
-import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.AutoLogOutput;
 
 public class ClimberIOSim implements ClimberIO {
 
@@ -64,7 +61,6 @@ public class ClimberIOSim implements ClimberIO {
 		);
 	}
 
-	// U don't need to zero the climbers in simulation
 	public void zeroClimbers() {
 		return;
 	}
