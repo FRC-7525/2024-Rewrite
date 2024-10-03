@@ -220,8 +220,10 @@ public class Manager extends Subsystem<ManagerStates> {
 		);
 
 		// For autos
-		addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () ->
-			getStateTime() > 0.4 && DriverStation.isAutonomous()
+		addTrigger(
+			ManagerStates.SHOOTING,
+			ManagerStates.IDLE,
+			() -> getStateTime() > 0.4 && DriverStation.isAutonomous()
 		);
 
 		// Climbing (POV)
@@ -327,7 +329,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	protected void runState() {
 		// NoteSimulator.update();
 		// NoteSimulator.logNoteInfo();
-	}	
+	}
 
 	// Near Setpoint functions for stuff
 	public boolean intakeNearSetpoints() {
