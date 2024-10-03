@@ -5,18 +5,20 @@ import frc.robot.Robot;
 import frc.robot.subsystems.manager.ManagerStates;
 
 public class Intaking extends Command {
-    Robot robot = null;
 
-    public Intaking(Robot robot) {
-        this.robot = robot;
-    }
-    @Override
-    public void initialize() {
-        robot.managerSubsystem.setState(ManagerStates.SPINNING_UP);
-    }
+	Robot robot = null;
 
-    @Override
-    public boolean isFinished() {
-        return robot.managerSubsystem.getState() == ManagerStates.IDLE;
-    }
+	public Intaking(Robot robot) {
+		this.robot = robot;
+	}
+
+	@Override
+	public void initialize() {
+		robot.managerSubsystem.setState(ManagerStates.SPINNING_UP);
+	}
+
+	@Override
+	public boolean isFinished() {
+		return robot.managerSubsystem.getState() == ManagerStates.IDLE;
+	}
 }
