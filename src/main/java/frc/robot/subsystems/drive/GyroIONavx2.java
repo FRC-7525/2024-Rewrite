@@ -16,6 +16,7 @@ public class GyroIONavx2 implements GyroIO {
 
 	public GyroIONavx2() {
 		navx = new AHRS(SerialPort.Port.kUSB1);
+		navx.enableBoardlevelYawReset(true);
 		navx.reset();
 		yawTimestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 		yawPositionQueue = HybridOdometryThread.getInstance()
@@ -26,6 +27,14 @@ public class GyroIONavx2 implements GyroIO {
 					return OptionalDouble.empty();
 				}
 			});
+	}
+
+	@Override
+	public void zero() {
+		System.out.println("ahhaha");
+		navx.reset();
+		navx.zeroYaw();
+		System.out.println(navx.getYaw());
 	}
 
 	@Override
@@ -48,10 +57,5 @@ public class GyroIONavx2 implements GyroIO {
 			yawTimestampQueue.clear();
 			yawPositionQueue.clear();
 		}
-	}
-
-	public void zeroGryo() {
-		// navx.reset();
-		navx.zeroYaw();
 	}
 }

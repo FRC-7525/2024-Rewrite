@@ -130,6 +130,7 @@ public class Drive extends Subsystem<DriveStates> {
 
 		if (Constants.controller.getStartButtonPressed()) {
 			zeroGryo();
+			System.out.println("aaa");
 		}
 	}
 
@@ -150,9 +151,7 @@ public class Drive extends Subsystem<DriveStates> {
 	}
 
 	public void zeroGryo() {
-		// poseEstimator.resetPosition(new Rotation2d(0), getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
-		// poseEstimator.resetPosition(getRotation(), getModulePositions(), getPose());
-		gyroIO.zeroGyro();
+		gyroIO.zero();
 	}
 
 	public void drive(
@@ -180,13 +179,13 @@ public class Drive extends Subsystem<DriveStates> {
 
 		if (headingCorrection) {
 			// System.out.println(headingCorrection);
-			System.out.println("Omgea = 0?" + (omega == 0));
-			System.out.println(
-				Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
-			);
-			System.out.println(
-				Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
-			);
+			// System.out.println("Omgea = 0?" + (omega == 0));
+			// System.out.println(
+			// 	Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
+			// );
+			// System.out.println(
+			// 	Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
+			// );
 			if (
 				Math.abs(omega) == 0.0 &&
 				(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND ||

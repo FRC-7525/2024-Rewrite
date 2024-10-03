@@ -102,7 +102,7 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// In DEGREES (Pivot setpoints)
-		public static final double DOWN = -227;
+		public static final double DOWN = -233;
 		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
@@ -205,9 +205,9 @@ public final class Constants {
     tm = translation multipliers
     aa = auto align
     */
-		public static final double REGULAR_RM = 0.4;
+		public static final double REGULAR_RM = 0.2;
 		public static final double REGULAR_TM = 1.0;
-		public static final double SLOW_RM = 0.5;
+		public static final double SLOW_RM = 0.1;
 		public static final double SLOW_TM = 0.2;
 		public static final double AA_RM = 0.8;
 		public static final double AA_TM = 0.8;
@@ -257,7 +257,7 @@ public final class Constants {
 			public static final FFConstants REAL_FF = new FFConstants(0, 0);
 			// TODO: Test 0.0020645, 0.0, 0.0 (YAGSL configs)
 			public static final PIDConstants REAL_DRIVE_PID = new PIDConstants(0.0020645, 0.0, 0.0);
-			public static final PIDConstants REAL_TURN_PID = new PIDConstants(7.0, 0.0, 0.00001);
+			public static final PIDConstants REAL_TURN_PID = new PIDConstants(7.0, 0.0, 0.00007);
 
 			public static final int NUM_TURN_MOTORS = 1;
 			public static final int NUM_DRIVE_MOTORS = 1;

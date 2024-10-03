@@ -28,7 +28,9 @@ public interface GyroIO {
 		public double yawPosDeg = 0.0;
 	}
 
-	public default void updateInputs(GyroIOInputs inputs) {}
+	public default void zeryGyroscope() {}
 
-	public default void zeroGyro() {}
+	public default void zero() {}
+
+	public default void updateInputs(GyroIOInputs inputs) {}
 }
