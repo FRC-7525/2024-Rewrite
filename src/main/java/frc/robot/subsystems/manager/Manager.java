@@ -1,6 +1,7 @@
 package frc.robot.subsystems.manager;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOSim;
 import frc.robot.subsystems.climbers.ClimberIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveStates;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavx2;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -217,6 +219,11 @@ public class Manager extends Subsystem<ManagerStates> {
 			Constants.controller.getAButtonPressed()
 		);
 
+		// For autos
+		addTrigger(ManagerStates.SHOOTING, ManagerStates.IDLE, () ->
+			getStateTime() > 0.4 && DriverStation.isAutonomous()
+		);
+
 		// Climbing (POV)
 		addTrigger(
 			ManagerStates.IDLE,
@@ -320,12 +327,7 @@ public class Manager extends Subsystem<ManagerStates> {
 	protected void runState() {
 		// NoteSimulator.update();
 		// NoteSimulator.logNoteInfo();
-	}
-
-	// Auto Stuff
-	public void setState(ManagerStates state) {
-		setState(state);
-	}
+	}	
 
 	// Near Setpoint functions for stuff
 	public boolean intakeNearSetpoints() {

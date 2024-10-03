@@ -14,7 +14,7 @@ public class Shooting extends Command {
 
     @Override
     public void initialize() {
-        robot.managerSubsystem.setState(ManagerStates.INTAKING);
+        robot.managerSubsystem.setState(ManagerStates.SPINNING_UP);
     }
 
     @Override
