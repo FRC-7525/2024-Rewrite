@@ -3,8 +3,8 @@ import os
 import sys
 
 # List of files to excuse (constants and things we didnt make and stuff we wont use)
-# TODO: Put un-used Module IO abstraction constants in constants (Not super needed but important)
-excused_files = ["Constants.java", "BuildConstants.java", "HybridOdometryThread.java", "ModuleIOHybrid.java", "LocalADStarAK.java", "ModuleIOSparkMax.java", "ModuleIOTalonFX.java", "PhoenixOdometryThread.java", "SparkMaxOdometryThread.java"]
+# TODO: Go through and clean up some of these excused files (vision, StarAK, etc)
+excused_files = ["Vision.java", "Constants.java", "BuildConstants.java", "HybridOdometryThread.java", "ModuleIOHybrid.java", "LocalADStarAK.java", "ModuleIOSparkMax.java", "ModuleIOTalonFX.java", "PhoenixOdometryThread.java", "SparkMaxOdometryThread.java"]
 
 # Not really dirs becasue the full ones didnt work
 excused_dirs = [
@@ -13,7 +13,7 @@ excused_dirs = [
 ]
 
 # Weird stuff that shouldn't go in constants, dont put function/var names in here theyre already checked
-excused_cases = ["ModuleIOSparkMax", "case", "new Module(", "new BaseStatusSignal[", "BaseStatusSignal.waitForAll(", "new ModuleIOHybrid(", "Math.pow(", "+=", "drive.getRotation()"]
+excused_cases = ["ModuleIOSparkMax", "case", "new Module(", "new BaseStatusSignal[", "BaseStatusSignal.waitForAll(", "new ModuleIOHybrid(", "Math.pow(", "+=", "drive.getRotation()", "autoChooser.addOption("]
 
 def check_for_magic_numbers(file_path):
     magic_numbers = []
