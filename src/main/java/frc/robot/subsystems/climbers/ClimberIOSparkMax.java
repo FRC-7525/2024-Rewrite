@@ -46,8 +46,8 @@ public class ClimberIOSparkMax implements ClimberIO {
 
 		climberController = new PIDController(0, 0, 0);
 
-		leftFilter = LinearFilter.movingAverage(5);
-		rightFilter = LinearFilter.movingAverage(5);
+		leftFilter = LinearFilter.movingAverage(Constants.Climber.CURRENT_FILTER_TAPS);
+		rightFilter = LinearFilter.movingAverage(Constants.Climber.CURRENT_FILTER_TAPS);
 
 		leftClimberSetpoint = 0;
 		rightClimberSetpoint = 0;
@@ -64,8 +64,8 @@ public class ClimberIOSparkMax implements ClimberIO {
 		inputs.rightClimberPosition = rightClimberEncoder.getPosition();
 		inputs.leftClimberSetpoint = leftClimberSetpoint;
 		inputs.rightClimberSetpoint = rightClimberSetpoint;
-		inputs.leftClimberSpeed = leftClimberEncoder.getVelocity() / 60;
-		inputs.rightClimberSpeed = rightClimberEncoder.getVelocity() / 60;
+		inputs.leftClimberSpeed = leftClimberEncoder.getVelocity() / Constants.RPM_TO_RPS_CF;
+		inputs.rightClimberSpeed = rightClimberEncoder.getVelocity() / Constants.RPM_TO_RPS_CF;
 	}
 
 	public void updateOutputs(ClimberIOOutputs outputs) {
@@ -108,8 +108,8 @@ public class ClimberIOSparkMax implements ClimberIO {
 	}
 
 	public void zeroClimbers() {
-		double leftZeroingSpeed = -0.25;
-		double rightZeroingSpeed = -0.25;
+		double leftZeroingSpeed = Constants.Climber.ZEROING_SPEED;
+		double rightZeroingSpeed = Constants.Climber.ZEROING_SPEED;
 
 		// Not voltage sensing
 		if (
@@ -118,7 +118,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 			leftClimberZeroed
 		) {
 			if (!leftClimberZeroed) leftClimberMotor.getEncoder().setPosition(0);
-			leftClimberSetpoint = 10;
+			leftClimberSetpoint = Constants.Climber.IDLE;
 			leftZeroingSpeed = climberController.calculate(
 				leftClimberEncoder.getPosition(),
 				leftClimberSetpoint
@@ -132,7 +132,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 			rightClimberZeroed
 		) {
 			if (!rightClimberZeroed) rightClimberMotor.getEncoder().setPosition(0);
-			rightClimberSetpoint = 10;
+			rightClimberSetpoint = Constants.Climber.IDLE;
 			rightZeroingSpeed = climberController.calculate(
 				rightClimberEncoder.getPosition(),
 				rightClimberSetpoint

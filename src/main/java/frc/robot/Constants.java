@@ -25,7 +25,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.PubSub;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.util.FFConstants;
 
@@ -262,7 +261,6 @@ public final class Constants {
 
 			// Hope this works??? This should be tuned using SYSID or Power, I, and Damping method
 			public static final FFConstants REAL_FF = new FFConstants(0, 0);
-			// TODO: Test 0.0020645, 0.0, 0.0 (YAGSL configs)
 			public static final PIDConstants REAL_DRIVE_PID = new PIDConstants(0.0020645, 0.0, 0.0);
 			public static final PIDConstants REAL_TURN_PID = new PIDConstants(7.0, 0.0, 0.00007);
 
@@ -281,14 +279,8 @@ public final class Constants {
 				public static final double TURN_MOI = 0.004;
 			}
 
-			// TODO: Put constants from those abstractions in here
-			public static final class SparkMax {}
-
-			public static final class TalonFX {}
-
 			public static final class Hybrid {
 
-				// TODO: Uh do these work?
 				public static final double DRIVE_GEAR_RATIO = 5.357;
 				public static final double TURN_GEAR_RATIO = 21.4286;
 
@@ -301,11 +293,6 @@ public final class Constants {
 				public static final int SPARK_MEASURMENT_PERIOD_MS = 10;
 				public static final int SPARK_AVG_DEPTH = 2;
 				public static final double SPARK_FRAME_PERIOD = 1000.0 / ODOMETRY_FREQUENCY;
-
-				// CAN/Device IDS and offsets (May be Wrong, guessed which ids are correct off vibes)
-
-				// TODO: Confirm module IDs are associated with correct module and tune module offsets if
-				// last years dont work
 
 				// Front Left Module
 				public static final int DRIVE0_ID = 2;
@@ -369,15 +356,23 @@ public final class Constants {
 		public static final int LEFT_ID = 33;
 		public static final int RIGHT_ID = 34;
 
-		// IN ROTATIONS (climber rotates a lot ig)
-		// TODO: TUNE
-		public static final double ERROR_OF_MARGIN = 1;
+		public static final int CURRENT_FILTER_TAPS = 5;
 
-		// TODO: Check if these are still right
+		public static final double ZEROING_SPEED = -0.25;
+
+		// Sim Configs
+		public static final int NUM_MOTORS = 2;
+		public static final double GEARING = 0.01;
+		public static final double JKG_M_SQUARED = 1;
+
+		// IN ROTATIONS (climber rotates a lot ig)
+		public static final double ERROR_OF_MARGIN = 1;
+		public static final double IDLE = 10;
+		public static final double CLIMBING = 150;
+
 		public static final double LEFT_CURRENT_LIMIT = 13;
 		public static final double RIGHT_CURRENT_LIMIT = 13;
 
-		// TODO: TUNE
 		public static final PIDConstants REAL_PID = new PIDConstants(0.05, 0, 0);
 		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
 	}

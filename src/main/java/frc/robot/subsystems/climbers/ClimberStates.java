@@ -1,10 +1,11 @@
 package frc.robot.subsystems.climbers;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.SubsystemStates;
 
 public enum ClimberStates implements SubsystemStates {
-	OFF(10, 10, "Off"),
-	CLIMBING(150, 150, "Climbing");
+	OFF(Constants.Climber.IDLE, Constants.Climber.IDLE, "Off"),
+	CLIMBING(Constants.Climber.CLIMBING, Constants.Climber.CLIMBING, "Climbing");
 
 	private double leftSetpoint;
 	private double rightSetpoint;
