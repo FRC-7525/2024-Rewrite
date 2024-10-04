@@ -83,7 +83,7 @@ public class Drive extends Subsystem<DriveStates> {
 		lastHeadingRadians = poseEstimator.getEstimatedPosition().getRotation().getRadians();
 		headingCorrectionEnabled = true;
 		// TODO: Tune
-		headingCorrectionController = new PIDController(0.01, 0, 0);
+		headingCorrectionController = new PIDController(Constants.Drive.HEADING_CORRECTION_PID.kP, Constants.Drive.HEADING_CORRECTION_PID.kI, Constants.Drive.HEADING_CORRECTION_PID.kD);
 
 		this.gyroIO = gyroIO;
 		modules[0] = new Module(flModuleIO, 0);
@@ -306,7 +306,7 @@ public class Drive extends Subsystem<DriveStates> {
 	 */
 	public void runVelocity(ChassisSpeeds speeds) {
 		// Calculate module setpoints
-		ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
+		ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, Constants.Drive.DISCRETIZE_TIME_SECONDS);
 		SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(
 			setpointStates,

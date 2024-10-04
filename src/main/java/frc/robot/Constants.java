@@ -196,6 +196,7 @@ public final class Constants {
 	}
 
 	public static final class Drive {
+		public static final PIDConstants HEADING_CORRECTION_PID = new PIDConstants(0.01, 0, 0);
 
 		public static final double DISCRETIZE_TIME_SECONDS = 0.02;
 		public static final double CONTROLLER_DEADBAND = 0.05;
@@ -253,7 +254,7 @@ public final class Constants {
 			public static final FFConstants SIM_FF = new FFConstants(0.0, 0.13);
 			public static final PIDConstants SIM_DRIVE_PID = new PIDConstants(0.1, 0.0, 0.0);
 			public static final PIDConstants SIM_TURN_PID = new PIDConstants(10.0, 0.0, 0.0);
-
+			
 			// Hope this works??? This should be tuned using SYSID or Power, I, and Damping method
 			public static final FFConstants REAL_FF = new FFConstants(0, 0);
 			// TODO: Test 0.0020645, 0.0, 0.0 (YAGSL configs)
