@@ -37,6 +37,7 @@ import frc.robot.util.FFConstants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
 	public static final double GRAVITY = 9.81;
 	public static final double SIM_UPDATE_TIME = 0.05;
 

@@ -56,7 +56,11 @@ public class Module {
 			// any PID/FF values for controllers idk why
 			case REAL:
 				// TODO: TEST THIS
-				driveFeedforward = createDriveFeedforward(Constants.Drive.OPTIMAL_VOLTAGE, Constants.Drive.MAX_LINEAR_SPEED, Constants.Drive.WHEEL_GRIP_COEFFICIENT_OF_FRICTION);
+				driveFeedforward = createDriveFeedforward(
+					Constants.Drive.OPTIMAL_VOLTAGE,
+					Constants.Drive.MAX_LINEAR_SPEED,
+					Constants.Drive.WHEEL_GRIP_COEFFICIENT_OF_FRICTION
+				);
 				driveFeedback = new PIDController(
 					Constants.Drive.Module.REAL_DRIVE_PID.kP,
 					Constants.Drive.Module.REAL_DRIVE_PID.kI,
@@ -211,7 +215,10 @@ public class Module {
 		SwerveModuleState lastModuleState,
 		double maxSpeed
 	) {
-		if (Math.abs(moduleState.speedMetersPerSecond) <= (maxSpeed * Constants.Drive.ANTI_JITTER_DRIVE_THRESHOLD)) {
+		if (
+			Math.abs(moduleState.speedMetersPerSecond) <=
+			(maxSpeed * Constants.Drive.ANTI_JITTER_DRIVE_THRESHOLD)
+		) {
 			moduleState.angle = lastModuleState.angle;
 		}
 	}
