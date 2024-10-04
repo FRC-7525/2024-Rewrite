@@ -73,9 +73,9 @@ public class ShooterIOTalonFX implements ShooterIO {
 		// rightAppliedVolts = shooterPIDController.calculate(rightVelocity.getValueAsDouble(), rps);
 
 		rightAppliedVolts = feedbackController.calculate(rightVelocity.getValueAsDouble(), rps);
-
-		leftMotor.setVoltage(leftAppliedVolts * 12);
-		rightMotor.setVoltage(rightAppliedVolts * 12);
+	
+		leftMotor.setVoltage(leftAppliedVolts * Constants.OPTIMAL_VOLTAGE);
+		rightMotor.setVoltage(rightAppliedVolts * Constants.OPTIMAL_VOLTAGE);
 	}
 
 	public void stop() {
