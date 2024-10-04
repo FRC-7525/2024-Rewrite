@@ -37,6 +37,7 @@ import frc.robot.util.FFConstants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
 	public static final double OPTIMAL_VOLTAGE = 12;
 	public static final double GRAVITY = 9.81;
 	public static final double SIM_UPDATE_TIME = 0.05;
@@ -382,7 +383,7 @@ public final class Constants {
 
 		public static final PIDConstants SIM_TRANSLATIONAL_PID = new PIDConstants(3, 0, 0);
 		public static final PIDConstants SIM_ROTATIONAL_PID = new PIDConstants(5, 0, 0);
-		
+
 		public static final PIDConstants REAL_TRANSLATIONAL_PID = new PIDConstants(1, 0, 0);
 		public static final PIDConstants REAL_ROTATIONAL_PID = new PIDConstants(1, 0, 0);
 
