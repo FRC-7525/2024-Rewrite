@@ -462,6 +462,7 @@ public final class Constants {
 	}
 
 	public static final class Manager {
+
 		public static final int SENDABLE_CHECK_INTERVAL = 50;
 
 		public static final double AUTO_SHOOTING_TIME = 0.4;

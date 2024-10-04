@@ -222,7 +222,9 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.SHOOTING,
 			ManagerStates.IDLE,
-			() -> getStateTime() > Constants.Manager.AUTO_SHOOTING_TIME && DriverStation.isAutonomous()
+			() ->
+				getStateTime() > Constants.Manager.AUTO_SHOOTING_TIME &&
+				DriverStation.isAutonomous()
 		);
 
 		// Climbing (POV)
