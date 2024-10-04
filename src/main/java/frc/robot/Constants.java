@@ -25,6 +25,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.PubSub;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.util.FFConstants;
 
@@ -37,7 +38,7 @@ import frc.robot.util.FFConstants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
+	public static final double GRAVITY = 9.81;
 	public static final double SIM_UPDATE_TIME = 0.05;
 
 	public static final double SLOW_UPDATE_FREQ = 50;
@@ -198,9 +199,12 @@ public final class Constants {
 	public static final class Drive {
 		public static final PIDConstants HEADING_CORRECTION_PID = new PIDConstants(0.01, 0, 0);
 
+		public static final double ANTI_JITTER_DRIVE_THRESHOLD = 0.01;
 		public static final double DISCRETIZE_TIME_SECONDS = 0.02;
 		public static final double CONTROLLER_DEADBAND = 0.05;
 		public static final int NUM_MODULES = 4;
+		public static final double OPTIMAL_VOLTAGE = 12.0;
+		public static final double WHEEL_GRIP_COEFFICIENT_OF_FRICTION = 1.19;
 
 		/* Rotation and Translation Modifers
     rm = rotation multiplier
@@ -223,7 +227,7 @@ public final class Constants {
 
 		// Configs
 		public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
-		public static final double MAX_LINEAR_SPEED = Units.feetToMeters(19.1);
+		public static final double MAX_LINEAR_SPEED = Units.feetToMeters(19.6);
 		public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
 		public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
 		public static final double DRIVE_BASE_RADIUS = Math.hypot(
