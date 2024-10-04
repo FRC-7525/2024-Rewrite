@@ -182,6 +182,7 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// IN DEGREES (Pivot Setpoints)
+		public static final double OUT_FOR_INTAKE = -29.3;
 		public static final double OUT = -79;
 		public static final double FEEDING_POSITION = -79;
 		public static final double IN = Units.degreesToRadians(0.0);
@@ -458,5 +459,15 @@ public final class Constants {
 			1,
 			1,
 		}; // how significantly important each tag is
+	}
+
+	public static final class Manager {
+		public static final int SENDABLE_CHECK_INTERVAL = 50;
+
+		public static final double AUTO_SHOOTING_TIME = 0.4;
+
+		//D pad stuff
+		public static final int DPAD_DOWN = 180;
+		public static final int DPAD_UP = 0;
 	}
 }

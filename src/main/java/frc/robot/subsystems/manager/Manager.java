@@ -49,7 +49,6 @@ public class Manager extends Subsystem<ManagerStates> {
 	private Boolean useVisionVal;
 	private Boolean useHeadingCorrectionVal;
 
-	private final int SENDABLE_CHECK_INTERVAL = 50;
 	private int loopCounter;
 
 	public Manager() {
@@ -64,7 +63,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		useHeadingCorrection = new SendableChooser<>();
 		driverShooterAfterSpinning = new SendableChooser<>();
 
-		loopCounter = 50;
+		loopCounter = Constants.Manager.SENDABLE_CHECK_INTERVAL;
 
 		useBeamBreaksVal = false;
 		useAutoAlignVal = false;
@@ -223,14 +222,14 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.SHOOTING,
 			ManagerStates.IDLE,
-			() -> getStateTime() > 0.4 && DriverStation.isAutonomous()
+			() -> getStateTime() > Constants.Manager.AUTO_SHOOTING_TIME && DriverStation.isAutonomous()
 		);
 
 		// Climbing (POV)
 		addTrigger(
 			ManagerStates.IDLE,
 			ManagerStates.STAGING_FOR_CLIMB,
-			() -> Constants.controller.getPOV() == 0 && useClimbersVal
+			() -> Constants.controller.getPOV() == Constants.Manager.DPAD_UP && useClimbersVal
 		);
 		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
 			ampBarSubsystem.nearSetPoints()
@@ -238,7 +237,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.CLIMBING,
 			ManagerStates.CLIMBED,
-			() -> Constants.controller.getPOV() == 180
+			() -> Constants.controller.getPOV() == Constants.Manager.DPAD_DOWN
 		);
 		addTrigger(ManagerStates.CLIMBED, ManagerStates.IDLE, () ->
 			Constants.controller.getXButtonPressed()
@@ -263,7 +262,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		climberSubsystem.periodic();
 
 		// Set Sendable Stuff:
-		if (loopCounter % SENDABLE_CHECK_INTERVAL == 0) {
+		if (loopCounter % Constants.Manager.SENDABLE_CHECK_INTERVAL == 0) {
 			useBeamBreaksVal = useBeamBreaks.getSelected() == null
 				? true
 				: useBeamBreaks.getSelected();
