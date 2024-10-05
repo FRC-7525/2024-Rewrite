@@ -167,7 +167,7 @@ public class Vision {
 			seesSideVision = true;
 			sideVisionTimer.reset();
 			sideVisionTimer.start();
-
+			System.out.println("aa");
 			return Optional.of(sideBotpose3d.get().estimatedPose.toPose2d());
 		} else {
 			if (sideVisionTimer.get() > Constants.Vision.LAST_VISION_MEASURMENT_TIMER) {

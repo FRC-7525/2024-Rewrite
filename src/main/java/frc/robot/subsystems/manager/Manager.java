@@ -249,7 +249,6 @@ public class Manager extends Subsystem<ManagerStates> {
 	@Override
 	public void periodic() {
 		super.periodic();
-
 		loopCounter += 1;
 
 		intakeSubsystem.setState(getState().getIntakeState());
