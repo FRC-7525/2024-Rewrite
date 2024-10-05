@@ -1,6 +1,7 @@
 package frc.robot.subsystems.AprilTagVision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -77,8 +78,9 @@ public class Vision {
 		// Cam layouts and stuff
 		try {
 			String deployDirectoryPath = Filesystem.getDeployDirectory().getAbsolutePath();
-			// layout = new AprilTagFieldLayout(deployDirectoryPath + "/CrescendoFieldLayout.json");
-			layout = AprilTagFieldLayout.k2024Crecendo.loadAprilTagLayoutField();
+			layout = new AprilTagFieldLayout(deployDirectoryPath + "/CrescendoFieldLayout.json");
+			// layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
 			frontEstimator = new PhotonPoseEstimator(
 				layout,
 				PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
