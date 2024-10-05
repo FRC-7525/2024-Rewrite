@@ -306,9 +306,10 @@ public class Manager extends Subsystem<ManagerStates> {
 		if (useClimbersVal) {
 			climberSubsystem.periodic();
 			climberSubsystem.setState(getState().getClimberState());
-		}
+		}	
 
-		if (useVisionVal) vision.periodic();
+		// if (useVisionVal) //vision.periodic();
+		vision.periodic();
 
 		driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
 

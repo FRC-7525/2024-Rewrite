@@ -25,6 +25,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 
 public class Vision {
 
@@ -76,7 +77,8 @@ public class Vision {
 		// Cam layouts and stuff
 		try {
 			String deployDirectoryPath = Filesystem.getDeployDirectory().getAbsolutePath();
-			layout = new AprilTagFieldLayout(deployDirectoryPath + "/CrescendoFieldLayout.json");
+			// layout = new AprilTagFieldLayout(deployDirectoryPath + "/CrescendoFieldLayout.json");
+			layout = AprilTagFieldLayout.k2024Crecendo.loadAprilTagLayoutField();
 			frontEstimator = new PhotonPoseEstimator(
 				layout,
 				PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
@@ -122,6 +124,8 @@ public class Vision {
 		}
 
 		// Add Vision Measurments
+		// System.out.println(getFrontPose2d().isPresent());
+		// System.out.println(frontBotpose3d.isPresent());
 		if (getFrontPose2d().isPresent()) {
 			var frontPipeline = frontCamera.getLatestResult();
 			driveSubsystem.addVisionMeasurement(
@@ -129,6 +133,7 @@ public class Vision {
 				Timer.getFPGATimestamp(),
 				getEstimationStdDevs(getFrontPose2d().get(), frontPipeline)
 			);
+			// System.out.println("zzzzzzzzzzzzzzzz");
 		}
 
 		if (getSidePose2d().isPresent()) {
