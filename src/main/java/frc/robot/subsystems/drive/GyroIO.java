@@ -30,7 +30,9 @@ public interface GyroIO {
 
 	public default void zeryGyroscope() {}
 
-	public default void zero() {}
+	public default void zero() {
+		
+	}
 
 	public default void updateInputs(GyroIOInputs inputs) {}
 }

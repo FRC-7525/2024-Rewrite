@@ -53,6 +53,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private double lastHeadingRadians;
 	private PIDController headingCorrectionController;
 	private boolean headingCorrectionEnabled;
+	private boolean fieldRelativeEnabled = true;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -128,12 +129,17 @@ public class Drive extends Subsystem<DriveStates> {
 				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
-				headingCorrectionEnabled
+				headingCorrectionEnabled,
+				fieldRelativeEnabled
 			);
 		}
 
 		if (Constants.controller.getStartButtonPressed()) {
 			zeroGryo();
+		}
+
+		if (Constants.controller.getBackButtonPressed()) {
+			fieldRelativeEnabled = !fieldRelativeEnabled;
 		}
 	}
 
@@ -164,7 +170,8 @@ public class Drive extends Subsystem<DriveStates> {
 		DoubleSupplier omegaSupplier,
 		double rotationMultiplier,
 		double translationMultiplier,
-		boolean headingCorrection
+		boolean headingCorrection,
+		boolean fieldRelative
 	) {
 		// Apply deadband
 		double linearMagnitude = MathUtil.applyDeadband(
@@ -222,6 +229,7 @@ public class Drive extends Subsystem<DriveStates> {
 			DriverStation.getAlliance().isPresent() &&
 			DriverStation.getAlliance().get() == Alliance.Red;
 		drive.runVelocity(
+			fieldRelative ? 
 			ChassisSpeeds.fromFieldRelativeSpeeds(
 				linearVelocity.getX() *
 				drive.getMaxLinearSpeedMetersPerSec() *
@@ -232,7 +240,16 @@ public class Drive extends Subsystem<DriveStates> {
 				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
 				(isFlipped
 						? drive.getRotation().plus(new Rotation2d(Math.PI))
-						: drive.getRotation()).times(-1)
+						: drive.getRotation()).times(Constants.currentMode == Constants.Mode.SIM ? 1 : -1)
+			) : 
+			new ChassisSpeeds(
+				linearVelocity.getX() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				linearVelocity.getY() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier
 			)
 		);
 	}
