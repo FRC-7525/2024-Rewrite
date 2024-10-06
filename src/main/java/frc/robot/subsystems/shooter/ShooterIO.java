@@ -16,10 +16,10 @@ public interface ShooterIO {
 
 	public static class ShooterIOOutputs {
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Shooter/LeftAppliedVolts")
 		public double leftShooterAppliedVolts = 0.0;
 
-		@AutoLogOutput
+		@AutoLogOutput(key = "Shooter/RightAppliedVolts")
 		public double rightShooterAppliedVolts = 0.0;
 	}
 

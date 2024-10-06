@@ -38,6 +38,8 @@ import frc.robot.util.FFConstants;
  */
 public final class Constants {
 
+	public static final double OPTIMAL_VOLTAGE = 12;
+	public static final double GRAVITY = 9.81;
 	public static final double SIM_UPDATE_TIME = 0.05;
 
 	public static final double SLOW_UPDATE_FREQ = 50;
@@ -182,6 +184,7 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// IN DEGREES (Pivot Setpoints)
+		public static final double OUT_FOR_INTAKE = -29.3;
 		public static final double OUT = -79;
 		public static final double FEEDING_POSITION = -79;
 		public static final double IN = Units.degreesToRadians(0.0);
@@ -196,16 +199,21 @@ public final class Constants {
 
 	public static final class Drive {
 
+		public static final PIDConstants HEADING_CORRECTION_PID = new PIDConstants(0.01, 0, 0);
+
+		public static final double ANTI_JITTER_DRIVE_THRESHOLD = 0.01;
 		public static final double DISCRETIZE_TIME_SECONDS = 0.02;
 		public static final double CONTROLLER_DEADBAND = 0.05;
 		public static final int NUM_MODULES = 4;
+		public static final double OPTIMAL_VOLTAGE = 12.0;
+		public static final double WHEEL_GRIP_COEFFICIENT_OF_FRICTION = 1.19;
 
 		/* Rotation and Translation Modifers
     rm = rotation multiplier
     tm = translation multipliers
     aa = auto align
     */
-		public static final double REGULAR_RM = 0.2;
+		public static final double REGULAR_RM = 0.4;
 		public static final double REGULAR_TM = 1.0;
 		public static final double SLOW_RM = 0.1;
 		public static final double SLOW_TM = 0.2;
@@ -221,7 +229,7 @@ public final class Constants {
 
 		// Configs
 		public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
-		public static final double MAX_LINEAR_SPEED = Units.feetToMeters(19.1);
+		public static final double MAX_LINEAR_SPEED = Units.feetToMeters(19.6);
 		public static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
 		public static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
 		public static final double DRIVE_BASE_RADIUS = Math.hypot(
@@ -255,7 +263,6 @@ public final class Constants {
 
 			// Hope this works??? This should be tuned using SYSID or Power, I, and Damping method
 			public static final FFConstants REAL_FF = new FFConstants(0, 0);
-			// TODO: Test 0.0020645, 0.0, 0.0 (YAGSL configs)
 			public static final PIDConstants REAL_DRIVE_PID = new PIDConstants(0.0020645, 0.0, 0.0);
 			public static final PIDConstants REAL_TURN_PID = new PIDConstants(7.0, 0.0, 0.00007);
 
@@ -274,14 +281,8 @@ public final class Constants {
 				public static final double TURN_MOI = 0.004;
 			}
 
-			// TODO: Put constants from those abstractions in here
-			public static final class SparkMax {}
-
-			public static final class TalonFX {}
-
 			public static final class Hybrid {
 
-				// TODO: Uh do these work?
 				public static final double DRIVE_GEAR_RATIO = 5.357;
 				public static final double TURN_GEAR_RATIO = 21.4286;
 
@@ -294,11 +295,6 @@ public final class Constants {
 				public static final int SPARK_MEASURMENT_PERIOD_MS = 10;
 				public static final int SPARK_AVG_DEPTH = 2;
 				public static final double SPARK_FRAME_PERIOD = 1000.0 / ODOMETRY_FREQUENCY;
-
-				// CAN/Device IDS and offsets (May be Wrong, guessed which ids are correct off vibes)
-
-				// TODO: Confirm module IDs are associated with correct module and tune module offsets if
-				// last years dont work
 
 				// Front Left Module
 				public static final int DRIVE0_ID = 2;
@@ -362,23 +358,35 @@ public final class Constants {
 		public static final int LEFT_ID = 33;
 		public static final int RIGHT_ID = 34;
 
-		// IN ROTATIONS (climber rotates a lot ig)
-		// TODO: TUNE
-		public static final double ERROR_OF_MARGIN = 1;
+		public static final int CURRENT_FILTER_TAPS = 5;
 
-		// TODO: Check if these are still right
+		public static final double ZEROING_SPEED = -0.25;
+
+		// Sim Configs
+		public static final int NUM_MOTORS = 2;
+		public static final double GEARING = 0.01;
+		public static final double JKG_M_SQUARED = 1;
+
+		// IN ROTATIONS (climber rotates a lot ig)
+		public static final double ERROR_OF_MARGIN = 1;
+		public static final double IDLE = 10;
+		public static final double CLIMBING = 150;
+
 		public static final double LEFT_CURRENT_LIMIT = 13;
 		public static final double RIGHT_CURRENT_LIMIT = 13;
 
-		// TODO: TUNE
 		public static final PIDConstants REAL_PID = new PIDConstants(0.05, 0, 0);
 		public static final PIDConstants SIM_PID = new PIDConstants(1, 0, 0);
 	}
 
 	public static final class AutoAlign {
 
-		public static final PIDConstants TRANSLATIONAL_PID = new PIDConstants(3, 0, 0);
-		public static final PIDConstants ROTATIONAL_PID = new PIDConstants(5, 0, 0);
+		public static final PIDConstants SIM_TRANSLATIONAL_PID = new PIDConstants(3, 0, 0);
+		public static final PIDConstants SIM_ROTATIONAL_PID = new PIDConstants(5, 0, 0);
+
+		public static final PIDConstants REAL_TRANSLATIONAL_PID = new PIDConstants(1, 0, 0);
+		public static final PIDConstants REAL_ROTATIONAL_PID = new PIDConstants(1, 0, 0);
+
 		public static final double TIME_TO_FEED = 1.0; // seconds
 		public static final double TIME_FOR_SCORING = .5; // seconds
 
@@ -458,5 +466,16 @@ public final class Constants {
 			1,
 			1,
 		}; // how significantly important each tag is
+	}
+
+	public static final class Manager {
+
+		public static final int SENDABLE_CHECK_INTERVAL = 50;
+
+		public static final double AUTO_SHOOTING_TIME = 0.4;
+
+		//D pad stuff
+		public static final int DPAD_DOWN = 180;
+		public static final int DPAD_UP = 0;
 	}
 }

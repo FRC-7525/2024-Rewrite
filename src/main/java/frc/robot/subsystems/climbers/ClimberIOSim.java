@@ -1,12 +1,9 @@
 package frc.robot.subsystems.climbers;
 
-import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.AutoLogOutput;
 
 public class ClimberIOSim implements ClimberIO {
 
@@ -20,15 +17,19 @@ public class ClimberIOSim implements ClimberIO {
 
 	public ClimberIOSim() {
 		// Lol I'm not gona tune the sim
-		climberSim = new DCMotorSim(DCMotor.getNEO(2), 1, 1);
+		climberSim = new DCMotorSim(
+			DCMotor.getNEO(Constants.Climber.NUM_MOTORS),
+			Constants.Climber.GEARING,
+			Constants.Climber.JKG_M_SQUARED
+		);
 		controller = new PIDController(0, 0, 0);
 		climberSetpoint = 0;
 		appliedVolts = 0;
 	}
 
 	public void updateInput(ClimberIOInputs inputs) {
-		inputs.leftClimberSpeed = climberSim.getAngularVelocityRPM() / 60;
-		inputs.rightClimberSpeed = climberSim.getAngularVelocityRPM() / 60;
+		inputs.leftClimberSpeed = climberSim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
+		inputs.rightClimberSpeed = climberSim.getAngularVelocityRPM() / Constants.RPM_TO_RPS_CF;
 		inputs.leftClimberPosition = climberSim.getAngularPositionRotations();
 		inputs.rightClimberPosition = climberSim.getAngularPositionRotations();
 		inputs.leftClimberSetpoint = climberSetpoint;
@@ -64,7 +65,6 @@ public class ClimberIOSim implements ClimberIO {
 		);
 	}
 
-	// U don't need to zero the climbers in simulation
 	public void zeroClimbers() {
 		return;
 	}

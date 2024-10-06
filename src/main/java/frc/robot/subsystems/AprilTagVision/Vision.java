@@ -1,6 +1,8 @@
 package frc.robot.subsystems.AprilTagVision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -77,6 +79,8 @@ public class Vision {
 		try {
 			String deployDirectoryPath = Filesystem.getDeployDirectory().getAbsolutePath();
 			layout = new AprilTagFieldLayout(deployDirectoryPath + "/CrescendoFieldLayout.json");
+			// layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
 			frontEstimator = new PhotonPoseEstimator(
 				layout,
 				PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
@@ -122,6 +126,8 @@ public class Vision {
 		}
 
 		// Add Vision Measurments
+		// System.out.println(getFrontPose2d().isPresent());
+		// System.out.println(frontBotpose3d.isPresent());
 		if (getFrontPose2d().isPresent()) {
 			var frontPipeline = frontCamera.getLatestResult();
 			driveSubsystem.addVisionMeasurement(
@@ -129,6 +135,7 @@ public class Vision {
 				Timer.getFPGATimestamp(),
 				getEstimationStdDevs(getFrontPose2d().get(), frontPipeline)
 			);
+			// System.out.println("zzzzzzzzzzzzzzzz");
 		}
 
 		if (getSidePose2d().isPresent()) {
@@ -160,7 +167,7 @@ public class Vision {
 			seesSideVision = true;
 			sideVisionTimer.reset();
 			sideVisionTimer.start();
-
+			System.out.println("aa");
 			return Optional.of(sideBotpose3d.get().estimatedPose.toPose2d());
 		} else {
 			if (sideVisionTimer.get() > Constants.Vision.LAST_VISION_MEASURMENT_TIMER) {

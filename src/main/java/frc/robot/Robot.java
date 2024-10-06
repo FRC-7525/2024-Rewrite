@@ -13,17 +13,16 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.ShootNearSpeakerCommand;
+import frc.robot.commands.Shooting;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -102,7 +101,7 @@ public class Robot extends LoggedRobot {
 		managerSubsystem = new Manager();
 
 		NamedCommands.registerCommand("Intaking", autoCommands.intaking());
-		NamedCommands.registerCommand("Shooting", autoCommands.shooting());
+		NamedCommands.registerCommand("Shooting", new Shooting(this));
 		NamedCommands.registerCommand("Return To Idle", autoCommands.returnToIdle());
 		NamedCommands.registerCommand("Speeding Up", autoCommands.startSpinningUp());
 		NamedCommands.registerCommand("Spin and Intake", autoCommands.spinAndIntake());
@@ -155,8 +154,8 @@ public class Robot extends LoggedRobot {
 		managerSubsystem.periodic();
 
 		// Logs note sim logging and updating sims
-		NoteSimulator.update();
-		NoteSimulator.logNoteInfo();
+		// NoteSimulator.update();
+		// NoteSimulator.logNoteInfo();
 
 		CommandScheduler.getInstance().run();
 	}

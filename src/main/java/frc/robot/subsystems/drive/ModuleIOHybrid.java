@@ -18,7 +18,6 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
 import frc.robot.Constants;
 import java.util.OptionalDouble;
 import java.util.Queue;
@@ -96,11 +95,17 @@ public class ModuleIOHybrid implements ModuleIO {
 			Constants.Drive.Module.Hybrid.DRIVE_CURRENT_LIMIT;
 		driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		driveTalon.getConfigurator().apply(driveConfig);
+		// TODO: This work or nah?
+		driveTalon
+			.getConfigurator()
+			.apply(driveConfig.ClosedLoopRamps.withVoltageClosedLoopRampPeriod(0.15));
 		setDriveBrakeMode(true);
 
 		cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
 		timestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
+
+		turnSparkMax.setClosedLoopRampRate(1);
 
 		drivePosition = driveTalon.getPosition();
 		drivePositionQueue = HybridOdometryThread.getInstance()
@@ -131,6 +136,8 @@ public class ModuleIOHybrid implements ModuleIO {
 		turnSparkMax.setInverted(isTurnMotorInverted);
 		turnSparkMax.setSmartCurrentLimit(Constants.Drive.Module.Hybrid.TURN_CURRENT_LIMIT);
 		turnSparkMax.enableVoltageCompensation(Constants.MAX_VOLTS);
+		// TODO: FIX
+		turnSparkMax.setOpenLoopRampRate(0.05);
 
 		turnRelativeEncoder.setPosition(0.0);
 		turnRelativeEncoder.setMeasurementPeriod(

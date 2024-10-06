@@ -40,6 +40,8 @@ public class Module {
 	private Rotation2d turnRelativeOffset = null; // Relative + Offset = Absolute
 	private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
+	private SwerveModuleState lastModuleState;
+
 	public Module(ModuleIO io, int index) {
 		this.io = io;
 		this.index = index;
@@ -54,7 +56,11 @@ public class Module {
 			// any PID/FF values for controllers idk why
 			case REAL:
 				// TODO: TEST THIS
-				driveFeedforward = createDriveFeedforward(12, Units.feetToMeters(19.6), 1.19);
+				driveFeedforward = createDriveFeedforward(
+					Constants.Drive.OPTIMAL_VOLTAGE,
+					Constants.Drive.MAX_LINEAR_SPEED,
+					Constants.Drive.WHEEL_GRIP_COEFFICIENT_OF_FRICTION
+				);
 				driveFeedback = new PIDController(
 					Constants.Drive.Module.REAL_DRIVE_PID.kP,
 					Constants.Drive.Module.REAL_DRIVE_PID.kI,
@@ -125,7 +131,7 @@ public class Module {
 
 	// 9.81 is "gravity"
 	public static double calculateMaxAcceleration(double cof) {
-		return cof * 9.81;
+		return cof * Constants.GRAVITY;
 	}
 
 	/**
@@ -150,11 +156,11 @@ public class Module {
 
 		updateOutputs();
 		Logger.recordOutput(
-			"DriveIOOutputs/Module" + Integer.toString(index) + "/DriveAppliedVolts",
+			"Drive/Module" + Integer.toString(index) + "/DriveAppliedVolts",
 			outputs.driveAppliedVolts
 		);
 		Logger.recordOutput(
-			"DriveIOOutputs/Module" + Integer.toString(index) + "/TurnAppliedVolts",
+			"Drive/Module" + Integer.toString(index) + "/TurnAppliedVolts",
 			outputs.turnAppliedVolts
 		);
 
@@ -203,6 +209,20 @@ public class Module {
 		}
 	}
 
+	// TODO: TEST
+	public static void antiJitter(
+		SwerveModuleState moduleState,
+		SwerveModuleState lastModuleState,
+		double maxSpeed
+	) {
+		if (
+			Math.abs(moduleState.speedMetersPerSecond) <=
+			(maxSpeed * Constants.Drive.ANTI_JITTER_DRIVE_THRESHOLD)
+		) {
+			moduleState.angle = lastModuleState.angle;
+		}
+	}
+
 	/**
 	 * Runs the module with the specified setpoint state. Returns the optimized
 	 * state.
@@ -210,12 +230,20 @@ public class Module {
 	public SwerveModuleState runSetpoint(SwerveModuleState state) {
 		// Optimize state based on current angle
 		// Controllers run in "periodic" when the setpoint is not null
+
+		// Set last moule state at start
+		if (lastModuleState == null) {
+			lastModuleState = state;
+		}
+
 		var optimizedState = SwerveModuleState.optimize(state, getAngle());
+		antiJitter(state, lastModuleState, Constants.Drive.MAX_LINEAR_SPEED);
 
 		// Update setpoints, controllers run in "periodic"
 		angleSetpoint = optimizedState.angle;
 		speedSetpoint = optimizedState.speedMetersPerSecond;
 
+		lastModuleState = state;
 		return optimizedState;
 	}
 

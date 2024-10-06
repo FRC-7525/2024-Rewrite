@@ -24,19 +24,27 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 		/* Sets PID values for each mode */
 		switch (Constants.currentMode) {
 			case REAL:
-				io.configureTranslationalPID(1, 0, 0);
-				io.configurerotationalPID(1, 0, 0);
+				io.configureTranslationalPID(
+					Constants.AutoAlign.REAL_TRANSLATIONAL_PID.kP,
+					Constants.AutoAlign.REAL_TRANSLATIONAL_PID.kI,
+					Constants.AutoAlign.REAL_TRANSLATIONAL_PID.kD
+				);
+				io.configurerotationalPID(
+					Constants.AutoAlign.REAL_ROTATIONAL_PID.kP,
+					Constants.AutoAlign.REAL_ROTATIONAL_PID.kI,
+					Constants.AutoAlign.REAL_ROTATIONAL_PID.kD
+				);
 				break;
 			case SIM:
 				io.configureTranslationalPID(
-					Constants.AutoAlign.TRANSLATIONAL_PID.kP,
-					Constants.AutoAlign.TRANSLATIONAL_PID.kI,
-					Constants.AutoAlign.TRANSLATIONAL_PID.kD
+					Constants.AutoAlign.SIM_TRANSLATIONAL_PID.kP,
+					Constants.AutoAlign.SIM_TRANSLATIONAL_PID.kI,
+					Constants.AutoAlign.SIM_TRANSLATIONAL_PID.kD
 				);
 				io.configurerotationalPID(
-					Constants.AutoAlign.ROTATIONAL_PID.kP,
-					Constants.AutoAlign.ROTATIONAL_PID.kI,
-					Constants.AutoAlign.ROTATIONAL_PID.kD
+					Constants.AutoAlign.SIM_ROTATIONAL_PID.kP,
+					Constants.AutoAlign.SIM_ROTATIONAL_PID.kI,
+					Constants.AutoAlign.SIM_ROTATIONAL_PID.kD
 				);
 				break;
 			case REPLAY:

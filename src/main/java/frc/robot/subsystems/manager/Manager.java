@@ -1,6 +1,7 @@
 package frc.robot.subsystems.manager;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.climbers.ClimberIO;
 import frc.robot.subsystems.climbers.ClimberIOSim;
 import frc.robot.subsystems.climbers.ClimberIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveStates;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavx2;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -47,12 +49,11 @@ public class Manager extends Subsystem<ManagerStates> {
 	private Boolean useVisionVal;
 	private Boolean useHeadingCorrectionVal;
 
-	private final int SENDABLE_CHECK_INTERVAL = 50;
 	private int loopCounter;
 
 	public Manager() {
 		super("Manager", ManagerStates.IDLE);
-		NoteSimulator.setDrive(driveSubsystem);
+		// NoteSimulator.setDrive(driveSubsystem);
 
 		// Setup toggles for dangerous stuff
 		useBeamBreaks = new SendableChooser<>();
@@ -62,7 +63,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		useHeadingCorrection = new SendableChooser<>();
 		driverShooterAfterSpinning = new SendableChooser<>();
 
-		loopCounter = 50;
+		loopCounter = Constants.Manager.SENDABLE_CHECK_INTERVAL;
 
 		useBeamBreaksVal = false;
 		useAutoAlignVal = false;
@@ -145,7 +146,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
 		vision = new Vision(driveSubsystem);
 
-		NoteSimulator.setDrive(driveSubsystem);
+		// NoteSimulator.setDrive(driveSubsystem);
 
 		/*
 		 * Generally each action has a specific button (Intaking, Shooting, etc.)
@@ -217,11 +218,20 @@ public class Manager extends Subsystem<ManagerStates> {
 			Constants.controller.getAButtonPressed()
 		);
 
+		// For autos
+		addTrigger(
+			ManagerStates.SHOOTING,
+			ManagerStates.IDLE,
+			() ->
+				getStateTime() > Constants.Manager.AUTO_SHOOTING_TIME &&
+				DriverStation.isAutonomous()
+		);
+
 		// Climbing (POV)
 		addTrigger(
 			ManagerStates.IDLE,
 			ManagerStates.STAGING_FOR_CLIMB,
-			() -> Constants.controller.getPOV() == 0 && useClimbersVal
+			() -> Constants.controller.getPOV() == Constants.Manager.DPAD_UP && useClimbersVal
 		);
 		addTrigger(ManagerStates.STAGING_FOR_CLIMB, ManagerStates.CLIMBING, () ->
 			ampBarSubsystem.nearSetPoints()
@@ -229,7 +239,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.CLIMBING,
 			ManagerStates.CLIMBED,
-			() -> Constants.controller.getPOV() == 180
+			() -> Constants.controller.getPOV() == Constants.Manager.DPAD_DOWN
 		);
 		addTrigger(ManagerStates.CLIMBED, ManagerStates.IDLE, () ->
 			Constants.controller.getXButtonPressed()
@@ -239,7 +249,6 @@ public class Manager extends Subsystem<ManagerStates> {
 	@Override
 	public void periodic() {
 		super.periodic();
-
 		loopCounter += 1;
 
 		intakeSubsystem.setState(getState().getIntakeState());
@@ -251,9 +260,10 @@ public class Manager extends Subsystem<ManagerStates> {
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
 		driveSubsystem.periodic();
+		climberSubsystem.periodic();
 
 		// Set Sendable Stuff:
-		if (loopCounter % SENDABLE_CHECK_INTERVAL == 0) {
+		if (loopCounter % Constants.Manager.SENDABLE_CHECK_INTERVAL == 0) {
 			useBeamBreaksVal = useBeamBreaks.getSelected() == null
 				? true
 				: useBeamBreaks.getSelected();
@@ -297,7 +307,8 @@ public class Manager extends Subsystem<ManagerStates> {
 			climberSubsystem.setState(getState().getClimberState());
 		}
 
-		// if (useVisionVal) vision.periodic();
+		// if (useVisionVal) //vision.periodic();
+		vision.periodic();
 
 		driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
 
@@ -317,8 +328,8 @@ public class Manager extends Subsystem<ManagerStates> {
 
 	@Override
 	protected void runState() {
-		NoteSimulator.update();
-		NoteSimulator.logNoteInfo();
+		// NoteSimulator.update();
+		// NoteSimulator.logNoteInfo();
 	}
 
 	// Near Setpoint functions for stuff

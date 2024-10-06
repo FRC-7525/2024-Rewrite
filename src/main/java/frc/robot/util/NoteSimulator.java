@@ -41,7 +41,7 @@ public class NoteSimulator {
 			return;
 		}
 
-		Logger.recordOutput("Launch Velocity", velocity);
+		Logger.recordOutput("Note Sim/Launch Velocity", velocity);
 
 		currentFieldPose = getFieldPose(Constants.NoteSim.SHOOTER_POSE3D);
 		inShooter = false;
@@ -112,10 +112,10 @@ public class NoteSimulator {
 	}
 
 	public static void logNoteInfo() {
-		Logger.recordOutput(
-			"SimNoteTrajectory",
-			NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0])
-		);
-		Logger.recordOutput("SimNotePose3d", getFieldPose(Constants.NoteSim.SHOOTER_POSE3D));
+		// Logger.recordOutput(
+		// 	"Note Sim/SimNoteTrajectory",
+		// 	NoteSimulator.getNoteTrajectory().toArray(new Translation3d[0])
+		// );
+		// Logger.recordOutput("Note Sim/SimNotePose3d", getFieldPose(Constants.NoteSim.SHOOTER_POSE3D));
 	}
 }

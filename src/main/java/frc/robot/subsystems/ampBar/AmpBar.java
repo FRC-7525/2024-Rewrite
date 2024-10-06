@@ -60,6 +60,11 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 	public void periodic() {
 		super.periodic();
 
+		Logger.processInputs("Amp Bar", inputs);
+		io.updateInput(inputs);
+		io.updateOutputs(outputs);
+
+		Logger.recordOutput("Amp Bar/Amp Bar BB", io.noteDetected());
 		Logger.recordOutput(
 			"Amp Bar/Amp Bar Pose3d",
 			new Pose3d(
@@ -67,10 +72,6 @@ public class AmpBar extends Subsystem<AmpBarStates> {
 				new Rotation3d(0, io.getPivotPosition(), 0)
 			)
 		);
-		Logger.processInputs("Amp Bar", inputs);
-		io.updateInput(inputs);
-		io.updateOutputs(outputs);
-		Logger.recordOutput("Amp Bar BB", io.noteDetected());
 	}
 
 	public boolean noteDetected() {
