@@ -230,6 +230,7 @@ public class Drive extends Subsystem<DriveStates> {
 			DriverStation.getAlliance().get() == Alliance.Red;
 
 		if (fieldRelative) {
+			// TODO: INVERT THE GYRO, MULTIPLYING IT BY 1 IS SO STUPID!!!!!!!!!!!!!!!!!!!!!!!!!
 			drive.runVelocity(
 				ChassisSpeeds.fromFieldRelativeSpeeds(
 					linearVelocity.getX() *
