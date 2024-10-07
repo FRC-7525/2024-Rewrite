@@ -18,10 +18,6 @@ public class AutoCommands {
 		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.INTAKING));
 	}
 
-	// public Command shooting() {
-	// 	return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.SHOOTING));
-	// }
-
 	public Command returnToIdle() {
 		return new InstantCommand(() -> robot.managerSubsystem.setState(ManagerStates.IDLE));
 	}
