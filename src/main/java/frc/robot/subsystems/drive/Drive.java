@@ -164,7 +164,8 @@ public class Drive extends Subsystem<DriveStates> {
 		DoubleSupplier omegaSupplier,
 		double rotationMultiplier,
 		double translationMultiplier,
-		boolean headingCorrection
+		boolean headingCorrection,
+		boolean fieldRelative
 	) {
 		// Apply deadband
 		double linearMagnitude = MathUtil.applyDeadband(
@@ -221,8 +222,25 @@ public class Drive extends Subsystem<DriveStates> {
 		boolean isFlipped =
 			DriverStation.getAlliance().isPresent() &&
 			DriverStation.getAlliance().get() == Alliance.Red;
-		drive.runVelocity(
-			ChassisSpeeds.fromFieldRelativeSpeeds(
+
+		if (fieldRelative) {
+			drive.runVelocity(
+				ChassisSpeeds.fromFieldRelativeSpeeds(
+					linearVelocity.getX() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					linearVelocity.getY() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
+					(isFlipped
+							? drive.getRotation().plus(new Rotation2d(Math.PI))
+							: drive.getRotation()).times(Constants.currentMode == Constants.Mode.REAL ? -1 : 1)
+				)
+			);
+		} else {
+			drive.runVelocity(
+			ChassisSpeeds.fromRobotRelativeSpeeds(
 				linearVelocity.getX() *
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
@@ -230,11 +248,12 @@ public class Drive extends Subsystem<DriveStates> {
 				drive.getMaxLinearSpeedMetersPerSec() *
 				translationMultiplier,
 				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				(isFlipped
-						? drive.getRotation().plus(new Rotation2d(Math.PI))
-						: drive.getRotation()).times(-1)
+				drive.getRotation()
 			)
 		);
+		}
+		
+
 	}
 
 	@Override
