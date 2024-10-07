@@ -128,7 +128,8 @@ public class Drive extends Subsystem<DriveStates> {
 				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
-				headingCorrectionEnabled
+				headingCorrectionEnabled,
+				false
 			);
 		}
 
