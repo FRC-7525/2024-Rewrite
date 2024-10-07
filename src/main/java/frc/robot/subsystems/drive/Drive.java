@@ -140,6 +140,7 @@ public class Drive extends Subsystem<DriveStates> {
 
 		if (Constants.controller.getBackButtonPressed()) {
 			fieldRelative = !fieldRelative;
+			Logger.recordOutput("Drive/Field Rel", fieldRelative);
 		}
 	}
 
@@ -188,14 +189,6 @@ public class Drive extends Subsystem<DriveStates> {
 		);
 
 		if (headingCorrection) {
-			// System.out.println(headingCorrection);
-			// System.out.println("Omgea = 0?" + (omega == 0));
-			// System.out.println(
-			// 	Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
-			// );
-			// System.out.println(
-			// 	Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
-			// );
 			if (
 				Math.abs(omega) == 0.0 &&
 				(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND ||
@@ -206,7 +199,6 @@ public class Drive extends Subsystem<DriveStates> {
 					lastHeadingRadians
 				) *
 				Constants.Drive.MAX_ANGULAR_SPEED;
-				// System.out.println("something is happening");
 			} else {
 				lastHeadingRadians = poseEstimator
 					.getEstimatedPosition()
@@ -230,7 +222,6 @@ public class Drive extends Subsystem<DriveStates> {
 			DriverStation.getAlliance().get() == Alliance.Red;
 
 		if (fieldRelative) {
-			// TODO: INVERT THE GYRO, MULTIPLYING IT BY 1 IS SO STUPID!!!!!!!!!!!!!!!!!!!!!!!!!
 			drive.runVelocity(
 				ChassisSpeeds.fromFieldRelativeSpeeds(
 					linearVelocity.getX() *
