@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SerialPort;
 import java.util.OptionalDouble;
@@ -14,15 +15,18 @@ public class GyroIONavx2 implements GyroIO {
 	private final Queue<Double> yawPositionQueue;
 	private final Queue<Double> yawTimestampQueue;
 
+	private Rotation3d offset;
+
 	public GyroIONavx2() {
 		navx = new AHRS(SerialPort.Port.kUSB1);
-		navx.enableBoardlevelYawReset(true);
 		navx.reset();
+		offset = new Rotation3d();
+
 		yawTimestampQueue = HybridOdometryThread.getInstance().makeTimestampQueue();
 		yawPositionQueue = HybridOdometryThread.getInstance()
 			.registerSignal(() -> {
 				if (navx.isConnected()) {
-					return OptionalDouble.of(navx.getYaw());
+					return OptionalDouble.of(navx.getRotation3d().minus(offset).getAngle());
 				} else {
 					return OptionalDouble.empty();
 				}
@@ -31,18 +35,15 @@ public class GyroIONavx2 implements GyroIO {
 
 	@Override
 	public void zero() {
-		System.out.println("ahhaha");
-		navx.reset();
-		navx.zeroYaw();
-		System.out.println(navx.getYaw());
+		this.offset = navx.getRotation3d();
 	}
 
 	@Override
 	public void updateInputs(GyroIOInputs inputs) {
 		inputs.connected = navx.isConnected();
-		inputs.yawPosition = Rotation2d.fromDegrees(navx.getYaw());
+		inputs.yawPosition = Rotation2d.fromRadians(navx.getRotation3d().minus(offset).getAngle());
 		inputs.yawVelocityRadPerSec = Units.degreesToRadians(navx.getRate());
-		inputs.yawPosDeg = navx.getYaw();
+		inputs.yawPosDeg = Units.radiansToDegrees(navx.getRotation3d().minus(offset).getAngle());
 
 		if (yawTimestampQueue != null && yawPositionQueue != null) {
 			inputs.odometryYawTimestamps = yawTimestampQueue

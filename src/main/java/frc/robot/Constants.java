@@ -223,7 +223,7 @@ public final class Constants {
 		public static final double FAST_TM = 2.0;
 
 		// Auto Config
-		public static final PIDConstants TRANSLATION_PID = new PIDConstants(7.0, 0.0, 0.25);
+		public static final PIDConstants TRANSLATION_PID = new PIDConstants(1.0, 0.0, 0.25);
 		public static final PIDConstants ROTATION_PID = new PIDConstants(4.0, 0.0, 0.4);
 		public static final double MAX_MODULE_SPEED = 6.0;
 
