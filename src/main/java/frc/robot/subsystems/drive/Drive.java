@@ -236,25 +236,25 @@ public class Drive extends Subsystem<DriveStates> {
 					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
 					(isFlipped
 							? drive.getRotation().plus(new Rotation2d(Math.PI))
-							: drive.getRotation()).times(Constants.currentMode == Constants.Mode.REAL ? -1 : 1)
+							: drive.getRotation()).times(
+							Constants.currentMode == Constants.Mode.REAL ? -1 : 1
+						)
 				)
 			);
 		} else {
 			drive.runVelocity(
-			ChassisSpeeds.fromRobotRelativeSpeeds(
-				linearVelocity.getX() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				linearVelocity.getY() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				drive.getRotation()
-			)
-		);
+				ChassisSpeeds.fromRobotRelativeSpeeds(
+					linearVelocity.getX() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					linearVelocity.getY() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
+					drive.getRotation()
+				)
+			);
 		}
-		
-
 	}
 
 	@Override
