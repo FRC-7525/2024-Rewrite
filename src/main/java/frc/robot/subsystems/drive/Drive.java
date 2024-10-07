@@ -53,6 +53,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private double lastHeadingRadians;
 	private PIDController headingCorrectionController;
 	private boolean headingCorrectionEnabled;
+	private boolean fieldRelative = true;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -129,12 +130,16 @@ public class Drive extends Subsystem<DriveStates> {
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
 				headingCorrectionEnabled,
-				false
+				fieldRelative
 			);
 		}
 
 		if (Constants.controller.getStartButtonPressed()) {
 			zeroGryo();
+		}
+
+		if (Constants.controller.getBackButtonPressed()) {
+			fieldRelative = !fieldRelative;
 		}
 	}
 
