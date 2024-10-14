@@ -83,7 +83,7 @@ public class Drive extends Subsystem<DriveStates> {
 
 		lastHeadingRadians = poseEstimator.getEstimatedPosition().getRotation().getRadians();
 		headingCorrectionEnabled = true;
-		// TODO: Tune
+
 		headingCorrectionController = new PIDController(
 			Constants.Drive.HEADING_CORRECTION_PID.kP,
 			Constants.Drive.HEADING_CORRECTION_PID.kI,
@@ -119,8 +119,6 @@ public class Drive extends Subsystem<DriveStates> {
 		// Can't run in auto otherwise it will constantly tell drive not to drive in
 		// auto (and thats not
 		// good)
-		// Logger.recordOutput("driveState", getState());
-		// TODO: TURN ON HEADING CORRECTION LATER
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
