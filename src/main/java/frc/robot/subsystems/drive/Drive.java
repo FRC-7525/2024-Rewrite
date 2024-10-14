@@ -53,6 +53,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private double lastHeadingRadians;
 	private PIDController headingCorrectionController;
 	private boolean headingCorrectionEnabled;
+	private boolean fieldRelativeEnabled = true;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -82,7 +83,7 @@ public class Drive extends Subsystem<DriveStates> {
 
 		lastHeadingRadians = poseEstimator.getEstimatedPosition().getRotation().getRadians();
 		headingCorrectionEnabled = true;
-		// TODO: Tune
+
 		headingCorrectionController = new PIDController(
 			Constants.Drive.HEADING_CORRECTION_PID.kP,
 			Constants.Drive.HEADING_CORRECTION_PID.kI,
@@ -118,22 +119,26 @@ public class Drive extends Subsystem<DriveStates> {
 		// Can't run in auto otherwise it will constantly tell drive not to drive in
 		// auto (and thats not
 		// good)
-		// Logger.recordOutput("driveState", getState());
-		// TODO: TURN ON HEADING CORRECTION LATER
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
-				() -> -Constants.controller.getLeftY(),
-				() -> -Constants.controller.getLeftX(),
+				() -> Constants.controller.getLeftY(),
+				() -> Constants.controller.getLeftX(),
 				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
-				headingCorrectionEnabled
+				headingCorrectionEnabled,
+				fieldRelativeEnabled
 			);
 		}
 
 		if (Constants.controller.getStartButtonPressed()) {
 			zeroGryo();
+		}
+
+		if (Constants.controller.getBackButtonPressed()) {
+			fieldRelativeEnabled = !fieldRelativeEnabled;
+			Logger.recordOutput("Drive", fieldRelativeEnabled);
 		}
 	}
 
@@ -164,7 +169,8 @@ public class Drive extends Subsystem<DriveStates> {
 		DoubleSupplier omegaSupplier,
 		double rotationMultiplier,
 		double translationMultiplier,
-		boolean headingCorrection
+		boolean headingCorrection,
+		boolean fieldRelative
 	) {
 		// Apply deadband
 		double linearMagnitude = MathUtil.applyDeadband(
@@ -181,14 +187,6 @@ public class Drive extends Subsystem<DriveStates> {
 		);
 
 		if (headingCorrection) {
-			// System.out.println(headingCorrection);
-			// System.out.println("Omgea = 0?" + (omega == 0));
-			// System.out.println(
-			// 	Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
-			// );
-			// System.out.println(
-			// 	Math.abs(ySupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND
-			// );
 			if (
 				Math.abs(omega) == 0.0 &&
 				(Math.abs(xSupplier.getAsDouble()) > Constants.Drive.CONTROLLER_DEADBAND ||
@@ -199,7 +197,6 @@ public class Drive extends Subsystem<DriveStates> {
 					lastHeadingRadians
 				) *
 				Constants.Drive.MAX_ANGULAR_SPEED;
-				// System.out.println("something is happening");
 			} else {
 				lastHeadingRadians = poseEstimator
 					.getEstimatedPosition()
@@ -222,18 +219,28 @@ public class Drive extends Subsystem<DriveStates> {
 			DriverStation.getAlliance().isPresent() &&
 			DriverStation.getAlliance().get() == Alliance.Red;
 		drive.runVelocity(
-			ChassisSpeeds.fromFieldRelativeSpeeds(
-				linearVelocity.getX() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				linearVelocity.getY() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				(isFlipped
-						? drive.getRotation().plus(new Rotation2d(Math.PI))
-						: drive.getRotation()).times(-1)
-			)
+			fieldRelative
+				? ChassisSpeeds.fromFieldRelativeSpeeds(
+					linearVelocity.getX() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					linearVelocity.getY() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
+					(isFlipped
+							? drive.getRotation().plus(new Rotation2d(Math.PI))
+							: drive.getRotation()).times(-1)
+				)
+				: new ChassisSpeeds(
+					linearVelocity.getX() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					linearVelocity.getY() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier
+				)
 		);
 	}
 
@@ -263,6 +270,7 @@ public class Drive extends Subsystem<DriveStates> {
 				module.stop();
 			}
 		}
+
 		// Log empty setpoint states when disabled
 		if (DriverStation.isDisabled()) {
 			Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
