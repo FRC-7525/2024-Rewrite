@@ -219,28 +219,28 @@ public class Drive extends Subsystem<DriveStates> {
 			DriverStation.getAlliance().isPresent() &&
 			DriverStation.getAlliance().get() == Alliance.Red;
 		drive.runVelocity(
-			fieldRelative ?
-			ChassisSpeeds.fromFieldRelativeSpeeds(
-				linearVelocity.getX() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				linearVelocity.getY() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-				(isFlipped
-						? drive.getRotation().plus(new Rotation2d(Math.PI))
-						: drive.getRotation()).times(-1)
-			) :
-			new ChassisSpeeds(
-				linearVelocity.getX() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				linearVelocity.getY() *
-				drive.getMaxLinearSpeedMetersPerSec() *
-				translationMultiplier,
-				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier
-			)
+			fieldRelative
+				? ChassisSpeeds.fromFieldRelativeSpeeds(
+					linearVelocity.getX() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					linearVelocity.getY() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
+					(isFlipped
+							? drive.getRotation().plus(new Rotation2d(Math.PI))
+							: drive.getRotation()).times(-1)
+				)
+				: new ChassisSpeeds(
+					linearVelocity.getX() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					linearVelocity.getY() *
+					drive.getMaxLinearSpeedMetersPerSec() *
+					translationMultiplier,
+					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier
+				)
 		);
 	}
 
