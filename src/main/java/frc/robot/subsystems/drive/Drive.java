@@ -53,7 +53,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private double lastHeadingRadians;
 	private PIDController headingCorrectionController;
 	private boolean headingCorrectionEnabled;
-	private boolean fieldRelative = true;
+	private boolean fieldRelativeEnabled = true;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -122,13 +122,13 @@ public class Drive extends Subsystem<DriveStates> {
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
-				() -> -Constants.controller.getLeftY(),
-				() -> -Constants.controller.getLeftX(),
+				() -> Constants.controller.getLeftY(),
+				() -> Constants.controller.getLeftX(),
 				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
 				headingCorrectionEnabled,
-				fieldRelative
+				fieldRelativeEnabled
 			);
 		}
 
@@ -137,8 +137,8 @@ public class Drive extends Subsystem<DriveStates> {
 		}
 
 		if (Constants.controller.getBackButtonPressed()) {
-			fieldRelative = !fieldRelative;
-			Logger.recordOutput("Drive/Field Rel", fieldRelative);
+			fieldRelativeEnabled = !fieldRelativeEnabled;
+			Logger.recordOutput("Drive", fieldRelativeEnabled);
 		}
 	}
 
@@ -218,38 +218,30 @@ public class Drive extends Subsystem<DriveStates> {
 		boolean isFlipped =
 			DriverStation.getAlliance().isPresent() &&
 			DriverStation.getAlliance().get() == Alliance.Red;
-
-		if (fieldRelative) {
-			drive.runVelocity(
-				ChassisSpeeds.fromFieldRelativeSpeeds(
-					linearVelocity.getX() *
-					drive.getMaxLinearSpeedMetersPerSec() *
-					translationMultiplier,
-					linearVelocity.getY() *
-					drive.getMaxLinearSpeedMetersPerSec() *
-					translationMultiplier,
-					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-					(isFlipped
-							? drive.getRotation().plus(new Rotation2d(Math.PI))
-							: drive.getRotation()).times(
-							Constants.currentMode == Constants.Mode.REAL ? -1 : 1
-						)
-				)
-			);
-		} else {
-			drive.runVelocity(
-				ChassisSpeeds.fromRobotRelativeSpeeds(
-					linearVelocity.getX() *
-					drive.getMaxLinearSpeedMetersPerSec() *
-					translationMultiplier,
-					linearVelocity.getY() *
-					drive.getMaxLinearSpeedMetersPerSec() *
-					translationMultiplier,
-					omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
-					drive.getRotation()
-				)
-			);
-		}
+		drive.runVelocity(
+			fieldRelative ?
+			ChassisSpeeds.fromFieldRelativeSpeeds(
+				linearVelocity.getX() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				linearVelocity.getY() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier,
+				(isFlipped
+						? drive.getRotation().plus(new Rotation2d(Math.PI))
+						: drive.getRotation()).times(-1)
+			) :
+			new ChassisSpeeds(
+				linearVelocity.getX() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				linearVelocity.getY() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier
+			)
+		);
 	}
 
 	@Override
@@ -278,6 +270,7 @@ public class Drive extends Subsystem<DriveStates> {
 				module.stop();
 			}
 		}
+
 		// Log empty setpoint states when disabled
 		if (DriverStation.isDisabled()) {
 			Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
