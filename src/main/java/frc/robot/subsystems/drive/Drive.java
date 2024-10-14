@@ -53,6 +53,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private double lastHeadingRadians;
 	private PIDController headingCorrectionController;
 	private boolean headingCorrectionEnabled;
+	private boolean fieldRelativeEnabled = true;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -123,18 +124,25 @@ public class Drive extends Subsystem<DriveStates> {
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
-				() -> -Constants.controller.getLeftY(),
-				() -> -Constants.controller.getLeftX(),
+				() -> Constants.controller.getLeftY(),
+				() -> Constants.controller.getLeftX(),
 				() -> Constants.controller.getRightX(),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
-				headingCorrectionEnabled
+				headingCorrectionEnabled,
+				fieldRelativeEnabled
 			);
 		}
 
 		if (Constants.controller.getStartButtonPressed()) {
 			zeroGryo();
 		}
+
+		if (Constants.controller.getBackButtonPressed()) {
+			fieldRelativeEnabled = !fieldRelativeEnabled;
+			Logger.recordOutput("Drive", fieldRelativeEnabled);
+		}
+
 	}
 
 	// L code??? (taken from AA) good enough
@@ -164,7 +172,8 @@ public class Drive extends Subsystem<DriveStates> {
 		DoubleSupplier omegaSupplier,
 		double rotationMultiplier,
 		double translationMultiplier,
-		boolean headingCorrection
+		boolean headingCorrection,
+		boolean fieldRelative
 	) {
 		// Apply deadband
 		double linearMagnitude = MathUtil.applyDeadband(
@@ -222,6 +231,7 @@ public class Drive extends Subsystem<DriveStates> {
 			DriverStation.getAlliance().isPresent() &&
 			DriverStation.getAlliance().get() == Alliance.Red;
 		drive.runVelocity(
+			fieldRelative ?
 			ChassisSpeeds.fromFieldRelativeSpeeds(
 				linearVelocity.getX() *
 				drive.getMaxLinearSpeedMetersPerSec() *
@@ -233,6 +243,15 @@ public class Drive extends Subsystem<DriveStates> {
 				(isFlipped
 						? drive.getRotation().plus(new Rotation2d(Math.PI))
 						: drive.getRotation()).times(-1)
+			) :
+			new ChassisSpeeds(
+				linearVelocity.getX() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				linearVelocity.getY() *
+				drive.getMaxLinearSpeedMetersPerSec() *
+				translationMultiplier,
+				omega * drive.getMaxAngularSpeedRadPerSec() * rotationMultiplier
 			)
 		);
 	}
@@ -263,6 +282,7 @@ public class Drive extends Subsystem<DriveStates> {
 				module.stop();
 			}
 		}
+
 		// Log empty setpoint states when disabled
 		if (DriverStation.isDisabled()) {
 			Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
