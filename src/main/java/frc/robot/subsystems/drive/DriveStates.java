@@ -5,6 +5,7 @@ import frc.robot.subsystems.SubsystemStates;
 
 public enum DriveStates implements SubsystemStates {
 	REGULAR_DRIVE("Regular Drive", Constants.Drive.REGULAR_TM, Constants.Drive.REGULAR_RM),
+	DEMO_SPIN("Spinning for Demo", 0.5, 0.2),
 	SLOW_MODE("Slow Mode", Constants.Drive.SLOW_TM, Constants.Drive.SLOW_RM),
 	AUTO_ALIGN("Auto Aligning", Constants.Drive.AA_TM, Constants.Drive.AA_RM),
 	SPEED_MAXXING("Speed Maxxing", Constants.Drive.FAST_TM, Constants.Drive.FAST_RM);

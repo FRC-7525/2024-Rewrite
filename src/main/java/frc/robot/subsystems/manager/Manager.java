@@ -159,15 +159,18 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(ManagerStates.IDLE, ManagerStates.INTAKING, () ->
 			Constants.controller.getBButtonPressed()
 		);
-		addTrigger(
-			ManagerStates.INTAKING,
-			ManagerStates.IDLE,
-			() ->
-				(intakeSubsystem.noteDetected() &&
-					intakeSubsystem.nearSetPoint() &&
-					useBeamBreaksVal) ||
-				Constants.controller.getBButtonPressed()
+		addTrigger(ManagerStates.INTAKING, ManagerStates.IDLE, () ->
+			Constants.controller.getBButtonPressed()
 		);
+		// addTrigger(
+		// 	ManagerStates.INTAKING,
+		// 	ManagerStates.IDLE,
+		// 	() ->
+		// 		(intakeSubsystem.noteDetected() &&
+		// 			intakeSubsystem.nearSetPoint() &&
+		// 			useBeamBreaksVal) ||
+		// 		Constants.controller.getBButtonPressed()
+		// );
 
 		// Amping (Y)
 		addTrigger(ManagerStates.IDLE, ManagerStates.STAGING_AMP, () ->

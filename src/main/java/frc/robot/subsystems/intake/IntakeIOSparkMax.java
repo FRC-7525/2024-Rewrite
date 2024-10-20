@@ -32,8 +32,8 @@ public class IntakeIOSparkMax implements IntakeIO {
 
 	boolean usingInPID;
 
-	private DigitalInput beamBreak;
-	Debouncer beamBreakDebouncer;
+	// private DigitalInput beamBreak;
+	// Debouncer beamBreakDebouncer;
 
 	public IntakeIOSparkMax() {
 		intakeMotor = new TalonFX(Constants.Intake.SPINNER_ID);
@@ -48,11 +48,11 @@ public class IntakeIOSparkMax implements IntakeIO {
 		pivotEncoder.setPositionConversionFactor(Constants.RADIAN_CF);
 		pivotEncoder.setVelocityConversionFactor(Constants.RADIAN_CF);
 
-		beamBreak = new DigitalInput(Constants.Intake.BEAM_BREAK_PORT);
-		beamBreakDebouncer = new Debouncer(
-			Constants.Intake.DEBOUNCE_TIME,
-			Debouncer.DebounceType.kBoth
-		);
+		// beamBreak = new DigitalInput(Constants.Intake.BEAM_BREAK_PORT);
+		// beamBreakDebouncer = new Debouncer(
+		// 	Constants.Intake.DEBOUNCE_TIME,
+		// 	Debouncer.DebounceType.kBoth
+		// );
 	}
 
 	public void setSetpoints(
@@ -124,8 +124,8 @@ public class IntakeIOSparkMax implements IntakeIO {
 		inPIDController.setPID(inPIPidConst.kP, inPIPidConst.kI, inPIPidConst.kD);
 	}
 
-	@Override
-	public boolean noteDetected() {
-		return !beamBreakDebouncer.calculate(beamBreak.get());
-	}
+	// @Override
+	// public boolean noteDetected() {
+	// 	return !beamBreakDebouncer.calculate(beamBreak.get());
+	// }
 }

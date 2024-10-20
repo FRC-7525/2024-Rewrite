@@ -54,6 +54,7 @@ public class Drive extends Subsystem<DriveStates> {
 	private PIDController headingCorrectionController;
 	private boolean headingCorrectionEnabled;
 	private boolean fieldRelativeEnabled = true;
+	// private Timer demoTimer = true;
 
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 	private Rotation2d rawGyroRotation = new Rotation2d();
@@ -103,6 +104,15 @@ public class Drive extends Subsystem<DriveStates> {
 		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SLOW_MODE, () ->
 			Constants.controller.getLeftBumperPressed()
 		);
+
+		addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.DEMO_SPIN, () ->
+			Constants.controller.getXButtonPressed()
+		); 
+
+		addTrigger(DriveStates.DEMO_SPIN, DriveStates.REGULAR_DRIVE, () ->
+			Constants.controller.getXButtonPressed()
+		);
+
 		// addTrigger(DriveStates.REGULAR_DRIVE, DriveStates.SPEED_MAXXING,
 		// 		() -> Constants.controller.getLeftBumperPressed());
 
@@ -121,12 +131,14 @@ public class Drive extends Subsystem<DriveStates> {
 		// good)
 		// Logger.recordOutput("driveState", getState());
 		// TODO: TURN ON HEADING CORRECTION LATER
+
+
 		if (DriverStation.isTeleop() && getState() != DriveStates.AUTO_ALIGN) {
 			drive(
 				this,
 				() -> Constants.controller.getLeftY(),
 				() -> Constants.controller.getLeftX(),
-				() -> Constants.controller.getRightX(),
+				() -> Constants.controller.getRightX() + (getState() == DriveStates.DEMO_SPIN ? 0.15 : 0),
 				getState().getRotationModifier(),
 				getState().getTranslationModifier(),
 				headingCorrectionEnabled,

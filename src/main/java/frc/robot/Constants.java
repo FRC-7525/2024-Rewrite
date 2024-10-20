@@ -104,7 +104,7 @@ public final class Constants {
 		public static final double OFF = 0.0;
 
 		// In DEGREES (Pivot setpoints)
-		public static final double DOWN = -233;
+		public static final double DOWN = -228;
 		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
