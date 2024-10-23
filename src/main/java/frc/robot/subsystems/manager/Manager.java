@@ -31,9 +31,9 @@ public class Manager extends Subsystem<ManagerStates> {
 	private Intake intakeSubsystem;
 	private AmpBar ampBarSubsystem;
 	private Shooter shooterSubsystem;
-	private Drive driveSubsystem;
-	private AutoAlign autoAlignSubsystem;
-	private Vision vision;
+	// private Drive driveSubsystem;
+	// private AutoAlign autoAlignSubsystem;
+	// private Vision vision;
 
 	private SendableChooser<Boolean> useBeamBreaks;
 	private SendableChooser<Boolean> useAutoAlign;
@@ -104,13 +104,13 @@ public class Manager extends Subsystem<ManagerStates> {
 				ampBarSubsystem = new AmpBar(new AmpBarIOReal());
 				shooterSubsystem = new Shooter(new ShooterIOTalonFX());
 				climberSubsystem = new Climber(new ClimberIOSparkMax());
-				driveSubsystem = new Drive(
-					new GyroIONavx2(),
-					new ModuleIOHybrid(0),
-					new ModuleIOHybrid(1),
-					new ModuleIOHybrid(2),
-					new ModuleIOHybrid(3)
-				);
+				// driveSubsystem = new Drive(
+				// 	new GyroIONavx2(),
+				// 	new ModuleIOHybrid(0),
+				// 	new ModuleIOHybrid(1),
+				// 	new ModuleIOHybrid(2),
+				// 	new ModuleIOHybrid(3)
+				// );
 				useVision.setDefaultOption("On", true);
 				break;
 			case REPLAY:
@@ -118,33 +118,33 @@ public class Manager extends Subsystem<ManagerStates> {
 				ampBarSubsystem = new AmpBar(new AmpBarIO() {});
 				shooterSubsystem = new Shooter(new ShooterIO() {});
 				climberSubsystem = new Climber(new ClimberIO() {});
-				driveSubsystem = new Drive(
-					new GyroIO() {},
-					new ModuleIO() {},
-					new ModuleIO() {},
-					new ModuleIO() {},
-					new ModuleIO() {}
-				);
+				// driveSubsystem = new Drive(
+				// 	new GyroIO() {},
+				// 	new ModuleIO() {},
+				// 	new ModuleIO() {},
+				// 	new ModuleIO() {},
+				// 	new ModuleIO() {}
+				// );
 				break;
 			case SIM:
 				intakeSubsystem = new Intake(new IntakeIOSim());
 				ampBarSubsystem = new AmpBar(new AmpBarIOSim());
 				shooterSubsystem = new Shooter(new ShooterIOSim());
 				climberSubsystem = new Climber(new ClimberIOSim());
-				driveSubsystem = new Drive(
-					new GyroIO() {},
-					new ModuleIOSim(),
-					new ModuleIOSim(),
-					new ModuleIOSim(),
-					new ModuleIOSim()
-				);
+				// driveSubsystem = new Drive(
+				// 	new GyroIO() {},
+				// 	new ModuleIOSim(),
+				// 	new ModuleIOSim(),
+				// 	new ModuleIOSim(),
+				// 	new ModuleIOSim()
+				// );
 				useVision.setDefaultOption("Off", false);
 				break;
 			default:
 				break;
 		}
-		autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
-		vision = new Vision(driveSubsystem);
+		// autoAlignSubsystem = new AutoAlign(new AutoAlignIO(driveSubsystem));
+		// vision = new Vision(driveSubsystem);
 
 		// NoteSimulator.setDrive(driveSubsystem);
 
@@ -262,7 +262,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		intakeSubsystem.periodic();
 		ampBarSubsystem.periodic();
 		shooterSubsystem.periodic();
-		driveSubsystem.periodic();
+		// driveSubsystem.periodic();
 		climberSubsystem.periodic();
 
 		// Set Sendable Stuff:
@@ -284,26 +284,26 @@ public class Manager extends Subsystem<ManagerStates> {
 		}
 
 		// AA
-		if (useAutoAlignVal) {
-			autoAlignSubsystem.periodic();
-			if (autoAlignSubsystem.nearTargetPoint()) {
-				switch (autoAlignSubsystem.getCachedState()) {
-					case AMP:
-						setState(ManagerStates.STAGING_AMP);
-						break;
-					case AMP_SPEAKER:
-						setState(ManagerStates.SPINNING_UP);
-						break;
-					case SOURCE_SPEAKER:
-						setState(ManagerStates.SPINNING_UP);
-						break;
-					case OFF:
-						break;
-					default:
-						break;
-				}
-			}
-		}
+		// if (useAutoAlignVal) {
+		// 	autoAlignSubsystem.periodic();
+		// 	if (autoAlignSubsystem.nearTargetPoint()) {
+		// 		switch (autoAlignSubsystem.getCachedState()) {
+		// 			case AMP:
+		// 				setState(ManagerStates.STAGING_AMP);
+		// 				break;
+		// 			case AMP_SPEAKER:
+		// 				setState(ManagerStates.SPINNING_UP);
+		// 				break;
+		// 			case SOURCE_SPEAKER:
+		// 				setState(ManagerStates.SPINNING_UP);
+		// 				break;
+		// 			case OFF:
+		// 				break;
+		// 			default:
+		// 				break;
+		// 		}
+		// 	}
+		// }
 
 		if (useClimbersVal) {
 			climberSubsystem.periodic();
@@ -311,9 +311,9 @@ public class Manager extends Subsystem<ManagerStates> {
 		}
 
 		// if (useVisionVal) //vision.periodic();
-		vision.periodic();
+		// vision.periodic();
 
-		driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
+		// driveSubsystem.toggleHeadingCorrection(useHeadingCorrectionVal);
 
 		// Cancel all actions regardless of whats happening
 		if (Constants.operatorController.getXButtonPressed()) {
@@ -326,7 +326,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		ampBarSubsystem.stop();
 		shooterSubsystem.stop();
 		climberSubsystem.stop();
-		driveSubsystem.stop();
+		// driveSubsystem.stop();
 	}
 
 	@Override
@@ -348,7 +348,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		return shooterSubsystem.nearSpeedPoint();
 	}
 
-	public boolean driveNearSetPose(Pose2d targetPose) {
-		return driveSubsystem.nearSetPose(targetPose);
-	}
+	// public boolean driveNearSetPose(Pose2d targetPose) {
+	// 	return driveSubsystem.nearSetPose(targetPose);
+	// }
 }

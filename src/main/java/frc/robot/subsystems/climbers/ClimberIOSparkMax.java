@@ -44,6 +44,15 @@ public class ClimberIOSparkMax implements ClimberIO {
 		leftClimberEncoder = leftClimberMotor.getEncoder();
 		rightClimberEncoder = rightClimberMotor.getEncoder();
 
+		// TODO: Constants/whatever this, its bc angle CFs will mess up these ones bc we wired badly and spark keeps configs
+		leftClimberEncoder.setVelocityConversionFactor(1);
+		rightClimberEncoder.setVelocityConversionFactor(1);
+		leftClimberEncoder.setPositionConversionFactor(1);
+		rightClimberEncoder.setPositionConversionFactor(1);
+
+		leftClimberMotor.burnFlash();
+		rightClimberMotor.burnFlash();
+
 		climberController = new PIDController(0, 0, 0);
 
 		leftFilter = LinearFilter.movingAverage(Constants.Climber.CURRENT_FILTER_TAPS);

@@ -20,8 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.AutoCommands;
-import frc.robot.commands.ShootNearSpeakerCommand;
+// import frc.robot.commands.ShootNearSpeakerCommand;
 import frc.robot.commands.Shooting;
 import frc.robot.subsystems.manager.*;
 import frc.robot.util.NoteSimulator;
@@ -105,7 +106,7 @@ public class Robot extends LoggedRobot {
 		NamedCommands.registerCommand("Return To Idle", autoCommands.returnToIdle());
 		NamedCommands.registerCommand("Speeding Up", autoCommands.startSpinningUp());
 		NamedCommands.registerCommand("Spin and Intake", autoCommands.spinAndIntake());
-		NamedCommands.registerCommand("Shoot Near Speaker", new ShootNearSpeakerCommand(this));
+		NamedCommands.registerCommand("Shoot Near Speaker", new PrintCommand("lalal"));
 
 		/* Not using this bc PP doesen't let you put "|, :, etc." in the Auto name so we wouldnt
 		 * be able to use the same names as the ones established in our auto style guide thing.
