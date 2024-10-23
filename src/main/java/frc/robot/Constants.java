@@ -78,7 +78,7 @@ public final class Constants {
 		);
 
 		// CAN IDs
-		public static final int PIVOT_ID = 32;
+		public static final int PIVOT_ID = 10;
 		public static final int SPINNER_ID = 20;
 
 		// PID
@@ -310,7 +310,7 @@ public final class Constants {
 
 				// Back Left Module
 				public static final int DRIVE2_ID = 11;
-				public static final int TURN2_ID = 10;
+				public static final int TURN2_ID = 100;
 				public static final int CANCODER2_ID = 12;
 				public static final double OFFSET2 = Units.degreesToRadians(220.517578125);
 
@@ -355,7 +355,7 @@ public final class Constants {
 
 	public static final class Climber {
 
-		public static final int LEFT_ID = 10;
+		public static final int LEFT_ID = 33;
 		public static final int RIGHT_ID = 34;
 
 		public static final int CURRENT_FILTER_TAPS = 5;

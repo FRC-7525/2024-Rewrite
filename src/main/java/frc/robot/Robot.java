@@ -16,6 +16,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -52,6 +53,8 @@ public class Robot extends LoggedRobot {
 	 */
 	@Override
 	public void robotInit() {
+
+		DriverStation.silenceJoystickConnectionWarning(true);
 		// Record metadata
 		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
 		Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -75,7 +78,7 @@ public class Robot extends LoggedRobot {
 			case REAL:
 				// Running on a real robot, log to a USB stick ("/U/logs")
 				// Logger.addDataReceiver(new WPILOGWriter());
-				CameraServer.startAutomaticCapture();
+				// CameraServer.startAutomaticCapture();
 				Logger.addDataReceiver(new NT4Publisher());
 				break;
 			case SIM:
