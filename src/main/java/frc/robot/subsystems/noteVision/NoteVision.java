@@ -1,9 +1,12 @@
 package frc.robot.subsystems.noteVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.List;
@@ -24,19 +27,14 @@ public class NoteVision {
 		hasTarget = false;
 	}
 
-	public Pose2d getNotePose(Pose2d botPose2d) {
+	public double noteAngle() {
 		PhotonPipelineResult lastResult = noteCam.getLatestResult();
 		List<PhotonTrackedTarget> noteData = lastResult.targets;
+		Rotation3d rotation3d = new Rotation3d(0, 0, 180);
 		for (PhotonTrackedTarget t : noteData) {
-			Transform3d noteTransform = t.getBestCameraToTarget();
-			Pose2d notePose2d = new Pose2d(
-				botPose2d.getX() + noteTransform.getX(),
-				botPose2d.getY() + noteTransform.getY(),
-				botPose2d.getRotation()
-			);
-			return notePose2d;
+			rotation3d = t.getBestCameraToTarget().getRotation();
 		}
-		return null;
+		return rotation3d.getAngle();
 	}
 
 	public void periodic() {
@@ -46,9 +44,7 @@ public class NoteVision {
 		} else {
 			hasTarget = false;
 		}
-		SmartDashboard.putNumber("noteX", getNotePose(pose).getX()); // for note vision testing
-		SmartDashboard.putNumber("noteY", getNotePose(pose).getY()); // for note vision testing
-
+		SmartDashboard.putNumber("Angle", noteAngle());
 		Logger.recordOutput("NoteVision/hasTarget", hasTarget);
 	}
 }

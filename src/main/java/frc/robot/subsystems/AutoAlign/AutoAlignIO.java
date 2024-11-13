@@ -68,23 +68,27 @@ public class AutoAlignIO {
 	}
 	public void driveToNotePose() {
 		Pose2d currentPose2d = driveSubsystem.getPose();
-		Pose2d visionPose = noteVision.getNotePose(currentPose2d); 
-
-		if (visionPose != null) {
-			targetPose2d = visionPose;  // Sets target pose to (best) note seen rather than whatever it is set to
+		double targetAngle;
+		targetAngle = 2; // need to tune for optimal speed
+		
+		if (noteVision.noteAngle() != 180) {
+			targetAngle = noteVision.noteAngle(); // Sets target pose to (best) note seen rather than whatever it is set to
+		} else {
+			targetAngle = 0;
+			appliedX = 0;
 		}
 
 		/*uses run velocity from drive and PID controllers to go to target pose */
-		appliedX = translationalPIDController.calculate(currentPose2d.getX(), targetPose2d.getX());
-		appliedY = translationalPIDController.calculate(currentPose2d.getY(), targetPose2d.getY());
+		//appliedX = translationalPIDController.calculate(currentPose2d.getX(), targetPose2d.getX());
+		//appliedY = translationalPIDController.calculate(currentPose2d.getY(), targetPose2d.getY());
 		appliedRotational = rotationalPIDController.calculate(
 			currentPose2d.getRotation().getRadians(),
-			targetPose2d.getRotation().getRadians()
+			targetAngle*(Math.PI/180)
 		);
 		driveSubsystem.runVelocity(
 			ChassisSpeeds.fromFieldRelativeSpeeds(
-				appliedX,
-				appliedY,
+				2,
+				0,
 				appliedRotational,
 				driveSubsystem.getRotation()
 			)
