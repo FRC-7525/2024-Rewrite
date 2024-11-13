@@ -67,9 +67,7 @@ public class AutoAlign extends Subsystem<AutoAlignStates> {
 			io.lockDrive();
 			
 			io.setTargetPose(
-				(getState() == AutoAlignStates.NOTE)
-                ? noteVision.getNotePose(driveSubsystem.getPose())  // Get the pose from NoteVision
-				:(DriverStation.getAlliance().get() == Alliance.Red)
+				(DriverStation.getAlliance().get() == Alliance.Red)
 					? getState().getTargetPose2dRed()
 					: getState().getTargetPose2dBlue()
 			);
