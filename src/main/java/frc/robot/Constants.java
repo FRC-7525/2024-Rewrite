@@ -108,7 +108,7 @@ public final class Constants {
 		public static final double IN = 0;
 
 		// In RPS (Spinner Setpoints)
-		public static final double REVERSE = -3;
+		public static final double REVERSE = -10;
 		public static final double ON = 3;
 
 		// Erros of Margin

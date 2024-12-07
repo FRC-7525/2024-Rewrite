@@ -209,7 +209,7 @@ public class Manager extends Subsystem<ManagerStates> {
 		addTrigger(
 			ManagerStates.SPINNING_UP,
 			ManagerStates.SHOOTING,
-			() -> driverShooterAfterSpinningVal || Constants.controller.getAButtonPressed()
+			() -> (driverShooterAfterSpinningVal && shooterSubsystem.nearSpeedPoint()) || Constants.controller.getAButtonPressed()
 		);
 		addTrigger(ManagerStates.SPINNING_UP, ManagerStates.IDLE, () ->
 			Constants.controller.getXButtonPressed()
